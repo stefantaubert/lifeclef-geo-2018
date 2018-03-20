@@ -1,0 +1,24 @@
+LifeClef GeoClef 
+
+Daten:
+insgesamt 3203 Spezies
+218.624 TIF Bilder von der Umgebung (1km x 1km) einer mit jeweils 33 Ebenen
+291.392 TIF insgesamt, 72.849 im Test-Set
+CSV mit 81 Spalten
+Metrik:
+MRR=Mean Reciprocal Rank
+
+Prediction:
+TIF;Spezies;Wahrscheinlichkeit;Rank
+2777702;3152583;0.614310483913869;2
+2777702;2888740;0.955044784350321;1
+2777702;2808330;0.0201473159249872;4
+2777702;2926110;0.345950950868428;3
+
+Datenanalyse:
+Welche Pflanzen kommen am häufigsten/seltesten vor?
+Gibt es genauso viele Spezies wie Scientificname?
+
+Steps:
+Wichtige Spalten heraussuchen
+Bilder außenvor lassen
