@@ -28,7 +28,7 @@ x_train = csv[['glc_id',
                       ]]
 
 #x_train.to_csv(data_paths.train_features, index=False)
-#x_train = pd.read_csv(data_paths.train_features)
+#x_train = pd.read_csv(data_paths.features_train)
 species = set(csv["species_glc_id"].values)
 print("All species:", species)
 print("All species count:", len(species))
@@ -88,20 +88,28 @@ print(pred.shape)
 
 #<glc_id;species_glc_id;probability;rank>
 
+result = pd.DataFrame(columns=['glc_id', 'species_glc_id', 'probability', 'rank'])
+
 for i in range(0, len(pred)):
     current_pred = pred[i]
-    current_glc_id = x_valid_ids[i]
+    current_glc_id = int(x_valid_ids[i])
     #pred_ranked = pd.Series(current_pred).rank(ascending=False, method="min")
     pred_r = rankdata(current_pred, method="ordinal")
     # absteigend sortieren
     pred_r = len(train_species_ids) - pred_r + 1
+    glc_id_array = [int(current_glc_id)] * len(train_species_ids)
+    #glc_id_array = pd.to_numeric(glc_id_array, downcast='integer')
 
-    glc_id_array = [current_glc_id] * len(train_species_ids)
-    percentile_list = pd.DataFrame(np.column_stack([glc_id_array, train_species_ids, current_pred, pred_r]), columns=['glc_id', 'species_glc_id', 'probability', 'rank'])
-    print(percentile_list)
+    percentile_list = pd.DataFrame({
+        'glc_id': glc_id_array,
+        'species_glc_id': train_species_ids,
+        'probability': current_pred,
+        'rank': pred_r
+    })
 
-    for j in range(0, len(train_species_ids)):
-        current_spec = train_species_ids[j]
-        current_spec_pred = current_pred[j]
-        current_rank = pred_r[j]
-        print("{};{};{};{}".format(current_glc_id, current_spec, current_spec_pred, current_rank))
+    # macht aus int float!
+    #percentile_list = pd.DataFrame(np.column_stack([glc_id_array, train_species_ids, current_pred, pred_r]), columns=['glc_id', 'species_glc_id', 'probability', 'rank'])
+    result = pd.concat([result, percentile_list], ignore_index=True)
+result = result.reindex(columns=('glc_id', 'species_glc_id', 'probability', 'rank'))
+print(result)
+result.to_csv(data_paths.submission_val, index=False, sep=";")
