@@ -8,7 +8,37 @@ http://hal.archives-ouvertes.fr/docs/00/72/67/60/PDF/07-busa-fekete.pdf
 Learning to Rank for Information Retrieval (Tie-Yan Liu)
 """
 import numpy as np
+import scipy
 
+def mean_reciprocal_rank(X, Y, indices, metric='hamming'):
+    ''' Computes the mean reciprocal rank of the correct match
+    Assumes that X[n] should be closest to Y[n]
+    Default uses hamming distance
+    :parameters:
+        - X : np.ndarray, shape=(n_examples, n_features)
+            Data matrix in X modality
+        - Y : np.ndarray, shape=(n_examples, n_features)
+            Data matrix in Y modality
+        - indices : np.ndarray
+            Denotes which rows to use in MRR calculation
+        - metric : str
+            Which metric to use to compare feature vectors
+    :returns:
+        - mrr_pessimist : float
+            Mean reciprocal rank, where ties are resolved pessimistically
+            That is, rank = # of distances <= dist(X[:, n], Y[:, n])
+        - mrr_optimist : float
+            Mean reciprocal rank, where ties are resolved optimistically
+            That is, rank = # of distances < dist(X[:, n], Y[:, n]) + 1
+    '''
+    # Compute distances between each codeword and each other codeword
+    distance_matrix = scipy.spatial.distance.cdist(X, Y, metric=metric)
+    # Rank is the number of distances smaller than the correct distance, as
+    # specified by the indices arg
+    n_le = distance_matrix.T <= distance_matrix[np.arange(X.shape[0]), indices]
+    n_lt = distance_matrix.T < distance_matrix[np.arange(X.shape[0]), indices]
+    return (np.mean(1./n_le.sum(axis=0)),
+            np.mean(1./(n_lt.sum(axis=0) + 1)))
 
 def mean_reciprocal_rank(rs):
     """Score is reciprocal of the rank of the first relevant item
