@@ -17,29 +17,66 @@ import data_paths
 
 all_start = time.time()
 
-csv = pd.read_csv(data_paths.occurrences_train, sep=';', nrows=500)
+csv = pd.read_csv(data_paths.occurrences_train, sep=';', nrows=5000)
 csv["glc_id"] = csv["patch_id"]
 
-csv = csv.fillna('0')
-x_train = csv[['glc_id',
-   # 'patch_id',
-    'chbio_1','chbio_2','chbio_3', 'chbio_4', 'chbio_5', 'chbio_6',
-     # 'chbio_7', 'chbio_8', 'chbio_9', 'chbio_10', 'chbio_11', 'chbio_12', 'chbio_13', 'chbio_14', 'chbio_15', 'chbio_16', 'chbio_17', 'chbio_18', 'chbio_19', 'alti', 'awc_top', 'bs_top', 'cec_top', 'crusting', 'dgh', 'dimp', 'erodi', 'oc_top', 'pd_top', 'text', 'proxi_eau_fast','clc'
-                      ]]
+#csv = csv.fillna('0')
+# print(len(csv.index))
+#
+# csv = csv.dropna(axis=0, how='any')
+# print(len(csv.index))
+# def select_rows(df,search_strings):
+#     unq,IDs = np.unique(df,return_inverse=True)
+#     unqIDs = np.searchsorted(unq,search_strings)
+#     return df[((IDs.reshape(df.shape) == unqIDs[:,None,None]).any(-1)).all(0)]
+#
+# rows_without_NA = csv[csv.isin([nan])]
+# print(len(rows_without_NA))
+#
+# #rows_with_NA = csv[csv == 'NA'].dropna(how='all')
+#
+# for index, row in csv.iterrows():
+#     for val in row.values:
+#         if str(val) == "1024178204":
+#             print(row)
+#
+#
+# rows_with_NA = select_rows(csv, ['NA'])
+# print(rows_with_NA)
+#
+# csv = csv.drop(rows_with_NA)
+#
+# print(len(csv.index))
+#
+#
+# # macht keinen sinn
+# csv = csv.replace(['NA'], ['0'])
+#print(csv.head())
+x_train = csv[[
+        'species_glc_id', 'glc_id',
+        # 'patch_id',
+        'chbio_1','chbio_2','chbio_3', 'chbio_4', 'chbio_5', 'chbio_6',
+        'chbio_7', 'chbio_8', 'chbio_9', 'chbio_10', 'chbio_11', 'chbio_12',
+        'chbio_13', 'chbio_14', 'chbio_15', 'chbio_16', 'chbio_17', 'chbio_18',
+        'chbio_19', 'alti',
+        'awc_top', 'bs_top', 'cec_top', 'crusting', 'dgh', 'dimp','erodi', 'oc_top', 'pd_top', 'text',
+        'proxi_eau_fast','clc'
+     ]]
+old_rowcount = len(x_train.index)
+x_train = x_train.dropna(axis=0, how='any')
+print("Count of dropped rows with 'nan'", old_rowcount - len(x_train.index), "of", old_rowcount)
+
 
 #x_train.to_csv(data_paths.train_features, index=False)
 #x_train = pd.read_csv(data_paths.features_train)
 species = set(csv["species_glc_id"].values)
-print("All species:", species)
+# print("All species:", species)
 print("All species count:", len(species))
 
-array  = [0 for i in range(0, len(set(csv["species_glc_id"].values)))]
-array2 = [array for i in range(0, len(csv.index))]
-print(array)
-print(array2)
 # Ausgabedaten erstellen.
-y_train = csv.species_glc_id
+y_train = x_train.species_glc_id
 #y_train = array2
+x_train.drop(["species_glc_id"],axis=1, inplace=True)
 
 # Trainings-Set und Validierungs-Set erstellen. Das Validierungs-Set enthält 10% aller Trainings-Daten.
 x_train, x_valid, y_train, y_valid = train_test_split(x_train, y_train, test_size=0.2, random_state=4242)
@@ -47,49 +84,52 @@ print("Validationset rows:", len(x_valid.index))
 train_species_ids = list(set(y_train))
 val_species_ids = list(set(y_valid))
 
-print("Trainspecies:", train_species_ids)
+# print("Trainspecies:", train_species_ids)
 print("Trainspecies count:", len(train_species_ids))
-print("Trainspecies last:", list(train_species_ids)[-1])
+# print("Trainspecies last:", list(train_species_ids)[-1])
 
-print("Valspecies:", val_species_ids)
+# print("Valspecies:", val_species_ids)
 print("Valspecies count:", len(val_species_ids))
-print("Valspecies last:", list(val_species_ids)[-1])
+# print("Valspecies last:", list(val_species_ids)[-1])
 
 #x_train.drop(['patch_id'], axis=1)
 
 x_train_ids = x_train.glc_id
 x_train.drop(["glc_id"],axis=1, inplace=True)
 
-print("Trainfeatures:", x_train)
-print("Train glc_ids:", x_train_ids)
-print("Unknown Spezies:", len(species) - len(train_species_ids))
+# print("Trainfeatures:", x_train)
+# print("Train glc_ids:", x_train_ids)
+print("Unknown species in trainset:", len(species) - len(train_species_ids))
 
 x_valid_ids = list(x_valid.glc_id)
 x_valid.drop(["glc_id"],axis=1, inplace=True)
 
-print("Validationfeatures:", x_valid)
-print("Validation glc_ids:", x_valid_ids)
-print("Count Validation glc_ids:", len(x_valid_ids))
+# print("Validationfeatures:", x_valid)
+# print("Validation glc_ids:", x_valid_ids)
+# print("Count Validation glc_ids:", len(x_valid_ids))
 print("Species only in validationset:", len(set(val_species_ids).difference(set(train_species_ids))) )
-print(type(x_valid_ids))
 
-if (True):
+
+if (False):
     clf = DecisionTreeClassifier()
     clf.n_classes_ = len(species)
     clf.fit(x_train, y_train)
     pred = clf.predict_proba(x_valid)
 else:
-    ctf = OneVsRestClassifier(XGBClassifier(n_jobs=-1))
+    ctf = OneVsRestClassifier(XGBClassifier(n_jobs=-1, seed=4242))
+    print("Fit model...")
     ctf.fit(x_train, y_train)
+    print("Predict data...")
     pred = ctf.predict_proba(x_valid)
 
-print(pred)
-print(pred.shape)
+print("Process data...")
+# print(pred)
+# print(pred.shape)
 
 #<glc_id;species_glc_id;probability;rank>
 
 result = pd.DataFrame(columns=['glc_id', 'species_glc_id', 'probability', 'rank', 'real_species_glc_id'])
-print(y_valid.shape)
+
 for i in range(0, len(pred)):
     current_pred = pred[i]
     current_glc_id = int(x_valid_ids[i])
@@ -115,19 +155,18 @@ for i in range(0, len(pred)):
     result = pd.concat([result, percentile_list], ignore_index=True)
 result = result.reindex(columns=('glc_id', 'species_glc_id', 'probability', 'rank', 'real_species_glc_id'))
 
-print(result)
-
 result_clean = pd.DataFrame(columns=['glc_id', 'species_glc_id', 'probability', 'rank', 'real_probability'])
 
-for index, row in result.iterrows():
-    if row.species_glc_id != row.real_species_glc_id:
-        result = result.drop(index)
+result = result[result.species_glc_id == result.real_species_glc_id]
 
-print(result)
+#print(result)
 
+print("Calculate MRR-Score...")
 sum = 0.0
 Q = len(result.index)
 print("Q:", Q)
+
+print("Dropped valpredictions because species was only in valset:", len(y_valid.index) - Q)
 
 # MRR berechnen
 for index, row in result.iterrows():
@@ -137,3 +176,4 @@ mrr_score = 1.0 / Q * sum
 print("MRR-Score:", mrr_score)
 
 result.to_csv(data_paths.submission_val, index=False, sep=";")
+print("Total duration (s):", time.time() - all_start)
