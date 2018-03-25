@@ -1,7 +1,6 @@
 import time
 import pandas as pd
 import numpy as np
-import data_paths
 import time
 import pandas as pd
 from sklearn.tree import DecisionTreeClassifier
@@ -10,9 +9,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import log_loss, accuracy_score, recall_score, precision_score, f1_score
 from xgboost import XGBClassifier
 from sklearn.multiclass import OneVsRestClassifier
-from sklearn.metrics import accuracy_score
-import xgboost as xgb
-import rank_metrics
+
 import data_paths
 
 all_start = time.time()
