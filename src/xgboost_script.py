@@ -73,7 +73,7 @@ print("Count Validation glc_ids:", len(x_valid_ids))
 print("Species only in validationset:", len(set(val_species_ids).difference(set(train_species_ids))) )
 print(type(x_valid_ids))
 
-if (False):
+if (True):
     clf = DecisionTreeClassifier()
     clf.n_classes_ = len(species)
     clf.fit(x_train, y_train)
@@ -88,8 +88,8 @@ print(pred.shape)
 
 #<glc_id;species_glc_id;probability;rank>
 
-result = pd.DataFrame(columns=['glc_id', 'species_glc_id', 'probability', 'rank'])
-
+result = pd.DataFrame(columns=['glc_id', 'species_glc_id', 'probability', 'rank', 'real_species_glc_id'])
+print(y_valid.shape)
 for i in range(0, len(pred)):
     current_pred = pred[i]
     current_glc_id = int(x_valid_ids[i])
@@ -100,16 +100,40 @@ for i in range(0, len(pred)):
     glc_id_array = [int(current_glc_id)] * len(train_species_ids)
     #glc_id_array = pd.to_numeric(glc_id_array, downcast='integer')
 
+    sol_array = [int(list(y_valid)[i])] * len(train_species_ids)
+
     percentile_list = pd.DataFrame({
         'glc_id': glc_id_array,
         'species_glc_id': train_species_ids,
         'probability': current_pred,
-        'rank': pred_r
+        'rank': pred_r,
+        'real_species_glc_id': sol_array,
     })
 
     # macht aus int float!
     #percentile_list = pd.DataFrame(np.column_stack([glc_id_array, train_species_ids, current_pred, pred_r]), columns=['glc_id', 'species_glc_id', 'probability', 'rank'])
     result = pd.concat([result, percentile_list], ignore_index=True)
-result = result.reindex(columns=('glc_id', 'species_glc_id', 'probability', 'rank'))
+result = result.reindex(columns=('glc_id', 'species_glc_id', 'probability', 'rank', 'real_species_glc_id'))
+
 print(result)
+
+result_clean = pd.DataFrame(columns=['glc_id', 'species_glc_id', 'probability', 'rank', 'real_probability'])
+
+for index, row in result.iterrows():
+    if row.species_glc_id != row.real_species_glc_id:
+        result = result.drop(index)
+
+print(result)
+
+sum = 0.0
+Q = len(result.index)
+print("Q:", Q)
+
+# MRR berechnen
+for index, row in result.iterrows():
+    sum += 1 / float(row["rank"])
+
+mrr_score = 1.0 / Q * sum
+print("MRR-Score:", mrr_score)
+
 result.to_csv(data_paths.submission_val, index=False, sep=";")
