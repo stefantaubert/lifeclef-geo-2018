@@ -8,15 +8,15 @@ from scipy.stats import rankdata
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import log_loss, accuracy_score, recall_score, precision_score, f1_score
 from xgboost import XGBClassifier
+import xgboost as xgb
 from sklearn.multiclass import OneVsRestClassifier
 from XGBClassifierWithParam import XGBCl
-
 import data_paths
 
 if __name__ == '__main__':
     all_start = time.time()
 
-    x_train = pd.read_csv(data_paths.features_train, nrows=1000)
+    x_train = pd.read_csv(data_paths.features_train, nrows=500)
     print(x_train)
     species_count = len(set(x_train["species_glc_id"].values))
 
@@ -68,12 +68,46 @@ if __name__ == '__main__':
     print("Species only in trainset:", len(set(val_species_ids).difference(set(train_species_ids))) )
 
     if (False):
-        clf = DecisionTreeClassifier()
-        clf.n_classes_ = species_count
-        clf.fit(x_train, y_train)
-        pred = clf.predict_proba(x_valid)
+        # clf = DecisionTreeClassifier()
+        # clf.n_classes_ = species_count
+        # clf.fit(x_train, y_train)
+        # pred = clf.predict_proba(x_valid)
+
+        # Die Parameter für XGBoost erstellen.
+        params = {}
+        params['objective'] = 'multi:softmax'
+        params['eval_metric'] = 'merror'
+        params['eta'] = 0.02
+        params['max_depth'] = 3
+        params['subsample'] = 0.6
+        params['base_score'] = 0.2
+        params['num_class'] = 3328
+        # params['scale_pos_weight'] = 0.36 #für test set
+
+        # Berechnungen mit der GPU ausführen
+        # params['updater'] = 'grow_gpu'
+
+        # Datenmatrix für die Eingabedaten erstellen.
+        d_train = xgb.DMatrix(x_train, label=y_train)
+        d_valid = xgb.DMatrix(x_valid, label=y_valid)
+
+        # Um den Score für das Validierungs-Set während des Trainings zu berechnen, muss eine Watchlist angelegt werden.
+        watchlist = [(d_train, 'train'), (d_valid, 'valid')]
+
+        # Modell trainieren.
+        # Geschwindigkeit ca. 1000 pro Minute auf der P6000
+        # zeigt alle 10 Schritte den Score für das Validierungs-Set an
+        print("Training model...")
+        bst = xgb.train(params, d_train, 5, watchlist, verbose_eval=1)
+
+        # Modell speichern.
+        bst.dump_model(data_paths.model_dump)
+        bst.save_model(data_paths.model)
+
+        predicted = bst.predict_proba(d_valid)
+
     else:
-        xg = XGBClassifier(objective="multi:softmax", eval_metric="merror", random_state=4242, n_jobs=-1, n_estimators = 36)
+        xg = XGBClassifier(objective="multi:softmax", eval_metric="merror", random_state=4242, n_jobs=-1, n_estimators = 30)
         # xg.fit()
 
         # ctf = OneVsRestClassifier(xg, n_jobs=-1)
