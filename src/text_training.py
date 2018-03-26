@@ -1,16 +1,11 @@
-import time
 import pandas as pd
 import numpy as np
 import time
 import pandas as pd
-from sklearn.tree import DecisionTreeClassifier
 from scipy.stats import rankdata
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import log_loss, accuracy_score, recall_score, precision_score, f1_score
 from xgboost import XGBClassifier
-import xgboost as xgb
-from sklearn.multiclass import OneVsRestClassifier
-from XGBClassifierWithParam import XGBCl
+
 import data_paths
 
 all_start = time.time()
@@ -18,12 +13,8 @@ all_start = time.time()
 x_train = np.load(data_paths.x_text)
 y_train = np.load(data_paths.y)
 
-print(x_train)
-print(y_train)
-
-x_train, x_valid, y_train, y_valid = train_test_split(x_train, y_train, test_size=0.2, random_state=4242)
+x_train, x_valid, y_train, y_valid = train_test_split(x_train, y_train, test_size=0.1, random_state=4242)
 print("Validationset rows:", len(x_valid))
-print(x_valid)
 
 # Entferne Spezies aus dem Validierungsset, falls diese Spezies nicht im Trainingsset vorkommt
 indicies = []
@@ -37,27 +28,27 @@ y_valid = np.delete(y_valid, indicies)
 
 train_species_ids = list(set(y_train))
 
-print("Count of y datas:", len(y_valid))
+print("Count of trainingdata:", len(y_train))
+print("Count of validationdata (without unique species):", len(y_valid))
 
-xg = XGBClassifier(objective="multi:softmax", eval_metric="merror", random_state=4242, n_jobs=-1, n_estimators=30, predictor='gpu_predictor')
-# xg.fit()
+xg = XGBClassifier(
+    objective="multi:softmax",
+    eval_metric="merror",
+    random_state=4242,
+    n_jobs=-1,
+    n_estimators=30,
+    predictor='gpu_predictor',
+)
 
-# ctf = OneVsRestClassifier(xg, n_jobs=-1)
-# print(ctf)
 print("Fit model...")
 xg.fit(x_train, y_train, eval_set=[(x_train, y_train), (x_valid, y_valid)])
 
-
-# ctf.fit(x_train, y_train)
 print("Predict data...")
 pred = xg.predict_proba(x_valid)
 
 print("Process data...")
-# print(pred)
-# print(pred.shape)
 
 # <glc_id;species_glc_id;probability;rank>
-
 result = pd.DataFrame(columns=['glc_id', 'species_glc_id', 'probability', 'rank', 'real_species_glc_id'])
 
 for i in range(0, len(pred)):
@@ -68,7 +59,6 @@ for i in range(0, len(pred)):
     # absteigend sortieren
     pred_r = len(train_species_ids) - pred_r + 1
     glc_id_array = [int(current_glc_id)] * len(train_species_ids)
-    # glc_id_array = pd.to_numeric(glc_id_array, downcast='integer')
 
     sol_array = [int(list(y_valid)[i])] * len(train_species_ids)
 
@@ -83,8 +73,8 @@ for i in range(0, len(pred)):
     # macht aus int float!
     # percentile_list = pd.DataFrame(np.column_stack([glc_id_array, train_species_ids, current_pred, pred_r]), columns=['glc_id', 'species_glc_id', 'probability', 'rank'])
     result = pd.concat([result, percentile_list], ignore_index=True)
-result = result.reindex(columns=('glc_id', 'species_glc_id', 'probability', 'rank', 'real_species_glc_id'))
 
+result = result.reindex(columns=('glc_id', 'species_glc_id', 'probability', 'rank', 'real_species_glc_id'))
 result = result[result.species_glc_id == result.real_species_glc_id]
 
 # print(result)
