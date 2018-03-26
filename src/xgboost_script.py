@@ -16,70 +16,29 @@ import data_paths
 if __name__ == '__main__':
     all_start = time.time()
 
-    csv = pd.read_csv(data_paths.occurrences_train, sep=';', nrows=3000)
-    csv["glc_id"] = csv["patch_id"]
-
-    #csv = csv.fillna('0')
-    # print(len(csv.index))
-    #
-    # csv = csv.dropna(axis=0, how='any')
-    # print(len(csv.index))
-    # def select_rows(df,search_strings):
-    #     unq,IDs = np.unique(df,return_inverse=True)
-    #     unqIDs = np.searchsorted(unq,search_strings)
-    #     return df[((IDs.reshape(df.shape) == unqIDs[:,None,None]).any(-1)).all(0)]
-    #
-    # rows_without_NA = csv[csv.isin([nan])]
-    # print(len(rows_without_NA))
-    #
-    # #rows_with_NA = csv[csv == 'NA'].dropna(how='all')
-    #
-    # for index, row in csv.iterrows():
-    #     for val in row.values:
-    #         if str(val) == "1024178204":
-    #             print(row)
-    #
-    #
-    # rows_with_NA = select_rows(csv, ['NA'])
-    # print(rows_with_NA)
-    #
-    # csv = csv.drop(rows_with_NA)
-    #
-    # print(len(csv.index))
-    #
-    #
-    # # macht keinen sinn
-    # csv = csv.replace(['NA'], ['0'])
-    #print(csv.head())
-    x_train = csv[[
-            'species_glc_id', 'glc_id',
-            # 'patch_id',
-            'chbio_1','chbio_2','chbio_3', 'chbio_4', 'chbio_5', 'chbio_6',
-            'chbio_7', 'chbio_8', 'chbio_9', 'chbio_10', 'chbio_11', 'chbio_12',
-            'chbio_13', 'chbio_14', 'chbio_15', 'chbio_16', 'chbio_17', 'chbio_18',
-            'chbio_19', 'alti',
-            'awc_top', 'bs_top', 'cec_top', 'crusting', 'dgh', 'dimp','erodi', 'oc_top', 'pd_top', 'text',
-            'proxi_eau_fast','clc'
-         ]]
-    old_rowcount = len(x_train.index)
-    x_train = x_train.dropna(axis=0, how='any')
-    print("Count of dropped rows with 'nan'", old_rowcount - len(x_train.index), "of", old_rowcount)
-
-
-    #x_train.to_csv(data_paths.train_features, index=False)
-    #x_train = pd.read_csv(data_paths.features_train)
-    species = set(csv["species_glc_id"].values)
-    # print("All species:", species)
-    print("All species count:", len(species))
+    x_train = pd.read_csv(data_paths.features_train, nrows=1000)
+    print(x_train)
+    species_count = len(set(x_train["species_glc_id"].values))
 
     # Ausgabedaten erstellen.
     y_train = x_train.species_glc_id
-    #y_train = array2
-    x_train.drop(["species_glc_id"],axis=1, inplace=True)
+    x_train.drop(["species_glc_id"], axis=1, inplace=True)
 
     # Trainings-Set und Validierungs-Set erstellen. Das Validierungs-Set enthält 10% aller Trainings-Daten.
     x_train, x_valid, y_train, y_valid = train_test_split(x_train, y_train, test_size=0.2, random_state=4242)
     print("Validationset rows:", len(x_valid.index))
+
+    # Entferne Spezies aus dem Validierungsset, falls diese Spezies nicht im Trainingsset vorkommt
+    indicies = []
+    for index, item in y_valid.iteritems():
+        if item not in y_train.values:
+            indicies.append(index)
+
+    x_valid.drop(indicies, inplace=True)
+    y_valid.drop(indicies, inplace=True)
+
+    print("Validationset rows after removing unique species:", len(x_valid.index))
+
     train_species_ids = list(set(y_train))
     val_species_ids = list(set(y_valid))
 
@@ -98,7 +57,7 @@ if __name__ == '__main__':
 
     # print("Trainfeatures:", x_train)
     # print("Train glc_ids:", x_train_ids)
-    print("Unknown species in trainset:", len(species) - len(train_species_ids))
+    print("Unknown species in trainset:", species_count - len(train_species_ids))
 
     x_valid_ids = list(x_valid.glc_id)
     x_valid.drop(["glc_id"],axis=1, inplace=True)
@@ -106,22 +65,25 @@ if __name__ == '__main__':
     # print("Validationfeatures:", x_valid)
     # print("Validation glc_ids:", x_valid_ids)
     # print("Count Validation glc_ids:", len(x_valid_ids))
-    print("Species only in validationset:", len(set(val_species_ids).difference(set(train_species_ids))) )
+    print("Species only in trainset:", len(set(val_species_ids).difference(set(train_species_ids))) )
 
     if (False):
         clf = DecisionTreeClassifier()
-        clf.n_classes_ = len(species)
+        clf.n_classes_ = species_count
         clf.fit(x_train, y_train)
         pred = clf.predict_proba(x_valid)
     else:
-        xg = XGBClassifier(objective="binary:logistic", eval_metric="multi:softmax", random_state=4242, silent=True, max_depth=6)
+        xg = XGBClassifier(objective="multi:softmax", eval_metric="merror", random_state=4242, n_jobs=-1, n_estimators = 36)
         # xg.fit()
-        ctf = OneVsRestClassifier(xg, n_jobs=-1)
-        print(ctf)
+
+        # ctf = OneVsRestClassifier(xg, n_jobs=-1)
+        # print(ctf)
         print("Fit model...")
-        ctf.fit(x_train, y_train)
+        xg.fit(x_train, y_train, eval_set=[(x_train, y_train), (x_valid, y_valid)])
+
+        #ctf.fit(x_train, y_train)
         print("Predict data...")
-        pred = ctf.predict_proba(x_valid)
+        pred = xg.predict_proba(x_valid)
 
     print("Process data...")
     # print(pred)
@@ -156,8 +118,6 @@ if __name__ == '__main__':
         result = pd.concat([result, percentile_list], ignore_index=True)
     result = result.reindex(columns=('glc_id', 'species_glc_id', 'probability', 'rank', 'real_species_glc_id'))
 
-    result_clean = pd.DataFrame(columns=['glc_id', 'species_glc_id', 'probability', 'rank', 'real_probability'])
-
     result = result[result.species_glc_id == result.real_species_glc_id]
 
     #print(result)
@@ -176,5 +136,6 @@ if __name__ == '__main__':
     mrr_score = 1.0 / Q * sum
     print("MRR-Score:", mrr_score)
 
+    result.drop(['real_species_glc_id'],axis=1, inplace=True)
     result.to_csv(data_paths.submission_val, index=False, sep=";")
     print("Total duration (s):", time.time() - all_start)
