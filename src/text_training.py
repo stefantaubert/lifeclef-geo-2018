@@ -13,6 +13,9 @@ all_start = time.time()
 x_train = np.load(data_paths.x_text)
 y_train = np.load(data_paths.y)
 
+df = pd.DataFrame(x_train)
+df.to_csv(data_paths.occurrences_train_gen, index=False)
+
 x_train, x_valid, y_train, y_valid = train_test_split(x_train, y_train, test_size=0.1, random_state=4242)
 print("Validationset rows:", len(x_valid))
 
