@@ -4,6 +4,8 @@ import data_paths
 from tqdm import tqdm
 import tifffile
 import pickle
+import sys
+
 
 def read_data():
     x_img = []
@@ -12,7 +14,7 @@ def read_data():
 
     df = pd.read_csv(data_paths.occurrences_train, sep=';', low_memory=False)
 
-    df = df.head(3000)
+    df = df.head(1)
 
     species_map = {l: i for i, l in enumerate(df.species_glc_id.unique())}
 
@@ -27,6 +29,9 @@ def read_data():
         img = tifffile.imread(data_paths.patch_train+'/{}/patch_{}.tif'.format(current_patch_dirname, current_patch_id))
         assert img.shape == (33, 64, 64)
 
+        #Change datatype of img from uint8 to enable mean calculation
+        img = np.array(img, dtype=np.uint16)
+
         csv_values = np.zeros(len(img))
 
         for i in range(len(img)):
@@ -37,7 +42,8 @@ def read_data():
         #y.append(target)
         y.append(current_species_glc_id)
 
-    x_img = np.array(x_img)
+    #Change datatype back to uint8
+    x_img = np.array(x_img, dtype=np.uint8)
     x_text = np.array(x_text)
     y = np.array(y)
 
