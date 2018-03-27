@@ -26,7 +26,9 @@ def nn_Model(output_shape):
     return model
 
 def run_Model():
-    species_map, x_img, x_text, y = read_data()
+    x_text = np.load(data_paths.x_text)
+    y = np.load(data_paths.y)
+
     species_count = y.shape[1]
     print(species_count)
 
