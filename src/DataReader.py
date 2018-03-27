@@ -14,9 +14,9 @@ def read_data():
 
     df = pd.read_csv(data_paths.occurrences_train, sep=';', low_memory=False)
 
-    df = df.head(1)
-
     species_map = {l: i for i, l in enumerate(df.species_glc_id.unique())}
+
+    df = df.head(1000)
 
     for index, row in tqdm(df.iterrows(), miniters=100):
         current_species_glc_id = row["species_glc_id"]
@@ -39,8 +39,8 @@ def read_data():
 
         x_img.append(img)
         x_text.append(csv_values)
-        #y.append(target)
-        y.append(current_species_glc_id)
+        y.append(target)
+        #y.append(current_species_glc_id)
 
     #Change datatype back to uint8
     x_img = np.array(x_img, dtype=np.uint8)
