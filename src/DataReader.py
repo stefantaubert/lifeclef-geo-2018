@@ -4,6 +4,7 @@ import data_paths
 from tqdm import tqdm
 import tifffile
 import pickle
+import settings
 import sys
 
 
@@ -16,7 +17,7 @@ def read_data():
 
     species_map = {l: i for i, l in enumerate(df.species_glc_id.unique())}
 
-    df = df.head(10000)
+    df = df.head(settings.read_data_count)
 
     for index, row in tqdm(df.iterrows(), miniters=100):
         current_species_glc_id = row["species_glc_id"]
@@ -48,8 +49,6 @@ def read_data():
     y = np.array(y)
 
     return species_map, x_img, x_text, y
-
-
 
 
 if __name__ == '__main__':

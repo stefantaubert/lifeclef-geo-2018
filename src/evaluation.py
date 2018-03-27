@@ -10,16 +10,13 @@ from sklearn.model_selection import train_test_split
 def evaluate():
     x_text = np.load(data_paths.x_text)
     y = np.load(data_paths.y)
-    species = np.load(data_paths.species_map)
-
+    #species = np.load(data_paths.species_map)
+    y_predicted = np.load(data_paths.prediction)
     df = pd.read_csv(data_paths.occurrences_train, sep=';', low_memory=False)
     species = df.species_glc_id.unique()
+    result = pd.DataFrame(columns=['glc_id', 'species_glc_id', 'probability', 'rank', 'real_species_glc_id'])
 
     x_train, x_valid, y_train, y_valid = train_test_split(x_text, y, test_size=train_val_split, random_state=seed)
-
-    y_predicted = np.load(data_paths.prediction)
-
-    result = pd.DataFrame(columns=['glc_id', 'species_glc_id', 'probability', 'rank', 'real_species_glc_id'])
 
     for i in range(0, len(y_valid)):
         current_pred = y_predicted[i]
@@ -30,10 +27,9 @@ def evaluate():
         pred_r = len(species) - pred_r + 1
         glc_id_array = [int(current_glc_id)] * len(species)
 
-        current_solution = y_valid[i]
-        #ind = current_solution.index(1)
         i, = np.where(y_valid[i] == 1)
         assert len(i) == 1
+
         current_solution_species = int(species[i])
         sol_array = [current_solution_species] * len(species)
 

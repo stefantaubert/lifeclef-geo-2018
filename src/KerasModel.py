@@ -49,8 +49,9 @@ def run_Model():
 
     print(result)
 
-    print(result)
-	np.save(data_paths.prediction, result)if __name__ == '__main__':
+    np.save(data_paths.prediction, result)
+
+if __name__ == '__main__':
     run_Model()
 
 
