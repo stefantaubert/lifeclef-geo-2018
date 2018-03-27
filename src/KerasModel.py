@@ -16,7 +16,7 @@ def nn_Model(output_shape):
     model.add(Dropout(rate=0.25))
     model.add(Dense(input_shape=(33, ), units=5000, activation='relu'))
     model.add(Dropout(rate=0.25))
-    model.add(Dense(output_shape, activation='softmax'))
+    model.add(Dense(output_shape, activation='sigmoid'))
     return model
 
 def run_Model():
@@ -37,7 +37,8 @@ def run_Model():
     model.fit(x_text, y, epochs=2, batch_size=32, validation_split=0.2)
 
     result = model.predict(np.array(x_text[0:1]))
-    print(result.shape)
+
+    print(result)
 
 if __name__ == '__main__':
     run_Model()
