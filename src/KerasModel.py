@@ -1,9 +1,12 @@
+import settings
+import numpy as np
+np.random.seed(settings.seed)
+
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Flatten, BatchNormalization
 from keras.layers import Conv2D, AveragePooling2D
 from DataReader import read_data
-from settings import *
-import numpy as np
+
 import data_paths
 import pickle
 from scipy.stats import rankdata
@@ -42,7 +45,7 @@ def run_Model():
                   loss='mse',
                   metrics=[top3_acc,  top50_acc, 'accuracy'])
 
-    x_train, x_valid, y_train, y_valid = train_test_split(x_text, y, test_size=train_val_split, random_state=seed)
+    x_train, x_valid, y_train, y_valid = train_test_split(x_text, y, test_size=settings.train_val_split, random_state=settings.seed)
 
     model.fit(x_train, y_train, epochs=2, batch_size=32)
 
