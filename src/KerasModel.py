@@ -22,7 +22,7 @@ def nn_Model(output_shape):
     model.add(Dropout(rate=0.25))
     model.add(Dense(input_shape=(33, ), units=5000, activation='relu'))
     model.add(Dropout(rate=0.25))
-    model.add(Dense(output_shape, activation='softmax'))
+    model.add(Dense(output_shape, activation='sigmoid'))
     return model
 
 def run_Model():
@@ -48,11 +48,9 @@ def run_Model():
     result = model.predict(x_valid)
 
     print(result)
-    print(result.shape)
 
-    np.save(data_paths.prediction, result)
-
-if __name__ == '__main__':
+    print(result)
+	np.save(data_paths.prediction, result)if __name__ == '__main__':
     run_Model()
 
 
