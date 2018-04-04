@@ -24,8 +24,9 @@ def read_data():
     'proxi_eau_fast', 'clc', 'day', 'month', 'year', 'latitude', 'longitude', 'patch_id', 'species_glc_id']
     
     species_map = {l: i for i, l in enumerate(df.species_glc_id.unique())}
-
-    #df = df.head(settings.read_data_count)
+    
+    if settings.read_data_count > 0:
+        df = df.head(settings.read_data_count)
 
     resulting_csv_values = []
     for index, row in tqdm(df.iterrows(), miniters=100):

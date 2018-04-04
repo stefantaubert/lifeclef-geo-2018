@@ -7,6 +7,8 @@ from keras.layers import Dense, Dropout, Flatten, BatchNormalization
 from keras.layers import Conv2D, AveragePooling2D
 from DataReader import read_data
 
+from keras import optimizers
+
 import data_paths
 import pickle
 from scipy.stats import rankdata
@@ -28,6 +30,32 @@ def nn_Model(output_shape):
     model.add(Dense(output_shape, activation='sigmoid'))
     return model
 
+def cnn_Model_2(output_shape):
+    model = Sequential()
+    model.add(Conv2D(input_shape=(33, 64, 64),
+                     filters=64,
+                     activation='relu',
+                     kernel_size=(7, 7),
+                     strides=(2, 2),
+                     data_format='channels_first'))
+    model.add(Conv2D(filters=64,
+                     activation='relu',
+                     kernel_size=(3, 3),
+                     strides=(1, 1),
+                     padding='same',
+                     data_format='channels_first'))
+    model.add(Conv2D(filters=64,
+                     activation='relu',
+                     kernel_size=(3, 3),
+                     strides=(1, 1),
+                     data_format='channels_first'))
+    model.add(Dropout(rate=0.5))
+    model.add(AveragePooling2D(pool_size=(4,4),
+                               data_format='channels_first'))
+    model.add(Flatten())
+    model.add(Dense(units=output_shape, activation='softmax'))
+    return model
+
 def cnn_Model(output_shape):
     model = Sequential()
     model.add(Conv2D(input_shape=(33, 64, 64),
@@ -36,12 +64,12 @@ def cnn_Model(output_shape):
                      kernel_size=(10, 10),
                      strides=(2, 2),
                      data_format='channels_first'))
-    model.add(Dropout(rate=0.5))
     model.add(AveragePooling2D(pool_size=(9,9),
                                data_format='channels_first'))
     model.add(Flatten())
     model.add(Dense(units=output_shape, activation='sigmoid'))
     return model
+
 
 
 def run_Model():
@@ -57,16 +85,20 @@ def run_Model():
     top3_acc.__name__ = 'top3_acc'
     top50_acc = functools.partial(top_k_categorical_accuracy, k=50)
     top50_acc.__name__ = 'top50_acc'
+    
+    sgd_optimizer = optimizers.SGD(lr=0.0000001, momentum=0.0, decay=0.0, nesterov=False)
+
 
     #model = nn_Model(species_count)
-    model = cnn_Model(species_count)
-    model.compile(optimizer='sgd',
+    #model = cnn_Model(species_count)
+    model = cnn_Model_2(species_count)
+    model.compile(optimizer=sgd_optimizer,
                   loss='mse',
                   metrics=['accuracy', top3_acc, top50_acc])
 
     x_train, x_valid, y_train, y_valid = train_test_split(x_train, y, test_size=settings.train_val_split, random_state=settings.seed)
 
-    model.fit(x_train, y_train, epochs=2, batch_size=32)
+    model.fit(x_train, y_train, epochs=10, batch_size=256, verbose=2)
 
     #result = model.predict(np.array(x_text[0:3]))
     result = model.predict(x_valid)
