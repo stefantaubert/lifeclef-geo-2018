@@ -73,13 +73,14 @@ def cnn_Model(output_shape):
 
 
 def run_Model():
+    print("Run model...")    
     x_text = np.load(data_paths.x_text)
     x_img = np.load(data_paths.x_img)
     y = np.load(data_paths.y)
 
     x_train = x_img
     species_count = y.shape[1]
-    print(species_count)
+    #print(species_count)
 
     top3_acc = functools.partial(top_k_categorical_accuracy, k=3)
     top3_acc.__name__ = 'top3_acc'
@@ -102,8 +103,6 @@ def run_Model():
 
     #result = model.predict(np.array(x_text[0:3]))
     result = model.predict(x_valid)
-
-    print(result)
 
     np.save(data_paths.prediction, result)
 

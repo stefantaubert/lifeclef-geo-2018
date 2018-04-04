@@ -57,16 +57,15 @@ def read_data():
         csv_values.append(row.patch_id)
         csv_values.append(row.species_glc_id)
 
-        #x_img.append(img)
-        #x_text.append(csv_values)
+        x_img.append(img)
+        x_text.append(csv_values)
         resulting_csv_values.append(csv_values)
-        #y.append(target)
+        y.append(target)
         #y.append(current_species_glc_id)
   
-    results_array=np.asarray(resulting_csv_values) #list to array to add to the dataframe as a new column
+    results_array = np.asarray(resulting_csv_values) #list to array to add to the dataframe as a new column
 
     result_ser = pd.DataFrame(results_array, columns=result_cols)
-
     result_ser.to_csv(data_paths.occurrences_train_gen, index=False)
 
     #Change datatype back to uint8
@@ -76,10 +75,13 @@ def read_data():
 
     return species_map, x_img, x_text, y
 
-
-if __name__ == '__main__':
+def read_and_write_data():
+    print("Read data...")    
     species_map, x_img, x_text, y = read_data()
     np.save(data_paths.x_img, x_img)
     np.save(data_paths.x_text, x_text)
     np.save(data_paths.y, y)
     pickle.dump(species_map, open(data_paths.species_map, 'wb'))
+
+if __name__ == '__main__':
+    read_and_write_data()
