@@ -5,6 +5,7 @@ patch_train = root + "patchTrain"
 occurrences_train = root + "occurrences_train.csv"
 occurrences_train_gen = root + "occurrences_train_gen.csv"
 features_train = root + "train_features.csv"
+
 submission_val = root + "submission_val.csv"#
 prediction = root + "prediction.npy"#
 
