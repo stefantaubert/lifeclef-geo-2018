@@ -21,16 +21,13 @@ def read_data():
     'chbio_13', 'chbio_14', 'chbio_15', 'chbio_16', 'chbio_17', 'chbio_18',
     'chbio_19', 'etp', 'alti',
     'awc_top', 'bs_top', 'cec_top', 'crusting', 'dgh', 'dimp', 'erodi', 'oc_top', 'pd_top', 'text',
-    'proxi_eau_fast', 'clc', 'day', 'month', 'year', 'latitude', 'longitude', 'patch_id', 'species_glc_id',
-                                     ]
-    result = pd.DataFrame(columns=result_cols)
-
-    result_col_count = len(result_cols)
-
+    'proxi_eau_fast', 'clc', 'day', 'month', 'year', 'latitude', 'longitude', 'patch_id', 'species_glc_id']
+    
     species_map = {l: i for i, l in enumerate(df.species_glc_id.unique())}
 
     #df = df.head(settings.read_data_count)
 
+    resulting_csv_values = []
     for index, row in tqdm(df.iterrows(), miniters=100):
         current_species_glc_id = row["species_glc_id"]
         current_patch_dirname = row["patch_dirname"]
@@ -61,11 +58,16 @@ def read_data():
 
         #x_img.append(img)
         #x_text.append(csv_values)
-        result.loc[index] = csv_values
+        resulting_csv_values.append(csv_values)
         #y.append(target)
         #y.append(current_species_glc_id)
+  
+    results_array=np.asarray(resulting_csv_values) #list to array to add to the dataframe as a new column
 
-    result.to_csv(data_paths.occurrences_train_gen, index=False)
+    result_ser = pd.DataFrame(results_array, columns=result_cols)
+
+    result_ser.to_csv(data_paths.occurrences_train_gen, index=False)
+
     #Change datatype back to uint8
     x_img = np.array(x_img, dtype=np.uint8)
     x_text = np.array(x_text)

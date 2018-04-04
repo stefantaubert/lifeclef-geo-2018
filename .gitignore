@@ -36,6 +36,7 @@
 *.pyc
 *.synctex.gz
 .idea
+.vscode
 *.md~
 /config
 .gitignore~
