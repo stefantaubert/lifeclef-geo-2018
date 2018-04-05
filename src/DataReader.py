@@ -10,10 +10,12 @@ import sys
 count_channels = 33
 image_dimension = 64
 
-def read_data():
+def read_and_write_data():
+    print("Read data...")
     x_img = []
     x_text = []
-    y = []
+    y_array = []
+    y_ids = []
 
     df = pd.read_csv(data_paths.occurrences_train, sep=';', low_memory=False)
     result_cols = [  'chbio_1', 'chbio_2', 'chbio_3', 'chbio_4', 'chbio_5', 'chbio_6',
@@ -59,8 +61,11 @@ def read_data():
 
         x_img.append(img)
         x_text.append(csv_values)
+        y_array.append(target)
+        y_ids.append(current_species_glc_id)
+
         resulting_csv_values.append(csv_values)
-        y.append(target)
+        
         #y.append(current_species_glc_id)
   
     results_array = np.asarray(resulting_csv_values) #list to array to add to the dataframe as a new column
@@ -71,16 +76,13 @@ def read_data():
     #Change datatype back to uint8
     x_img = np.array(x_img, dtype=np.uint8)
     x_text = np.array(x_text)
-    y = np.array(y)
+    y_array = np.array(y_array)
+    y_ids = np.array(y_ids)
 
-    return species_map, x_img, x_text, y
-
-def read_and_write_data():
-    print("Read data...")    
-    species_map, x_img, x_text, y = read_data()
     np.save(data_paths.x_img, x_img)
     np.save(data_paths.x_text, x_text)
-    np.save(data_paths.y, y)
+    np.save(data_paths.y_array, y_array)
+    np.save(data_paths.y_ids, y_ids)
     pickle.dump(species_map, open(data_paths.species_map, 'wb'))
 
 if __name__ == '__main__':

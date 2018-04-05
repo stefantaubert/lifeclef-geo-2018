@@ -2,10 +2,15 @@ import settings
 import numpy as np
 np.random.seed(settings.seed)
 
+import submission_maker
+import evaluation
+import DataReader
+import settings
+import time
+
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Flatten, BatchNormalization
 from keras.layers import Conv2D, AveragePooling2D
-from DataReader import read_data
 
 from keras import optimizers
 
@@ -70,13 +75,11 @@ def cnn_Model(output_shape):
     model.add(Dense(units=output_shape, activation='sigmoid'))
     return model
 
-
-
 def run_Model():
-    print("Run model...")    
+    print("Run model...")
     x_text = np.load(data_paths.x_text)
     x_img = np.load(data_paths.x_img)
-    y = np.load(data_paths.y)
+    y = np.load(data_paths.y_array)
 
     x_train = x_img
     species_count = y.shape[1]
@@ -107,6 +110,12 @@ def run_Model():
     np.save(data_paths.prediction, result)
 
 if __name__ == '__main__':
-    run_Model()
+    start_time = time.time()
 
+    DataReader.read_and_write_data()
+    run_Model()
+    submission_maker.make_submission()
+    evaluation.evaluate_with_mrr()
+
+    print("Total duration:", time.time() - start_time, "s")
 

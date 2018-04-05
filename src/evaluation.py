@@ -1,4 +1,3 @@
-from DataReader import read_data
 from settings import *
 import numpy as np
 import data_paths

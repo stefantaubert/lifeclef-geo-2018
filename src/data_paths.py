@@ -11,5 +11,6 @@ prediction = root + "prediction.npy"#
 
 x_img = root + "Numpy_Files/x_img.npy"
 x_text = root + "Numpy_Files/x_text.npy"
-y = root + "Numpy_Files/y.npy"
+y_array = root + "Numpy_Files/y.npy"
+y_ids = root + "Numpy_Files/y_ids.npy"
 species_map = root + "Numpy_Files/species_map.p"

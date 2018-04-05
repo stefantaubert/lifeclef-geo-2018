@@ -1,4 +1,3 @@
-from DataReader import read_data
 from settings import *
 import numpy as np
 import data_paths
@@ -11,7 +10,7 @@ from sklearn.model_selection import train_test_split
 def make_submission():
     print("Make submission...")    
     x_text = np.load(data_paths.x_text)
-    y = np.load(data_paths.y)
+    y = np.load(data_paths.y_array)
     #species = np.load(data_paths.species_map)
     y_predicted = np.load(data_paths.prediction)
     df = pd.read_csv(data_paths.occurrences_train, sep=';', low_memory=False)
@@ -44,7 +43,8 @@ def make_submission():
         sol_row.append(current_rank)
 
         sol_rows.append(sol_row)
-        
+
+    # <glc_id;species_glc_id;probability;rank>        
     result_ser = pd.DataFrame(sol_rows, columns = ['glc_id', 'species_glc_id', 'probability', 'rank'])
     result_ser.to_csv(data_paths.submission_val, index=False)
 
