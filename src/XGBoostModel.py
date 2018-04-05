@@ -1,7 +1,6 @@
 import pandas as pd
 import numpy as np
 import time
-import settings
 from scipy.stats import rankdata
 from sklearn.model_selection import train_test_split
 from xgboost import XGBClassifier
@@ -24,7 +23,7 @@ def run_Model():
     xg = XGBClassifier(
         objective="multi:softmax",
         eval_metric="merror",
-        random_state=4242,
+        random_state=settings.seed,
         n_jobs=-1,
         n_estimators=30,
         predictor='gpu_predictor',
