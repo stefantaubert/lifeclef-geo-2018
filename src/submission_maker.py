@@ -19,6 +19,8 @@ def make_submission():
 
     x_train, x_valid, y_train, y_valid = train_test_split(x_text, y, test_size=train_val_split, random_state=seed)
 
+    # print("Validationset rows after removing unique species:", len(x_valid.index))
+
     sol_rows = []
 
     for i in tqdm(range(len(y_valid))):

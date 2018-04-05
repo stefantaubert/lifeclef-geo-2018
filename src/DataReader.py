@@ -32,53 +32,53 @@ def read_and_write_data():
 
     for index, row in tqdm(df.iterrows(), miniters=100):
         current_species_glc_id = row["species_glc_id"]
-        # current_patch_dirname = row["patch_dirname"]
-        # current_patch_id = row["patch_id"]
+        current_patch_dirname = row["patch_dirname"]
+        current_patch_id = row["patch_id"]
 
-        # target = np.zeros(len(species_map.keys()))
-        # target[species_map[current_species_glc_id]] = 1
+        target = np.zeros(len(species_map.keys()))
+        target[species_map[current_species_glc_id]] = 1
 
-        # img = tifffile.imread(data_paths.patch_train+'/{}/patch_{}.tif'.format(current_patch_dirname, current_patch_id))
-        # assert img.shape == (count_channels, image_dimension, image_dimension)
+        img = tifffile.imread(data_paths.patch_train+'/{}/patch_{}.tif'.format(current_patch_dirname, current_patch_id))
+        assert img.shape == (count_channels, image_dimension, image_dimension)
 
-        # #Change datatype of img from uint8 to enable mean calculation
-        # img = np.array(img, dtype=np.uint16)
+        #Change datatype of img from uint8 to enable mean calculation
+        img = np.array(img, dtype=np.uint16)
 
-        # csv_values = []
+        csv_values = []
 
-        # for i in range(len(img)):
-        #     csv_values.append((img[i][31][31] + img[i][31][32] + img[i][32][31] + img[i][32][32])/4)
+        for i in range(len(img)):
+            csv_values.append((img[i][31][31] + img[i][31][32] + img[i][32][31] + img[i][32][32])/4)
 
-        # csv_values.append(row.day)
-        # csv_values.append(row.month)
-        # csv_values.append(row.year)
-        # csv_values.append(row.Latitude)
-        # csv_values.append(row.Longitude)
-        # # patch_id != index, da zwischendrin immer mal zeilen mit höheren patch_ids vorkommen
-        # csv_values.append(row.patch_id)
-        # csv_values.append(row.species_glc_id)
+        csv_values.append(row.day)
+        csv_values.append(row.month)
+        csv_values.append(row.year)
+        csv_values.append(row.Latitude)
+        csv_values.append(row.Longitude)
+        # patch_id != index, da zwischendrin immer mal zeilen mit höheren patch_ids vorkommen
+        csv_values.append(row.patch_id)
+        csv_values.append(row.species_glc_id)
 
-        # x_img.append(img)
-        # x_text.append(csv_values)
-        # y_array.append(target)
+        x_img.append(img)
+        x_text.append(csv_values)
+        y_array.append(target)
         y_ids.append(current_species_glc_id)        
     
-    # print("Write data...")
-    # results_array = np.asarray(x_text) #list to array to add to the dataframe as a new column
+    print("Write data...")
+    results_array = np.asarray(x_text) #list to array to add to the dataframe as a new column
 
-    # result_ser = pd.DataFrame(results_array, columns=result_cols)
-    # result_ser.to_csv(data_paths.occurrences_train_gen, index=False)
+    result_ser = pd.DataFrame(results_array, columns=result_cols)
+    result_ser.to_csv(data_paths.occurrences_train_gen, index=False)
 
-    # #Change datatype back to uint8
-    # x_img = np.array(x_img, dtype=np.uint8)
-    # x_text = np.array(x_text)
-    # y_array = np.array(y_array)
+    #Change datatype back to uint8
+    x_img = np.array(x_img, dtype=np.uint8)
+    x_text = np.array(x_text)
+    y_array = np.array(y_array)
     y_ids = np.array(y_ids)
 
-    # pickle.dump(species_map, open(data_paths.species_map, 'wb'))
-    # np.save(data_paths.x_img, x_img)
-    # np.save(data_paths.x_text, x_text)
-    # np.save(data_paths.y_array, y_array)
+    pickle.dump(species_map, open(data_paths.species_map, 'wb'))
+    np.save(data_paths.x_img, x_img)
+    np.save(data_paths.x_text, x_text)
+    np.save(data_paths.y_array, y_array)
     np.save(data_paths.y_ids, y_ids)
 
 if __name__ == '__main__':

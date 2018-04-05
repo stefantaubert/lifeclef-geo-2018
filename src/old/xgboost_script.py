@@ -28,16 +28,14 @@ if __name__ == '__main__':
     x_train, x_valid, y_train, y_valid = train_test_split(x_train, y_train, test_size=0.2, random_state=4242)
     print("Validationset rows:", len(x_valid.index))
 
-    # Entferne Spezies aus dem Validierungsset, falls diese Spezies nicht im Trainingsset vorkommt
-    indicies = []
-    for index, item in y_valid.iteritems():
-        if item not in y_train.values:
-            indicies.append(index)
-
-    x_valid.drop(indicies, inplace=True)
-    y_valid.drop(indicies, inplace=True)
-
-    print("Validationset rows after removing unique species:", len(x_valid.index))
+    # # Entferne Spezies aus dem Validierungsset, falls diese Spezies nicht im Trainingsset vorkommt
+    # indicies = []
+    # for index, item in y_valid.iteritems():
+    #     if item not in y_train.values:
+    #         indicies.append(index)
+    # x_valid.drop(indicies, inplace=True)
+    # y_valid.drop(indicies, inplace=True)
+    # print("Validationset rows after removing unique species:", len(x_valid.index))
 
     train_species_ids = list(set(y_train))
     val_species_ids = list(set(y_valid))
