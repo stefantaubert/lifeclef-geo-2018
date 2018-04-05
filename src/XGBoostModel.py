@@ -17,14 +17,15 @@ def run_Model():
 
     x_text = pd.read_csv(data_paths.occurrences_train_gen)
 
+    x_text = x_text[['chbio_1', 'chbio_5', 'chbio_6','month', 'latitude', 'longitude']]
+
     y = np.load(data_paths.y_ids)
 
     # species_count = np.load(data_paths.y_array).shape[1]
     
     x_train, x_valid, y_train, y_valid = train_test_split(x_text, y, test_size=settings.train_val_split, random_state=settings.seed)
 
-    xg = XGBClassifier
-    (
+    xg = XGBClassifier(
         objective="multi:softmax",
         eval_metric="merror",
         random_state=settings.seed,
