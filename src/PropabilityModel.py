@@ -36,14 +36,18 @@ def run_Model():
     print(list(counter.items()))
     countRows = len(x_text.index)
 
+    species_map = []
     array = []
     for item, count in tqdm(sorted(counter.items())):
         array.append(count / countRows * 100 )
+        species_map.append(int(item))
 
+    np.save(data_paths.species_map_training, np.asarray(species_map))
+    
     assert len(array) == len(set(species_ids))
 
     x_train, x_valid, y_train, y_valid = train_test_split(x_text, y, test_size=settings.train_val_split, random_state=settings.seed)
-    print("createPred")
+    print("Create prediction...")
     valid_row_count = len(x_valid)
 
     prediction = []

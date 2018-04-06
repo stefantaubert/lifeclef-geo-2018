@@ -13,4 +13,5 @@ def mrr_score(ranks):
     return mrr_score
 
 def mrr_score_df(df):
+    assert "rank" in df.columns.values
     return mrr_score(list(df["rank"].values))

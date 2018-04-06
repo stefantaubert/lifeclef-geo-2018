@@ -10,6 +10,7 @@ import evaluation
 import DataReader
 import settings
 import time
+import json
 
 def run_Model():
     print("Run model...")
@@ -36,6 +37,7 @@ def run_Model():
 
     print("Fit model...")
     xg.fit(x_train, y_train, eval_set=[(x_train, y_train), (x_valid, y_valid)])
+    np.save(data_paths.species_map_training, xg.classes_)
 
     print("Predict data...")
     pred = xg.predict_proba(x_valid)
