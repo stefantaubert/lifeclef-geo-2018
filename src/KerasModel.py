@@ -91,7 +91,7 @@ def run_Model():
     top50_acc.__name__ = 'top50_acc'
     
     sgd_optimizer = optimizers.SGD(lr=0.0000001, momentum=0.0, decay=0.0, nesterov=False)
-
+    #adam nehmen
 
     #model = nn_Model(species_count)
     #model = cnn_Model(species_count)
