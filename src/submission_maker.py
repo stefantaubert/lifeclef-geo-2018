@@ -13,13 +13,12 @@ def make_submission():
     
     x_text = pd.read_csv(data_paths.occurrences_train_gen)
     species = x_text.species_glc_id.unique()
-    y = x_text.species_glc_id
+    #y = x_text.species_glc_id
     x_text = x_text[['chbio_1', 'chbio_5', 'chbio_6','month', 'latitude', 'longitude']]
 
-    # y = np.load(data_paths.y_array)
+    y = np.load(data_paths.y_array)
     #species = np.load(data_paths.species_map)
     y_predicted = np.load(data_paths.prediction)
-    print(y_predicted)
     x_train, x_valid, y_train, y_valid = train_test_split(x_text, y, test_size=train_val_split, random_state=seed)
 
     # print("Validationset rows after removing unique species:", len(x_valid.index))
@@ -30,7 +29,6 @@ def make_submission():
     for i in tqdm(range(len(y_valid))):
         current_pred_array = y_predicted[i]
         current_glc_id = i
-        print(current_pred_array)
         pred_r = rankdata(current_pred_array, method="ordinal")
         # absteigend sortieren
         pred_r = len(species) - pred_r + 1
