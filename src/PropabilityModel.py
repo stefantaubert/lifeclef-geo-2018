@@ -29,7 +29,7 @@ def run_Model():
     print("Run model...")
     #x_text = np.load(data_paths.x_text)
 
-    x_text = pd.read_csv(data_paths.occurrences_train_gen, sep=";")
+    x_text = pd.read_csv(data_paths.occurrences_train_gen)
     species_ids = x_text["species_glc_id"].values
     counter = Counter(species_ids)
     y = np.load(data_paths.y_ids)

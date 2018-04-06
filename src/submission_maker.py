@@ -11,7 +11,7 @@ def make_submission():
     print("Make submission...")    
     #x_text = np.load(data_paths.x_text)
     
-    x_text = pd.read_csv(data_paths.occurrences_train_gen, sep=";")
+    x_text = pd.read_csv(data_paths.occurrences_train_gen)
 
     x_text = x_text[['chbio_1', 'chbio_5', 'chbio_6','month', 'latitude', 'longitude']]
 
