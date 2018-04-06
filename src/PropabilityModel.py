@@ -45,7 +45,7 @@ def run_Model():
     x_train, x_valid, y_train, y_valid = train_test_split(x_text, y, test_size=settings.train_val_split, random_state=settings.seed)
 
     prediction = countRows * array
-    
+    print(prediction)
     np.save(data_paths.prediction, prediction)
 
 
