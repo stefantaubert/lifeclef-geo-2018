@@ -27,13 +27,15 @@ def make_submission_array(classes, predictions):
         current_ranks = rankdata(current_predictions, method="ordinal")
         # rang 100,99,98 zu rang 1,2,3 machen und 
         current_ranks = count_classes - current_ranks + 1
-        
-        for class_index in range(count_classes):
-            current_class = classes[class_index]
-            current_rank = current_ranks[class_index]
-            current_prediction = current_predictions[class_index]
-            submission_row = [current_glc_id, current_class, current_prediction, current_rank]
-            submission.append(submission_row)
+        current_glc_id_array = count_classes * [current_glc_id]
+        submissions = [list(a) for a in zip(current_glc_id_array, classes, current_predictions, current_ranks)]
+        submission.extend(submissions)
+        # for class_index in range(count_classes):
+        #     current_class = classes[class_index]
+        #     current_rank = current_ranks[class_index]
+        #     current_prediction = current_predictions[class_index]
+        #     submission_row = [current_glc_id, current_class, current_prediction, current_rank]
+        #     submission.append(submission_row)
     
     return submission
 
