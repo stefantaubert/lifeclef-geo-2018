@@ -31,7 +31,7 @@ def make_submission():
     for i in tqdm(range(len(y_valid))):
         current_pred_array = y_predicted[i]
         current_glc_id = i
-
+        print(current_pred_array)
         pred_r = rankdata(current_pred_array, method="ordinal")
         # absteigend sortieren
         pred_r = len(species) - pred_r + 1
