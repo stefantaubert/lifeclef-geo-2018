@@ -24,7 +24,6 @@ def make_submission():
     # print("Validationset rows after removing unique species:", len(x_valid.index))
 
     sol_rows = []
-    result = pd.DataFrame(columns=['glc_id', 'species_glc_id', 'probability', 'rank', 'real_species_glc_id'])
 
     for i in tqdm(range(len(y_valid))):
         current_pred_array = y_predicted[i]
