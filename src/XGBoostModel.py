@@ -19,7 +19,13 @@ def run_Model():
 
     x_text = pd.read_csv(data_paths.occurrences_train_gen)
 
-    x_text = x_text[['chbio_1', 'chbio_2','chbio_3','chbio_4','chbio_5', 'chbio_6', 'latitude', 'longitude']]
+    x_text = x_text[[ 'chbio_1', 'chbio_2', 'chbio_3', 'chbio_4', 'chbio_5', 'chbio_6',
+    'chbio_7', 'chbio_8', 'chbio_9', 'chbio_10', 'chbio_11', 'chbio_12',
+    'chbio_13', 'chbio_14', 'chbio_15', 'chbio_16', 'chbio_17', 'chbio_18',
+    'chbio_19', 
+    # 'etp', 'alti', 'awc_top', 'bs_top', 'cec_top', 'crusting', 'dgh', 'dimp', 'erodi', 'oc_top', 'pd_top', 'text',
+    # 'proxi_eau_fast', 'clc', 'latitude', 'longitude'
+    ]]
 
     y = np.load(data_paths.y_ids)
 
@@ -76,7 +82,7 @@ def run_Model():
             eval_metric="merror",
             random_state=settings.seed,
             n_jobs=-1,
-            n_estimators=10,
+            n_estimators=100,
             predictor='gpu_predictor',
         )
 
