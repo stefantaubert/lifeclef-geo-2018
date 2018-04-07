@@ -80,6 +80,8 @@ def run_Model():
     x_text = np.load(data_paths.x_text)
     x_img = np.load(data_paths.x_img)
     y = np.load(data_paths.y_array)
+    classes_ = np.unique(y)
+    np.save(data_paths.species_map_training, classes_)
 
     x_train = x_img
     species_count = y.shape[1]
@@ -102,7 +104,7 @@ def run_Model():
 
     x_train, x_valid, y_train, y_valid = train_test_split(x_train, y, test_size=settings.train_val_split, random_state=settings.seed)
 
-    model.fit(x_train, y_train, epochs=10, batch_size=256, verbose=2)
+    model.fit(x_train, y_train, epochs=5, batch_size=256, verbose=2)
 
     #result = model.predict(np.array(x_text[0:3]))
     result = model.predict(x_valid)
@@ -112,7 +114,7 @@ def run_Model():
 if __name__ == '__main__':
     start_time = time.time()
 
-    DataReader.read_and_write_data()
+    #DataReader.read_and_write_data()
     run_Model()
     submission_maker.make_submission()
     evaluation.evaluate_with_mrr()
