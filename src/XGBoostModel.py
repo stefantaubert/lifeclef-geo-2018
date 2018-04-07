@@ -51,7 +51,7 @@ def run_Model():
         params['max_depth'] = 3
         params['subsample'] = 0.6
         params['base_score'] = 0.2
-        params['num_class'] = len(classes_)
+        params['num_class'] = len(classes_) + 1 # da species_id 1-basiert ist
         # params['scale_pos_weight'] = 0.36 #für test set
 
         # Berechnungen mit der GPU ausführen
