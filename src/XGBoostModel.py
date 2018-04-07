@@ -19,7 +19,7 @@ def run_Model():
 
     x_text = pd.read_csv(data_paths.occurrences_train_gen)
 
-    x_text = x_text[['chbio_1', 'chbio_5', 'chbio_6','month', 'latitude', 'longitude']]
+    x_text = x_text[['chbio_1', 'chbio_2','chbio_3','chbio_4','chbio_5', 'chbio_6', 'latitude', 'longitude']]
 
     y = np.load(data_paths.y_ids)
 
@@ -27,7 +27,7 @@ def run_Model():
     
     x_train, x_valid, y_train, y_valid = train_test_split(x_text, y, test_size=settings.train_val_split, random_state=settings.seed)
 
-    if (True):
+    if (False):
         # clf = DecisionTreeClassifier()
         # clf.n_classes_ = species_count
         # clf.fit(x_train, y_train)
@@ -60,7 +60,7 @@ def run_Model():
         # Geschwindigkeit ca. 1000 pro Minute auf der P6000
         # zeigt alle 10 Schritte den Score für das Validierungs-Set an
         print("Training model...")
-        bst = xgb.train(params, d_train, 1, watchlist, verbose_eval=1)
+        bst = xgb.train(params, d_train, 10, watchlist, verbose_eval=1)
 
         # Modell speichern.
         # bst.dump_model(data_paths.model_dump)
@@ -76,8 +76,8 @@ def run_Model():
             eval_metric="merror",
             random_state=settings.seed,
             n_jobs=-1,
-            n_estimators=30,
-            # predictor='gpu_predictor',
+            n_estimators=10,
+            predictor='gpu_predictor',
         )
 
         print("Fit model...")
@@ -87,6 +87,7 @@ def run_Model():
         print("Predict data...")
         pred = xg.predict_proba(x_valid)
 
+        print("Save predictions...")
         np.save(data_paths.prediction, pred)
 
 

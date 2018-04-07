@@ -104,7 +104,7 @@ def run_Model():
 
     x_train, x_valid, y_train, y_valid = train_test_split(x_train, y, test_size=settings.train_val_split, random_state=settings.seed)
 
-    model.fit(x_train, y_train, epochs=5, batch_size=256, verbose=2)
+    model.fit(x_train, y_train, epochs=1, batch_size=256, verbose=2)
 
     #result = model.predict(np.array(x_text[0:3]))
     result = model.predict(x_valid)
