@@ -3,7 +3,7 @@ import numpy as np
 import time
 from scipy.stats import rankdata
 from sklearn.model_selection import train_test_split
-from xgboost import XGBClassifier
+#from xgboost import XGBClassifier
 import data_paths
 import submission_maker
 import evaluation
@@ -62,8 +62,8 @@ if __name__ == '__main__':
     start_time = time.time()
 
     # DataReader.read_and_write_data()
-    run_Model()
-    submission_maker.make_submission()
+    #run_Model()
+    #submission_maker.make_submission()
     evaluation.evaluate_with_mrr()
 
     print("Total duration:", time.time() - start_time, "s")

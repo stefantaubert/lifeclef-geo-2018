@@ -60,14 +60,14 @@ def run_Model():
         # Geschwindigkeit ca. 1000 pro Minute auf der P6000
         # zeigt alle 10 Schritte den Score für das Validierungs-Set an
         print("Training model...")
-        bst = xgb.train(params, d_train, 3, watchlist, verbose_eval=1)
+        bst = xgb.train(params, d_train, 1, watchlist, verbose_eval=1)
 
         # Modell speichern.
         # bst.dump_model(data_paths.model_dump)
         # bst.save_model(data_paths.model)
        
         print("Predict data...")
-        pred = bst.predict_proba(d_valid)
+        pred = bst.predict(d_valid)
         np.save(data_paths.prediction, pred)
         
     else:
