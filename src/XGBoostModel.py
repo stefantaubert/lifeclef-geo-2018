@@ -27,15 +27,6 @@ def run_Model():
     
     x_train, x_valid, y_train, y_valid = train_test_split(x_text, y, test_size=settings.train_val_split, random_state=settings.seed)
 
-    xg = XGBClassifier(
-        objective="multi:softmax",
-        eval_metric="merror",
-        random_state=settings.seed,
-        n_jobs=-1,
-        n_estimators=30,
-        # predictor='gpu_predictor',
-    )
-
     if (True):
         # clf = DecisionTreeClassifier()
         # clf.n_classes_ = species_count
@@ -55,7 +46,7 @@ def run_Model():
         # params['scale_pos_weight'] = 0.36 #für test set
 
         # Berechnungen mit der GPU ausführen
-        # params['updater'] = 'grow_gpu'
+        params['updater'] = 'grow_gpu'
 
         # Datenmatrix für die Eingabedaten erstellen.
         d_train = xgb.DMatrix(x_train, label=y_train)
@@ -69,7 +60,7 @@ def run_Model():
         # Geschwindigkeit ca. 1000 pro Minute auf der P6000
         # zeigt alle 10 Schritte den Score für das Validierungs-Set an
         print("Training model...")
-        bst = xgb.train(params, d_train, 5, watchlist, verbose_eval=1)
+        bst = xgb.train(params, d_train, 3, watchlist, verbose_eval=1)
 
         # Modell speichern.
         # bst.dump_model(data_paths.model_dump)
@@ -80,6 +71,15 @@ def run_Model():
         np.save(data_paths.prediction, pred)
         
     else:
+        xg = XGBClassifier(
+            objective="multi:softmax",
+            eval_metric="merror",
+            random_state=settings.seed,
+            n_jobs=-1,
+            n_estimators=30,
+            # predictor='gpu_predictor',
+        )
+
         print("Fit model...")
         xg.fit(x_train, y_train, eval_set=[(x_train, y_train), (x_valid, y_valid)])
         np.save(data_paths.species_map_training, xg.classes_)
