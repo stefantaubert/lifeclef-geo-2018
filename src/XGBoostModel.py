@@ -4,6 +4,7 @@ import time
 from scipy.stats import rankdata
 from sklearn.model_selection import train_test_split
 from xgboost import XGBClassifier
+import xgboost as xgb
 import data_paths
 import submission_maker
 import evaluation
@@ -35,14 +36,57 @@ def run_Model():
         # predictor='gpu_predictor',
     )
 
-    print("Fit model...")
-    xg.fit(x_train, y_train, eval_set=[(x_train, y_train), (x_valid, y_valid)])
-    np.save(data_paths.species_map_training, xg.classes_)
+    if (True):
+        # clf = DecisionTreeClassifier()
+        # clf.n_classes_ = species_count
+        # clf.fit(x_train, y_train)
+        # pred = clf.predict_proba(x_valid)
+        classes_ = np.unique(y)
 
-    print("Predict data...")
-    pred = xg.predict_proba(x_valid)
+        # Die Parameter für XGBoost erstellen.
+        params = {}
+        params['objective'] = 'multi:softmax'
+        params['eval_metric'] = 'merror'
+        params['eta'] = 0.02
+        params['max_depth'] = 3
+        params['subsample'] = 0.6
+        params['base_score'] = 0.2
+        params['num_class'] = len(classes_)
+        # params['scale_pos_weight'] = 0.36 #für test set
 
-    np.save(data_paths.prediction, pred)
+        # Berechnungen mit der GPU ausführen
+        # params['updater'] = 'grow_gpu'
+
+        # Datenmatrix für die Eingabedaten erstellen.
+        d_train = xgb.DMatrix(x_train, label=y_train)
+        d_valid = xgb.DMatrix(x_valid, label=y_valid)
+        np.save(data_paths.species_map_training, classes_)
+
+        # Um den Score für das Validierungs-Set während des Trainings zu berechnen, muss eine Watchlist angelegt werden.
+        watchlist = [(d_train, 'train'), (d_valid, 'valid')]
+
+        # Modell trainieren.
+        # Geschwindigkeit ca. 1000 pro Minute auf der P6000
+        # zeigt alle 10 Schritte den Score für das Validierungs-Set an
+        print("Training model...")
+        bst = xgb.train(params, d_train, 5, watchlist, verbose_eval=1)
+
+        # Modell speichern.
+        bst.dump_model(data_paths.model_dump)
+        bst.save_model(data_paths.model)
+
+        pred = bst.predict_proba(d_valid)
+        np.save(data_paths.prediction, pred)
+        
+    else:
+        print("Fit model...")
+        xg.fit(x_train, y_train, eval_set=[(x_train, y_train), (x_valid, y_valid)])
+        np.save(data_paths.species_map_training, xg.classes_)
+
+        print("Predict data...")
+        pred = xg.predict_proba(x_valid)
+
+        np.save(data_paths.prediction, pred)
 
 
 if __name__ == '__main__':

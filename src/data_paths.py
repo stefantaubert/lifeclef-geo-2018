@@ -6,6 +6,9 @@ occurrences_train = root + "occurrences_train.csv"
 occurrences_train_gen = root + "occurrences_train_gen.csv"
 features_train = root + "train_features.csv"
 
+model_dump = root + "dump.dmp"
+model = root + "xgboost"
+
 submission_val = root + "submission_val.csv"#
 prediction = root + "prediction.npy"#
 
