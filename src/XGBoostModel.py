@@ -47,10 +47,10 @@ def run_Model():
         params = {}
         params['objective'] = 'multi:softmax'
         params['eval_metric'] = 'merror'
-        params['eta'] = 0.02
-        params['max_depth'] = 3
-        params['subsample'] = 0.6
-        params['base_score'] = 0.2
+        # params['eta'] = 0.02
+        # params['max_depth'] = 3
+        # params['subsample'] = 0.6
+        # params['base_score'] = 0.2
         params['num_class'] = len(classes_) + 1 # da species_id 1-basiert ist
         # params['scale_pos_weight'] = 0.36 #für test set
 
@@ -69,12 +69,13 @@ def run_Model():
         # Geschwindigkeit ca. 1000 pro Minute auf der P6000
         # zeigt alle 10 Schritte den Score für das Validierungs-Set an
         print("Training model...")
-        bst = xgb.train(params, d_train, 1, watchlist, verbose_eval=50)
+        bst = xgb.train(params, d_train, 5, watchlist, verbose_eval=1)
 
         # Modell speichern.
-        bst.dump_model(data_paths.model_dump)
-        bst.save_model(data_paths.model)
-
+        # bst.dump_model(data_paths.model_dump)
+        # bst.save_model(data_paths.model)
+       
+        print("Predict data...")
         pred = bst.predict_proba(d_valid)
         np.save(data_paths.prediction, pred)
         
