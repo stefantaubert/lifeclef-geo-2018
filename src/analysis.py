@@ -4,6 +4,118 @@ import data_paths
 from collections import Counter
 from itertools import repeat, chain
 import matplotlib.pyplot as plt
+from tqdm import tqdm
+from bisect import bisect_left
+import numpy as np
+import matplotlib.mlab as mlab
+import matplotlib.pyplot as plt
+
+def binary_search(a, x, lo=0, hi=None):  # can't use a to specify default for hi
+    hi = hi if hi is not None else len(a)  # hi defaults to len(a)   
+    pos = bisect_left(a, x, lo, hi)  # find insertion position
+    return (pos if pos != hi and a[pos] == x else -1)  # don't walk off the end
+
+def analyse_chbio_1():
+    csv = pd.read_csv(data_paths.occurrences_train_gen)#, nrows=100)
+    print("Count of different species:", len(set(csv["species_glc_id"].values)))
+    a = csv["species_glc_id"].values
+
+    chbio1 = set(csv["chbio_1"].values)
+    counts = {key: [] for key in chbio1}
+
+    for index, row in tqdm(csv.iterrows()):
+        chbio = float(row["chbio_1"])
+        species = int(row["species_glc_id"])
+        if species not in counts[chbio]:
+            counts[chbio].append(species)
+    
+    res  = {k: len(v) for k, v in counts.items()}
+
+    print(res)
+
+    x = list(res.keys())
+    y = list(res.values())
+
+    plt.bar(x,y,align='center') # A bar chart
+    plt.xlabel('chbio_1')
+    plt.ylabel('different species')
+    plt.show()
+
+def analyse_chbio_2():
+    col = "chbio_2"
+    csv = pd.read_csv(data_paths.occurrences_train_gen, nrows=100)
+    print("Count of different species:", len(set(csv["species_glc_id"].values)))
+    a = csv["species_glc_id"].values
+
+    counts = {key: [] for key in set(csv[col].values)}
+
+    for index, row in tqdm(csv.iterrows()):
+        chbio = float(row[col])
+        species = int(row["species_glc_id"])
+        if species not in counts[chbio]:
+            counts[chbio].append(species)
+    
+    res  = {k: len(v) for k, v in counts.items()}
+
+    print(res)
+
+    x = list(res.keys())
+    y = list(res.values())
+
+    plt.subplot(1,2,1)
+    plt.bar(x,y,align='center') # A bar chart
+    plt.xlabel(col)
+    plt.ylabel('different species')
+
+    plt.subplot(1,2,2)
+    plt.bar(x,y,align='center') # A bar chart
+    plt.xlabel(col)
+    plt.ylabel('different species')
+    plt.show()
+
+    # fig, ax = plt.subplots(1, 2, sharex='col', sharey='row')
+    # ax[0, 0]
+
+    # zu welcher chbio 1 sind wieviele verschiedene klassen vorhanden
+
+class py_plotter:
+    def __init__(self, rows, cols):
+        self.rows = rows
+        self.cols = cols
+        self.csv = pd.read_csv(data_paths.occurrences_train_gen)#, nrows=100)
+        print(self.csv)
+        self.csv = self.csv.drop(["patch_id", "day", "month", "year"], axis=1) ### Tag usw haben manchmal keine werte
+        self.counter = 0
+
+    def plot_data(self):
+        plt.subplots_adjust(hspace=0.8, wspace=0.4)
+        for col in self.csv.columns.values:
+            if col != "species_glc_id":
+                self.plot(col)
+        plt.show()
+
+    def plot(self, col_name):
+        counts = {key: [] for key in set(self.csv[col_name].values)}
+        
+        for index, row in tqdm(self.csv.iterrows()):
+            chbio = float(row[col_name])
+            species = int(row["species_glc_id"])
+            if species not in counts[chbio]:
+                counts[chbio].append(species)
+        
+        res  = {k: len(v) for k, v in counts.items()}
+
+        print(res)
+
+        x = list(res.keys())
+        y = list(res.values())
+
+        self.counter += 1
+        plt.subplot(self.rows, self.cols, self.counter)
+        plt.bar(x,y,align='center') # A bar chart
+        plt.xlabel(col_name)
+        plt.ylabel('c_species')
+
 def analyse_spec_occ():
     csv = pd.read_csv(data_paths.occurrences_train_gen, sep=';')
     print("Count of different species:", len(set(csv["species_glc_id"].values)))
@@ -67,4 +179,4 @@ def analyse_spec():
     print("Column names: ", csv.columns.values)
 
 if __name__ == '__main__':
-    analyse_spec_occ()
+    py_plotter(5, 7).plot_data()
