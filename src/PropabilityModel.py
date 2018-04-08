@@ -42,7 +42,7 @@ def run_Model():
     for item, count in tqdm(sorted(counter.items())):
         array.append(count / countRows * 100 )
         species_map.append(int(item))
-    
+
     np.save(data_paths.species_map_training, np.asarray(species_map))
     
     assert len(array) == len(set(species_ids))
@@ -63,8 +63,8 @@ if __name__ == '__main__':
     start_time = time.time()
 
     # DataReader.read_and_write_data()
-    #run_Model()
-    #submission_maker.make_submission()
+    run_Model()
+    submission_maker.make_submission()
     evaluation.evaluate_with_mrr()
 
     print("Total duration:", time.time() - start_time, "s")
