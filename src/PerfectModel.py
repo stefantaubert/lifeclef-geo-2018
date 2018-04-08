@@ -28,11 +28,12 @@ def binary_search(a, x, lo=0, hi=None):  # can't use a to specify default for hi
 
 def run_Model():
     print("Run model...")
-    #x_text = np.load(data_paths.x_text)
-
+    
     x_text = pd.read_csv(data_paths.occurrences_train_gen)
-    species_ids = x_text["species_glc_id"].values
     y_array = np.load(data_paths.y_array)
+
+    ### testen ob list(species_map.keys()) die reihnfolge der keys beibehält
+    #species_ids = x_text["species_glc_id"].values
 
     # with open(data_paths.species_map, 'rb') as f:
     #     y = pickle.load(f)
@@ -53,27 +54,26 @@ def run_Model():
     #     if k_from_keylist != k_from_dict:
     #         print("Fail------------")
     
-    with open(data_paths.species_map, 'rb') as f:
-        species_map = pickle.load(f)
+    # with open(data_paths.species_map, 'rb') as f:
+    #     species_map = pickle.load(f)
 
-    classes_ = list(species_map.keys())
-    np.save(data_paths.species_map_training, classes_)
+    # classes_ = list(species_map.keys())
+    # np.save(data_paths.species_map_training, classes_)
 
-    for index, row in x_text.iterrows():
-        current_species = row["species_glc_id"]
-        y = y_array[index]
-        assert len(y) == len(classes_)
+    # for index, row in x_text.iterrows():
+    #     current_species = row["species_glc_id"]
+    #     y = y_array[index]
+    #     assert len(y) == len(classes_)
 
-        for i in range(len(y_array)):
-            current_sol = y[i]
-            if current_sol == 1:
-                assert classes_[i] == current_species
+    #     for i in range(len(y_array)):
+    #         current_sol = y[i]
+    #         if current_sol == 1:
+    #             assert classes_[i] == current_species
 
     x_train, x_valid, y_train, y_valid = train_test_split(x_text, y_array, test_size=settings.train_val_split, random_state=settings.seed)
-    print(y_valid)
+    #print(y_valid)
     print("Save prediction...")
     np.save(data_paths.prediction, y_valid)
-
 
 if __name__ == '__main__':
     start_time = time.time()
