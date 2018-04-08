@@ -15,7 +15,7 @@ import random
 from collections import Counter
 from tqdm import tqdm
 from bisect import bisect_left
-
+np.set_printoptions(threshold=np.nan)
 random.seed = settings.seed
 
 count_most_common = 531
@@ -32,9 +32,7 @@ def run_Model():
 
     x_text = pd.read_csv(data_paths.occurrences_train_gen)
     species_ids = x_text["species_glc_id"].values
-
     y_array = np.load(data_paths.y_array)
-    y_ids = np.load(data_paths.y_ids)
 
     # with open(data_paths.species_map, 'rb') as f:
     #     y = pickle.load(f)
@@ -61,8 +59,18 @@ def run_Model():
     classes_ = list(species_map.keys())
     np.save(data_paths.species_map_training, classes_)
 
+    for index, row in x_text.iterrows():
+        current_species = row["species_glc_id"]
+        y = y_array[index]
+        assert len(y) == len(classes_)
+
+        for i in range(len(y_array)):
+            current_sol = y[i]
+            if current_sol == 1:
+                assert classes_[i] == current_species
+
     x_train, x_valid, y_train, y_valid = train_test_split(x_text, y_array, test_size=settings.train_val_split, random_state=settings.seed)
-    
+    print(y_valid)
     print("Save prediction...")
     np.save(data_paths.prediction, y_valid)
 
@@ -70,7 +78,7 @@ def run_Model():
 if __name__ == '__main__':
     start_time = time.time()
 
-    # DataReader.read_and_write_data()
+    #DataReader.read_and_write_data()
     run_Model()
     submission_maker.make_submission()
     evaluation.evaluate_with_mrr()
