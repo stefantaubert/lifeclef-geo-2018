@@ -80,7 +80,11 @@ def run_Model():
     x_text = np.load(data_paths.x_text)
     x_img = np.load(data_paths.x_img)
     y = np.load(data_paths.y_array)
-    classes_ = np.unique(y)
+    
+    with open(data_paths.species_map, 'rb') as f:
+        species_map = pickle.load(f)
+
+    classes_ = list(species_map.keys())
     np.save(data_paths.species_map_training, classes_)
 
     x_train = x_img

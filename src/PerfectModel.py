@@ -5,6 +5,7 @@ from scipy.stats import rankdata
 from sklearn.model_selection import train_test_split
 #from xgboost import XGBClassifier
 import data_paths
+import pickle
 import submission_maker
 import evaluation
 import DataReader
@@ -34,7 +35,31 @@ def run_Model():
 
     y_array = np.load(data_paths.y_array)
     y_ids = np.load(data_paths.y_ids)
-    np.save(data_paths.species_map_training, np.unique(y_ids))
+
+    # with open(data_paths.species_map, 'rb') as f:
+    #     y = pickle.load(f)
+
+    # print(y)
+    # y2 = np.unique(y_ids)
+    # print(y2)
+
+    # y1 = list(y.keys())
+
+    # # for i in range(len(y2)):
+    # #     print(y1[i])
+    # #     print(y2[i])
+    # #     assert y1[i] == y2[i]
+
+    # for k_from_dict, v in y.items():
+    #     k_from_keylist = y1[v]
+    #     if k_from_keylist != k_from_dict:
+    #         print("Fail------------")
+    
+    with open(data_paths.species_map, 'rb') as f:
+        species_map = pickle.load(f)
+
+    classes_ = list(species_map.keys())
+    np.save(data_paths.species_map_training, classes_)
 
     x_train, x_valid, y_train, y_valid = train_test_split(x_text, y_array, test_size=settings.train_val_split, random_state=settings.seed)
     
