@@ -46,9 +46,9 @@ def make_submission_df(classes, predictions):
 
 def make_submission():
     print("Make submission...")
-    y_ids = np.load(data_paths.y_ids)
+    # y_ids = np.load(data_paths.y_ids)
 
-    np.save(data_paths.species_map_training, np.unique(y_ids))
+    # np.save(data_paths.species_map_training, np.unique(y_ids))
 
     classes = np.load(data_paths.species_map_training)
 
