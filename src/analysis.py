@@ -59,14 +59,13 @@ class py_plotter_value_count:
         self.cols = cols
         self.csv = pd.read_csv(data_paths.occurrences_train_gen)#, nrows=100)
         print(self.csv)
-        self.csv = self.csv.drop(["patch_id", "day", "month", "year"], axis=1) ### Tag usw haben manchmal keine werte
+        self.csv = self.csv.drop(["patch_id", "species_glc_id", "day", "month", "year"], axis=1) ### Tag usw haben manchmal keine werte
         self.counter = 0
 
     def plot_data(self):
         plt.subplots_adjust(hspace=0.8, wspace=0.4)
         for col in self.csv.columns.values:
-            if col != "species_glc_id":
-                self.plot(col)
+            self.plot(col)
         plt.show()
 
     def plot(self, col_name):
@@ -85,7 +84,7 @@ class py_plotter_value_count:
         plt.subplot(self.rows, self.cols, self.counter)
         plt.bar(x,y,align='center') # A bar chart
         plt.xlabel(col_name)
-        plt.ylabel('c_species')
+        plt.ylabel('occurence')
 
 def analyse_spec_occ():
     csv = pd.read_csv(data_paths.occurrences_train_gen, sep=';')
