@@ -15,6 +15,47 @@ def binary_search(a, x, lo=0, hi=None):  # can't use a to specify default for hi
     pos = bisect_left(a, x, lo, hi)  # find insertion position
     return (pos if pos != hi and a[pos] == x else -1)  # don't walk off the end
 
+class py_plotter_combined:
+    def __init__(self, rows, cols):
+        self.rows = rows
+        self.cols = cols
+        self.csv = pd.read_csv(data_paths.occurrences_train_gen)#, nrows=100)
+        print(self.csv)
+        self.csv = self.csv.drop(["patch_id", "day", "month", "year"], axis=1) ### Tag usw haben manchmal keine werte
+        self.counter = 0
+
+    def plot_data(self):
+        plt.subplots_adjust(hspace=0.8, wspace=0.4)
+        for col in self.csv.columns.values:
+            if col != "species_glc_id":
+                self.plot(col)
+        plt.show()
+
+    def plot(self, col_name):
+        counts = {key: [] for key in set(self.csv[col_name].values)}
+        occurences = {key: 0 for key in set(self.csv[col_name].values)}
+        
+        for index, row in tqdm(self.csv.iterrows()):
+            chbio = float(row[col_name])
+            species = int(row["species_glc_id"])
+            occurences[chbio] += 1
+            if species not in counts[chbio]:
+                counts[chbio].append(species)
+        
+        res  = {k: len(v) / occurences[k] for k, v in counts.items()}
+
+        print(res)
+
+        x = list(res.keys())
+        y = list(res.values())
+
+        self.counter += 1
+        plt.subplot(self.rows, self.cols, self.counter)
+        plt.bar(x,y,align='center') # A bar chart
+        plt.xlabel(col_name)
+        #plt.ylabel('c_species')
+
+
 class py_plotter_species_count:
     def __init__(self, rows, cols):
         self.rows = rows
@@ -150,4 +191,5 @@ def analyse_spec():
 
 if __name__ == '__main__':
     #py_plotter_species_count(5, 7).plot_data()
-    py_plotter_value_count(5, 7).plot_data()
+    #py_plotter_value_count(5, 7).plot_data()
+    py_plotter_combined(5, 7).plot_data()
