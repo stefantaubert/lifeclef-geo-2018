@@ -54,6 +54,8 @@ def make_submission():
 
     predictions = np.load(data_paths.prediction)
     df = make_submission_df(classes, predictions)
+
+    print("Save submission...")
     df.to_csv(data_paths.submission_val, index=False)
 
     # y = None

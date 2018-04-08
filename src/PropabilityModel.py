@@ -28,20 +28,21 @@ def binary_search(a, x, lo=0, hi=None):  # can't use a to specify default for hi
 def run_Model():
     print("Run model...")
     #x_text = np.load(data_paths.x_text)
+    print("Load data...")
 
     x_text = pd.read_csv(data_paths.occurrences_train_gen)
     species_ids = x_text["species_glc_id"].values
-    counter = Counter(species_ids)
     y = np.load(data_paths.y_ids)
-    print(list(counter.items()))
-    countRows = len(x_text.index)
 
+    print("Process data...")
+    counter = Counter(species_ids)
+    countRows = len(x_text.index)
     species_map = []
     array = []
     for item, count in tqdm(sorted(counter.items())):
         array.append(count / countRows * 100 )
         species_map.append(int(item))
-
+    
     np.save(data_paths.species_map_training, np.asarray(species_map))
     
     assert len(array) == len(set(species_ids))

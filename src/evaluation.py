@@ -9,11 +9,12 @@ from itertools import chain
 
 def evaluate_with_mrr():
     print("Evaluate submission...")
+    print("Load data...")
     df = pd.read_csv(data_paths.submission_val)
     x_text = pd.read_csv(data_paths.occurrences_train_gen)
     y = np.load(data_paths.y_ids)
     c_classes = len(np.load(data_paths.species_map_training))
-
+    
     x_train, x_valid, y_train, y_valid = train_test_split(x_text, y, test_size=settings.train_val_split, random_state=settings.seed)
     
     print("Calculate MRR-Score...")    
