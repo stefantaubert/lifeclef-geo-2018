@@ -48,7 +48,7 @@ class channelmap_vector:
         #             current_row.append(row[col])
 
         #     array.append(current_row)
-        threshold = 40
+        threshold = 20
         similar_species = {k: [] for k in species}
         matrix = []
         for i in tqdm(range(len(array))):
