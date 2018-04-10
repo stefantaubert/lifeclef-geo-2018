@@ -5,13 +5,17 @@ patch_train = root + "patchTrain"
 occurrences_train = root + "occurrences_train.csv"
 occurrences_train_gen = root + "occurrences_train_gen.csv"
 features_train = root + "train_features.csv"
+max_values_species = root + "max_values_species.csv"
+species_channel_map_dir = root + "channel_maps/"
+channel_map_diff = root + "channel_map_diff.csv"
 
-model_dump = root + "dump.dmp"
+model_dump = root + "xgboost.dmp"
 model = root + "xgboost"
 
 submission_val = root + "submission_val.csv"#
 prediction = root + "prediction.npy"#
 
+similar_species = root + "similar_species.npy"
 x_img = root + "Numpy_Files/x_img.npy"
 x_text = root + "Numpy_Files/x_text.npy"
 y_array = root + "Numpy_Files/y.npy"
