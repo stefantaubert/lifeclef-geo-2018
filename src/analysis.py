@@ -51,7 +51,7 @@ class channelmap_vector:
         threshold = 60
         similar_species = {k: [] for k in species}
         matrix = []
-        for i in tqdm(range(2)):
+        for i in tqdm(range(len(array))):
             current_channel_map = np.array(array[i])
             species_distances = []
 
