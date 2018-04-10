@@ -22,3 +22,5 @@ y_array = root + "Numpy_Files/y.npy"
 y_ids = root + "Numpy_Files/y_ids.npy"
 species_map = root + "Numpy_Files/species_map.p"
 species_map_training = root + "Numpy_Files/species_map.npy"
+
+heatmaps = root + "Analysis/Heatmaps/"
