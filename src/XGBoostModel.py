@@ -90,6 +90,10 @@ def run_Model():
         xg.fit(x_train, y_train, eval_set=[(x_train, y_train), (x_valid, y_valid)])
         np.save(data_paths.species_map_training, xg.classes_)
 
+        print("Save model...")
+        xg.dump_model(data_paths.model_dump)
+        xg.save_model(data_paths.model)
+
         print("Predict data...")
         pred = xg.predict_proba(x_valid)
 
@@ -100,7 +104,7 @@ def run_Model():
 if __name__ == '__main__':
     start_time = time.time()
 
-    # DataReader.read_and_write_data()
+    DataReader.read_and_write_data()
     run_Model()
     submission_maker.make_submission()
     evaluation.evaluate_with_mrr()
