@@ -483,7 +483,7 @@ if __name__ == '__main__':
     #py_plotter_combined(5, 7).plot_data()
     #analyse_spec_occ()
     #py_species_channels_relative(5,7,890).plot_data()
-    #csv_max_values_per_species()
+    csv_max_values_per_species()
     #csv_max_values_occurrences(5,7).plot_data()
     #csv_species_map()
     channelmap_vector()
