@@ -13,6 +13,7 @@ import math
 import pickle
 import networkx as nx
 import matplotlib.pyplot as plt
+from species_group import SpeciesGroup
 
 def binary_search(a, x, lo=0, hi=None):  # can't use a to specify default for hi
     hi = hi if hi is not None else len(a)  # hi defaults to len(a)   
@@ -48,7 +49,7 @@ class channelmap_vector:
         #             current_row.append(row[col])
 
         #     array.append(current_row)
-        threshold = 20
+        threshold = 60
         similar_species = {k: [] for k in species}
         matrix = []
         for i in tqdm(range(len(array))):
@@ -104,6 +105,21 @@ class channelmap_vector:
         result_ser = pd.DataFrame(results_array, columns=species)
         result_ser.to_csv(data_paths.channel_map_diff, index=False)
 
+        groups = SpeciesGroup().get_groups(similar_species)
+        print("Count of groups:", len(groups))
+        print(groups)
+
+        group_counts = {}
+
+        for group in groups:
+            current_len = len(group)
+            if current_len in group_counts.keys():
+                group_counts[current_len] += 1
+            else:
+                group_counts[current_len] = 1
+
+        print("Group overwiew (count of species: groups):", group_counts)
+
         G=nx.Graph()
 
         for key, value in similar_species.items():
@@ -111,6 +127,7 @@ class channelmap_vector:
             for val in value:
                 G.add_edge(key, val)
 
+        nx.draw_networkx_labels(G,pos=nx.spring_layout(G))
         nx.draw(G, node_size=20)
         plt.show()
 
