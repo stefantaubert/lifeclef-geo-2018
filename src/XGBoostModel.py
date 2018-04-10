@@ -82,7 +82,7 @@ def run_Model():
             eval_metric="merror",
             random_state=settings.seed,
             n_jobs=-1,
-            n_estimators=100,
+            n_estimators=149,
             predictor='gpu_predictor',
         )
 
