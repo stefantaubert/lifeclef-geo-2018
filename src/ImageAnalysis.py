@@ -15,9 +15,9 @@ image_dimension = 64
 
 readcount=50000
 
-def analyse_tiffs(species_id):
+def analyse_tiffs(species_id, df):
 
-    df = pd.read_csv(data_paths.occurrences_train, sep=';', low_memory=False)
+    #df = pd.read_csv(data_paths.occurrences_train, sep=';', low_memory=False)
 
     #df = df.head(readcount)
 
@@ -58,8 +58,6 @@ def analyse_tiffs(species_id):
         plt.clf()
 
 if __name__ == '__main__':
-    analyse_tiffs(1267)
-    analyse_tiffs(890)
-    analyse_tiffs(775)
-    analyse_tiffs(912)
-    analyse_tiffs(3075)
+    df = pd.read_csv(data_paths.occurrences_train, sep=';', low_memory=False)
+    for i in range(1, 3337):
+        analyse_tiffs(i, df)
