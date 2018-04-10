@@ -48,6 +48,8 @@ def read_and_write_data():
 
         for i in range(len(img)):
             csv_values.append((img[i][31][31] + img[i][31][32] + img[i][32][31] + img[i][32][32])/4)
+        
+        img = np.array(img, dtype=np.uint8)
 
         csv_values.append(row.day)
         csv_values.append(row.month)
@@ -58,7 +60,7 @@ def read_and_write_data():
         csv_values.append(row.patch_id)
         csv_values.append(row.species_glc_id)
 
-        x_img.append(img)
+        x_img.append([img[31]])
         x_text.append(csv_values)
         y_array.append(target)
         y_ids.append(current_species_glc_id)        
