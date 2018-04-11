@@ -1,5 +1,6 @@
 import unittest
 from species_group import SpeciesGroup
+    ### alt
 
 class SpeciesGroupTests(unittest.TestCase):
     def test1(self):
@@ -24,7 +25,7 @@ class SpeciesGroupTests(unittest.TestCase):
         # g_f = [6,2,4,5, 2,1,3,5,6, 4,1,5,6, 5,2,3,4,6] = [1,1, 2,2,2, 3,3, 4,4,4, 5,5,5,5, 6,6,6,6] = [5,6]
         # g_g = [7]
         
-        groups = SpeciesGroup().get_groups(dic)
+        groups = SpeciesGroup().iter(dic)
         
         self.assertEqual(len(groups), 2)
         self.assertEqual(groups[0], set([1, 2, 4, 5, 6, 9, 10]))
@@ -44,8 +45,8 @@ class SpeciesGroupTests(unittest.TestCase):
             10: [5, 4]
         }
 
-        groups = SpeciesGroup().get_groups(dic)
-        groups = SpeciesGroup().get_groups(dic)
+        groups = SpeciesGroup().iter(dic)
+        groups = SpeciesGroup().iter(dic)
         
         self.assertEqual(len(groups), 2)
         self.assertEqual(groups[0], set([1, 2, 4, 5, 6, 9, 10]))

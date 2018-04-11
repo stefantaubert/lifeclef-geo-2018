@@ -17,7 +17,7 @@ dic = {
     4: [1, 5, 6],
     5: [2, 3, 4, 6],
     6: [2, 4, 5],
-    7: [],
+    7: [8],
 }
 with open(data_paths.similar_species, 'rb') as f:
     similar_species_loaded = pickle.load(f)
@@ -47,9 +47,19 @@ for key, value in dic.items():
 
 nx.draw_networkx_labels(G,pos=nx.spring_layout(G))
 
-# print("Nodes of graph: ")
-# print(G.nodes())
-# print("Edges of graph: ")
-# print(G.edges())
-# nx.draw(G, node_size=20)
-# plt.show()
+groups = []
+processed_nodes = []
+
+for node in G.nodes():
+    if node not in processed_nodes:
+        connected_nodes = nx.node_connected_component(G, node )
+        groups.append(connected_nodes)
+        processed_nodes.extend(connected_nodes)
+    
+print(groups)
+print("Nodes of graph: ")
+print(G.nodes())
+print("Edges of graph: ")
+print(G.edges())
+nx.draw(G, node_size=20)
+plt.show()

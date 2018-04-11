@@ -94,7 +94,6 @@ class channelmap_vector:
         
         #print(similar_species)
         pickle.dump(similar_species, open(data_paths.similar_species, 'wb'))
-
        
         # with open(data_paths.similar_species, 'rb') as f:
         #     similar_species_loaded = pickle.load(f)
@@ -105,10 +104,20 @@ class channelmap_vector:
         result_ser = pd.DataFrame(results_array, columns=species)
         result_ser.to_csv(data_paths.channel_map_diff, index=False)
 
-        groups = SpeciesGroup().get_groups(similar_species)
-        print("Count of groups:", len(groups))
-        print(groups)
+        G = self.dict_to_graph(similar_species)
+        groups = self.get_groups_of_graph(G)
+        group_counts = self.get_group_lengths(groups)
 
+        print("Count of groups:", len(groups))
+        print("Group overwiew (count of species: groups):", group_counts)
+        self.plot_network(G)
+    
+    def plot_network(self, G):
+        nx.draw_networkx_labels(G,pos=nx.spring_layout(G))
+        nx.draw(G, node_size=20)
+        plt.show()
+
+    def get_group_lengths(self, groups):
         group_counts = {}
 
         for group in groups:
@@ -118,18 +127,29 @@ class channelmap_vector:
             else:
                 group_counts[current_len] = 1
 
-        print("Group overwiew (count of species: groups):", group_counts)
+        return group_counts
 
+    def dict_to_graph(self, dictionary):
         G=nx.Graph()
-
-        for key, value in similar_species.items():
+        
+        for key, value in dictionary.items():
             G.add_node(key)
             for val in value:
                 G.add_edge(key, val)
+        
+        return G
 
-        nx.draw_networkx_labels(G,pos=nx.spring_layout(G))
-        nx.draw(G, node_size=20)
-        plt.show()
+    def get_groups_of_graph(self, G):
+        groups = []
+        processed_nodes = []
+
+        for node in G.nodes():
+            if node not in processed_nodes:
+                connected_nodes = nx.node_connected_component(G, node )
+                groups.append(connected_nodes)
+                processed_nodes.extend(connected_nodes)
+            
+        return groups
 
 class csv_species_map:
     def __init__(self):
