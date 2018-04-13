@@ -15,8 +15,7 @@ import data_paths
 
 
 def generate__train_image_list():
-    x_img_path_list = []
-    y = []
+    samples = []
 
     df = pd.read_csv(data_paths.occurrences_train, sep=';', low_memory=False)
 
@@ -29,21 +28,17 @@ def generate__train_image_list():
         current_patch_dirname = row["patch_dirname"]
         current_patch_id = row["patch_id"]
 
-        target = np.zeros(len(species_map.keys()))
-        target[species_map[current_species_glc_id]] = 1
-
-        img_path =[current_patch_dirname, current_patch_id]
+        #Create Sample Entry, contains
+        #Dirname of image patch, ID of image patch, species_id  
+        sample =[current_patch_dirname, current_patch_id, current_species_glc_id]
         
-        x_img_path_list.append(img_path)
-        y.append(target)
+        samples.append(sample)
     
     print("Writing Data...")
 
-    y = np.array(y)
-    x_img_path_list = np.array(x_img_path_list, dtype=np.uint32)
+    samples = np.array(samples, dtype=np.uint32)
 
-    np.save(data_paths.image_train_set_x, x_img_path_list)
-    np.save(data_paths.image_train_set_y, y)
+    np.save(data_paths.train_samples, samples)
 
 
 #def generate_test_image_list():

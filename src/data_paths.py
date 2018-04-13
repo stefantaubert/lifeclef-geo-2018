@@ -28,3 +28,6 @@ heatmaps = root + "Analysis/Heatmaps/"
 
 image_train_set_y = root + "Numpy_Files/ImageFileList/train_y.npy"
 image_train_set_x = root + "Numpy_Files/ImageFileList/train_x.npy"
+
+
+train_samples = root + "Numpy_Files/Train/samples.npy"
