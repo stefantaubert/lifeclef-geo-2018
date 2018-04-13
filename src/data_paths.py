@@ -25,3 +25,6 @@ species_map = root + "Numpy_Files/species_map.p"
 species_map_training = root + "Numpy_Files/species_map.npy"
 
 heatmaps = root + "Analysis/Heatmaps/"
+
+image_train_set_y = root + "Numpy_Files/ImageFileList/train_y.npy"
+image_train_set_x = root + "Numpy_Files/ImageFileList/train_x.npy"
