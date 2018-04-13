@@ -6,7 +6,6 @@ from itertools import repeat, chain
 import matplotlib.pyplot as plt
 from tqdm import tqdm
 from bisect import bisect_left
-import numpy as np
 import matplotlib.mlab as mlab
 import matplotlib.pyplot as plt
 import math
@@ -518,9 +517,9 @@ if __name__ == '__main__':
     #py_plotter_species_count(5, 7).plot_data()
     #py_plotter_value_count(5, 7).plot_data()
     #py_plotter_combined(5, 7).plot_data()
-    #analyse_spec_occ()
-    #py_species_channels_relative(5,7,890).plot_data()
-    #csv_max_values_per_species()
+    analyse_spec_occ()
+    py_species_channels_relative(5,7,890).plot_data()
+    csv_max_values_per_species()
     #csv_max_values_occurrences(5,7).plot_data()
     #csv_species_map()
     channelmap_vector()

@@ -4,6 +4,7 @@ root = root_lines[0]
 patch_train = root + "patchTrain"
 occurrences_train = root + "occurrences_train.csv"
 occurrences_train_gen = root + "occurrences_train_gen.csv"
+occurrences_test_gen = root + "occurrences_test_gen.csv"
 features_train = root + "train_features.csv"
 max_values_species = root + "max_values_species.csv"
 species_channel_map_dir = root + "channel_maps/"
