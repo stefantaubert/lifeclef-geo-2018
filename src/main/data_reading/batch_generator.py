@@ -37,4 +37,4 @@ def getNextImageBatch(samples, species_map):
 
 def nextBatch(samples, species_map):
     for x, y in getNextImageBatch(samples, species_map):
-        yield x, y
+        yield (x, y)
