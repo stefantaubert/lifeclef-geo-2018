@@ -6,13 +6,13 @@ from itertools import repeat, chain
 import matplotlib.pyplot as plt
 from tqdm import tqdm
 from bisect import bisect_left
-import numpy as np
 import matplotlib.mlab as mlab
 import matplotlib.pyplot as plt
 import math
 import pickle
 import networkx as nx
 import matplotlib.pyplot as plt
+from species_group import SpeciesGroup
 
 def binary_search(a, x, lo=0, hi=None):  # can't use a to specify default for hi
     hi = hi if hi is not None else len(a)  # hi defaults to len(a)   
@@ -48,7 +48,7 @@ class channelmap_vector:
         #             current_row.append(row[col])
 
         #     array.append(current_row)
-        threshold = 20
+        threshold = 60
         similar_species = {k: [] for k in species}
         matrix = []
         for i in tqdm(range(len(array))):
@@ -93,7 +93,6 @@ class channelmap_vector:
         
         #print(similar_species)
         pickle.dump(similar_species, open(data_paths.similar_species, 'wb'))
-
        
         # with open(data_paths.similar_species, 'rb') as f:
         #     similar_species_loaded = pickle.load(f)
@@ -104,15 +103,52 @@ class channelmap_vector:
         result_ser = pd.DataFrame(results_array, columns=species)
         result_ser.to_csv(data_paths.channel_map_diff, index=False)
 
-        G=nx.Graph()
+        G = self.dict_to_graph(similar_species)
+        groups = self.get_groups_of_graph(G)
+        group_counts = self.get_group_lengths(groups)
 
-        for key, value in similar_species.items():
+        print("Count of groups:", len(groups))
+        print("Group overwiew (count of species: groups):", group_counts)
+        self.plot_network(G)
+    
+    def plot_network(self, G):
+        nx.draw_networkx_labels(G,pos=nx.spring_layout(G))
+        nx.draw(G, node_size=20)
+        plt.show()
+
+    def get_group_lengths(self, groups):
+        group_counts = {}
+
+        for group in groups:
+            current_len = len(group)
+            if current_len in group_counts.keys():
+                group_counts[current_len] += 1
+            else:
+                group_counts[current_len] = 1
+
+        return group_counts
+
+    def dict_to_graph(self, dictionary):
+        G=nx.Graph()
+        
+        for key, value in dictionary.items():
             G.add_node(key)
             for val in value:
                 G.add_edge(key, val)
+        
+        return G
 
-        nx.draw(G, node_size=20)
-        plt.show()
+    def get_groups_of_graph(self, G):
+        groups = []
+        processed_nodes = []
+
+        for node in G.nodes():
+            if node not in processed_nodes:
+                connected_nodes = nx.node_connected_component(G, node )
+                groups.append(connected_nodes)
+                processed_nodes.extend(connected_nodes)
+            
+        return groups
 
 class csv_species_map:
     def __init__(self):
@@ -481,9 +517,9 @@ if __name__ == '__main__':
     #py_plotter_species_count(5, 7).plot_data()
     #py_plotter_value_count(5, 7).plot_data()
     #py_plotter_combined(5, 7).plot_data()
-    #analyse_spec_occ()
-    #py_species_channels_relative(5,7,890).plot_data()
-    #csv_max_values_per_species()
+    analyse_spec_occ()
+    py_species_channels_relative(5,7,890).plot_data()
+    csv_max_values_per_species()
     #csv_max_values_occurrences(5,7).plot_data()
     #csv_species_map()
     channelmap_vector()

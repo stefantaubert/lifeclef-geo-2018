@@ -192,6 +192,6 @@ if __name__ == '__main__':
     run_Model()
     submission_maker.make_submission()
     evaluation.evaluate_with_mrr()
-
+    
     print("Total duration:", time.time() - start_time, "s")
 

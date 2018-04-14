@@ -106,5 +106,16 @@ def make_submission():
 #     result_ser = pd.DataFrame(sol_rows, columns = ['glc_id', 'species_glc_id', 'probability', 'rank'])
 #     result_ser.to_csv(data_paths.submission_val, index=False)
 
+def make_submission_for_current_training():
+    print("Make submission...")
+
+    classes = np.load(data_paths.current_training_species_map)
+
+    predictions = np.load(data_paths.current_training_results)
+    df = make_submission_df(classes, predictions)
+
+    print("Save submission...")
+    df.to_csv(data_paths.current_training_submission, index=False)
+
 if __name__ == '__main__':
-    make_submission()
+    make_submission_for_current_training()
