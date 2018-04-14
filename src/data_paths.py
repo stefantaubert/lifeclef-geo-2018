@@ -35,3 +35,4 @@ image_train_set_x = root + "Numpy_Files/ImageFileList/train_x.npy"
 
 
 train_samples = root + "Numpy_Files/Train/samples.npy"
+train_samples_species_map = root + "Numpy_Files/Train/species_map.py"

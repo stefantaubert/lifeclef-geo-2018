@@ -39,6 +39,7 @@ def generate__train_image_list():
     samples = np.array(samples, dtype=np.uint32)
 
     np.save(data_paths.train_samples, samples)
+    pickle.dump(species_map, open(data_paths.train_samples_species_map, 'wb'))
 
 
 #def generate_test_image_list():
