@@ -217,7 +217,7 @@ groups_for_lengths = get_groups_for_lengts(groups)
 
 group_length_probs = get_group_length_propabilities(groups_for_lengths, species_propabilities)
 
-print(group_length_probs)
+#print(group_length_probs)
 print("Count of groups:", len(groups))
 print("Group overwiew (count of species: groups):", group_counts)
 

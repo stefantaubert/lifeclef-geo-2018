@@ -2,7 +2,9 @@ root_lines = open("../config/data_root").read().split('\n')
 root = root_lines[0]
 
 patch_train = root + "patchTrain"
+patch_test = root + "patchTest"
 occurrences_train = root + "occurrences_train.csv"
+occurrences_test = root + "occurrences_test.csv"
 occurrences_train_gen = root + "occurrences_train_gen.csv"
 occurrences_test_gen = root + "occurrences_test_gen.csv"
 features_train = root + "train_features.csv"
