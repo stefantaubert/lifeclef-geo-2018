@@ -52,7 +52,7 @@ class Data:
 
         return mean
         
-    def create_dataset_df(self, path_occurences, batch_dir):
+    def _create_dataset_df(self, path_occurences, batch_dir):
         x_text = []
         df = pd.read_csv(path_occurences, sep=';', low_memory=False)
         species_id_column_name = 'species_glc_id'
@@ -98,11 +98,11 @@ class Data:
         return result_ser
 
     def _create_train(self):
-        df = self.create_dataset_df(data_paths.occurrences_train, data_paths.patch_train)
+        df = self._create_dataset_df(data_paths.occurrences_train, data_paths.patch_train)
         df.to_csv(data_paths.occurrences_train_gen, index=False)
    
     def _create_test(self):
-        df = self.create_dataset_df(data_paths.occurrences_test, data_paths.patch_train)
+        df = self._create_dataset_df(data_paths.occurrences_test, data_paths.patch_train)
         df.to_csv(data_paths.occurrences_test_gen, index=False)
 
     def _load_train(self):
