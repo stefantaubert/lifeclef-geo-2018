@@ -10,30 +10,25 @@ def loadImage(sample):
     return img
 
 def getDatasetChunk(samples):
-    for i in xrange(0, len(samples), 32):
-        yield split[i:i+32]
+    for i in range(0, len(samples), 32):
+        yield samples[i:i+32]
 
 def getNextImageBatch(samples, species_map):
     for chunk in getDatasetChunk(samples):
         #TODO: replace with Constants from settings
         x_batch = np.zeros((32, 33, 64, 64), dtype=np.uint8)
-        y_batch = np.zeros(())
+        y_batch = np.zeros((32, len(species_map.keys())))
 
         current_batch_slot = 0
 
         for sample in chunk:
-            try:
-                x = loadImage(sample)
-                y = np.zeros(len(species_map.keys()))
-                y = [species_map[x[2]]] = 1 
+            x = loadImage(sample)
+            y = np.zeros(len(species_map.keys()))
+            y[species_map[sample[2]]] = 1 
 
-                x_batch[current_batch_slot] = x
-                y_batch[current_batch_slot] = y
-                current_batch_slot += 1
-            
-            except:
-                print("failed to load data")
-                continue
+            x_batch[current_batch_slot] = x
+            y_batch[current_batch_slot] = y
+            current_batch_slot += 1
 
         x_batch = x_batch[:current_batch_slot]
         y_batch = y_batch[:current_batch_slot]
