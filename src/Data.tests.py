@@ -47,6 +47,6 @@ class TestEvaluationRanksMethod(unittest.TestCase):
         self.assertEqual(2 / 4, value1)
         self.assertEqual(6 / 16, value2)
         self.assertEqual(11 / 36, value3)
-                    
+
 if __name__ == '__main__':
     unittest.main()
