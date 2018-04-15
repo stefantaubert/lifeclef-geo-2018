@@ -35,13 +35,83 @@ def nn_Model(output_shape):
     model.add(Dense(output_shape, activation='sigmoid'))
     return model
 
+def cnn_Model_3(output_shape):
+    model = Sequential()
+
+    model.add(Conv2D(input_shape=(1, 64, 64),
+                     filters=64,
+                     activation='relu',
+                     kernel_size=(3, 3),
+                     strides=(1, 1),
+                     padding='same',
+                     data_format='channels_first'))
+    model.add(Conv2D(filters=64,
+                     activation='relu',
+                     kernel_size=(3, 3),
+                     strides=(1, 1),
+                     padding='same',
+                     data_format='channels_first'))
+    model.add(Conv2D(filters=64,
+                     activation='relu',
+                     kernel_size=(3, 3),
+                     strides=(1, 1),
+                     data_format='channels_first'))
+    model.add(AveragePooling2D(pool_size=(2,2),
+                               data_format='channels_first'))
+    model.add(Conv2D(filters=64,
+                     activation='relu',
+                     kernel_size=(3, 3),
+                     strides=(1, 1),
+                     padding='same',
+                     data_format='channels_first'))
+    model.add(Conv2D(filters=64,
+                     activation='relu',
+                     kernel_size=(3, 3),
+                     strides=(1, 1),
+                     padding='same',
+                     data_format='channels_first'))
+    model.add(Conv2D(filters=64,
+                     activation='relu',
+                     kernel_size=(3, 3),
+                     strides=(1, 1),
+                     data_format='channels_first'))
+    model.add(AveragePooling2D(pool_size=(2,2),
+                               data_format='channels_first'))
+    model.add(Conv2D(filters=64,
+                     activation='relu',
+                     kernel_size=(3, 3),
+                     strides=(1, 1),
+                     padding='same',
+                     data_format='channels_first'))
+    model.add(Conv2D(filters=64,
+                     activation='relu',
+                     kernel_size=(3, 3),
+                     strides=(1, 1),
+                     padding='same',
+                     data_format='channels_first'))
+    model.add(Conv2D(filters=64,
+                     activation='relu',
+                     kernel_size=(3, 3),
+                     strides=(1, 1),
+                     data_format='channels_first'))
+    model.add(Dropout(0.5))
+    model.add(Flatten())
+    model.add(Dense(units=output_shape, activation='softmax'))
+    return model
+
 def cnn_Model_2(output_shape):
     model = Sequential()
-    model.add(Conv2D(input_shape=(33, 64, 64),
+    model.add(Conv2D(input_shape=(1, 64, 64),
                      filters=64,
                      activation='relu',
                      kernel_size=(7, 7),
                      strides=(2, 2),
+                     data_format='channels_first'))
+    model.add(Conv2D(filters=64,
+                     activation='relu',
+                     kernel_size=(3, 3),
+                     strides=(1, 1),
+                     padding='same',
                      data_format='channels_first'))
     model.add(Conv2D(filters=64,
                      activation='relu',
@@ -96,19 +166,19 @@ def run_Model():
     top50_acc = functools.partial(top_k_categorical_accuracy, k=50)
     top50_acc.__name__ = 'top50_acc'
     
-    sgd_optimizer = optimizers.SGD(lr=0.0000001, momentum=0.0, decay=0.0, nesterov=False)
+    sgd_optimizer = optimizers.SGD(lr=0.3, momentum=0.01, decay=0.0, nesterov=False)
     #adam nehmen
 
     #model = nn_Model(species_count)
     #model = cnn_Model(species_count)
-    model = cnn_Model_2(species_count)
-    model.compile(optimizer=sgd_optimizer,
-                  loss='mse',
+    model = cnn_Model_3(species_count)
+    model.compile(optimizer='adam',
+                  loss='binary_crossentropy',
                   metrics=['accuracy', top3_acc, top50_acc])
 
     x_train, x_valid, y_train, y_valid = train_test_split(x_train, y, test_size=settings.train_val_split, random_state=settings.seed)
 
-    model.fit(x_train, y_train, epochs=3, batch_size=256, verbose=2)
+    model.fit(x_train, y_train, epochs=100, batch_size=128, verbose=2)
 
     #result = model.predict(np.array(x_text[0:3]))
     result = model.predict(x_valid)
@@ -122,6 +192,6 @@ if __name__ == '__main__':
     run_Model()
     submission_maker.make_submission()
     evaluation.evaluate_with_mrr()
-
+    
     print("Total duration:", time.time() - start_time, "s")
 

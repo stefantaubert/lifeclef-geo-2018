@@ -36,3 +36,8 @@ image_train_set_x = root + "Numpy_Files/ImageFileList/train_x.npy"
 
 train_samples = root + "Numpy_Files/Train/samples.npy"
 train_samples_species_map = root + "Numpy_Files/Train/species_map.py"
+
+current_training_gt = root + "Current_Training_Results/gt.npy"
+current_training_results = root + "Current_Training_Results/results.npy"
+current_training_species_map = root + "Current_Training_Results/species_map.py"
+current_training_submission = root + "Current_Training_Results/submission.csv"

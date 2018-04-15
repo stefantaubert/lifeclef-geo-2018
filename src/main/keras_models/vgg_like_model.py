@@ -1,4 +1,5 @@
 import settings
+import numpy as np
 np.random.seed(settings.seed)
 
 
