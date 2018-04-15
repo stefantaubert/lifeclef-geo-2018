@@ -18,7 +18,7 @@ def load():
 class SimilarSpeciesExtractor():
     def __init__(self):
         self.data = Data()
-        self.data._load_train()
+        self.data.load_train()
     
     def get_similar_species_dict(self, species_diff_matrix_df):
         assert len(species_diff_matrix_df.index) == self.data.species_count

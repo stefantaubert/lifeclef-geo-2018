@@ -187,75 +187,75 @@ class csv_species_map:
             plt.title("Species: " + str(specie) + ", occurence: " + str(occ))
             plt.savefig(data_paths.species_channel_map_dir + str(specie) + ".png", bbox_inches='tight')
 
-class csv_max_values_occurrences:
-    def __init__(self, rows, cols):
-        self.rows = rows
-        self.cols = cols
-        self.csv = pd.read_csv(data_paths.max_values_species)
-        self.csv = self.csv.drop(['occurence', 'species_glc_id'], axis=1)
-        self.counter = 0
+# class csv_max_values_occurrences:
+#     def __init__(self, rows, cols):
+#         self.rows = rows
+#         self.cols = cols
+#         self.csv = pd.read_csv(data_paths.max_values_species)
+#         self.csv = self.csv.drop(['occurence', 'species_glc_id'], axis=1)
+#         self.counter = 0
 
-    def plot_data(self):
-        plt.subplots_adjust(hspace=0.8, wspace=0.4)
-        for col in self.csv.columns.values:
-            self.plot(col)
-        plt.show()
+#     def plot_data(self):
+#         plt.subplots_adjust(hspace=0.8, wspace=0.4)
+#         for col in self.csv.columns.values:
+#             self.plot(col)
+#         plt.show()
 
-    def plot(self, col_name):
-        counts = {key: 0 for key in set(self.csv[col_name].values)}
+#     def plot(self, col_name):
+#         counts = {key: 0 for key in set(self.csv[col_name].values)}
         
-        for index, row in tqdm(self.csv.iterrows()):
-            chbio = float(row[col_name])
-            counts[chbio] += 1
+#         for index, row in tqdm(self.csv.iterrows()):
+#             chbio = float(row[col_name])
+#             counts[chbio] += 1
             
-        print(counts)
+#         print(counts)
 
-        x = list(counts.keys())
-        y = list(counts.values())
+#         x = list(counts.keys())
+#         y = list(counts.values())
 
-        self.counter += 1
-        plt.subplot(self.rows, self.cols, self.counter)
-        plt.bar(x,y,align='center') # A bar chart
-        plt.xlabel(col_name)
-        plt.ylabel('occurence')    
+#         self.counter += 1
+#         plt.subplot(self.rows, self.cols, self.counter)
+#         plt.bar(x,y,align='center') # A bar chart
+#         plt.xlabel(col_name)
+#         plt.ylabel('occurence')    
 
-class csv_max_values_per_species:
-    def __init__(self):
-        csv = pd.read_csv(data_paths.occurrences_train_gen)
-        y_ids = np.load(data_paths.y_ids)
-        #print(self.csv)
-        species = np.unique(y_ids)
-        #csv = csv.drop(["patch_id", "day", "month", "year"], axis=1) ### Tag usw haben manchmal keine werte
-        rows_to_consider = ['chbio_1', 'chbio_2', 'chbio_3', 'chbio_4', 'chbio_5', 'chbio_6',
-            'chbio_7', 'chbio_8', 'chbio_9', 'chbio_10', 'chbio_11', 'chbio_12',
-            'chbio_13', 'chbio_14', 'chbio_15', 'chbio_16', 'chbio_17', 'chbio_18',
-            'chbio_19', 'etp', 'alti',
-            'awc_top', 'bs_top', 'cec_top', 'crusting', 'dgh', 'dimp', 'erodi', 'oc_top', 'pd_top', 'text',
-            'proxi_eau_fast', 'clc', 
-            #'day', 'month', 'year',
-             'latitude', 'longitude']
+# class csv_max_values_per_species:
+#     def __init__(self):
+#         csv = pd.read_csv(data_paths.occurrences_train_gen)
+#         y_ids = np.load(data_paths.y_ids)
+#         #print(self.csv)
+#         species = np.unique(y_ids)
+#         #csv = csv.drop(["patch_id", "day", "month", "year"], axis=1) ### Tag usw haben manchmal keine werte
+#         rows_to_consider = ['chbio_1', 'chbio_2', 'chbio_3', 'chbio_4', 'chbio_5', 'chbio_6',
+#             'chbio_7', 'chbio_8', 'chbio_9', 'chbio_10', 'chbio_11', 'chbio_12',
+#             'chbio_13', 'chbio_14', 'chbio_15', 'chbio_16', 'chbio_17', 'chbio_18',
+#             'chbio_19', 'etp', 'alti',
+#             'awc_top', 'bs_top', 'cec_top', 'crusting', 'dgh', 'dimp', 'erodi', 'oc_top', 'pd_top', 'text',
+#             'proxi_eau_fast', 'clc', 
+#             #'day', 'month', 'year',
+#              'latitude', 'longitude']
 
-        result_cols = rows_to_consider + ['occurence', 'species_glc_id']
+#         result_cols = rows_to_consider + ['occurence', 'species_glc_id']
             
-        #columns = csv.columns.values
-        resulting_rows = []
-        for specie in tqdm(species):
-            specie_csv = csv[csv["species_glc_id"] == specie]
-            row = []
-            for col in rows_to_consider:
-                c = Counter(specie_csv[col])
-                most_common_value, occ = c.most_common(1)[0]
-                row.append(most_common_value)
-            row.append(len(specie_csv.index))
-            row.append(specie)
-            resulting_rows.append(row)
+#         #columns = csv.columns.values
+#         resulting_rows = []
+#         for specie in tqdm(species):
+#             specie_csv = csv[csv["species_glc_id"] == specie]
+#             row = []
+#             for col in rows_to_consider:
+#                 c = Counter(specie_csv[col])
+#                 most_common_value, occ = c.most_common(1)[0]
+#                 row.append(most_common_value)
+#             row.append(len(specie_csv.index))
+#             row.append(specie)
+#             resulting_rows.append(row)
 
         
-        print("Write data...")
-        results_array = np.asarray(resulting_rows) #list to array to add to the dataframe as a new column
+#         print("Write data...")
+#         results_array = np.asarray(resulting_rows) #list to array to add to the dataframe as a new column
 
-        result_ser = pd.DataFrame(results_array, columns=result_cols)
-        result_ser.to_csv(data_paths.max_values_species, index=False)
+#         result_ser = pd.DataFrame(results_array, columns=result_cols)
+#         result_ser.to_csv(data_paths.max_values_species, index=False)
                 
 class py_species_channels_relative:
     def __init__(self, rows, cols, species_id):
@@ -519,7 +519,5 @@ if __name__ == '__main__':
     #py_plotter_combined(5, 7).plot_data()
     analyse_spec_occ()
     py_species_channels_relative(5,7,890).plot_data()
-    csv_max_values_per_species()
-    #csv_max_values_occurrences(5,7).plot_data()
     #csv_species_map()
     channelmap_vector()

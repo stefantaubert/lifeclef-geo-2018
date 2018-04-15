@@ -14,13 +14,13 @@ def load():
 class MostCommonValueExtractor():
     def __init__(self):
         self.data = Data()
-        self.data._load_train()
+        self.data.load_train()
         self.cols_to_consider = ['chbio_1', 'chbio_2', 'chbio_3', 'chbio_4', 'chbio_5', 'chbio_6',
             'chbio_7', 'chbio_8', 'chbio_9', 'chbio_10', 'chbio_11', 'chbio_12',
             'chbio_13', 'chbio_14', 'chbio_15', 'chbio_16', 'chbio_17', 'chbio_18',
             'chbio_19', 'etp', 'alti',
             'awc_top', 'bs_top', 'cec_top', 'crusting', 'dgh', 'dimp', 'erodi', 'oc_top', 'pd_top', 'text',
-            'proxi_eau_fast', 'clc', 
+            'proxi_eau_fast', 'clc',
             #'day', 'month', 'year',
             'latitude', 'longitude']
 
@@ -43,8 +43,6 @@ class MostCommonValueExtractor():
 
         results_array = np.asarray(resulting_rows) #list to array to add to the dataframe as a new column
         result_ser = pd.DataFrame(results_array, columns=result_cols)   
-
-        assert len(result_ser.columns.values) == len(self.cols_to_consider)
 
         return result_ser
 
