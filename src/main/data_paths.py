@@ -5,6 +5,7 @@ root = root_lines[0]
 
 patch_train = root + "patchTrain"
 patch_test = root + "patchTest"
+
 occurrences_train = root + "occurrences_train.csv"
 occurrences_test = root + "occurrences_test.csv"
 occurrences_train_gen = root + "occurrences_train_gen_" + str(settings.pixel_count) + ".csv"

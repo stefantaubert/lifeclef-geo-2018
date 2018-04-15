@@ -16,7 +16,7 @@ def load():
 class SpeciesDiffExtractor():
     def __init__(self):
         self.data = Data()
-        self.data._load_train()
+        self.data.load_train()
     
     def get_vector_length(self, v):
         summ = 0

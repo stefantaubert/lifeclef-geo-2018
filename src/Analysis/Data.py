@@ -12,6 +12,7 @@ class Data:
         self.train = pd.read_csv(data_paths.occurrences_train_gen)
         self.species = sorted(self.train.species_glc_id.unique())
         self.species_count = len(self.species)
+        
         r = [i + 1 for i in range(len(self.species))]
         assert self.species == r
     
@@ -20,6 +21,7 @@ class Data:
 
     def load_datasets(self):
         print("Loading trainset...")
-        self._load_train()
+        self.load_train()
+
         print("Loading testset...")
-        self._load_test()
+        self.load_test()

@@ -18,7 +18,7 @@ def load():
 class GroupExtractor():
     def __init__(self):
         self.data = Data()
-        self.data._load_train()
+        self.data.load_train()
 
     def plot_network(self, G):
         nx.draw_networkx_labels(G,pos=nx.spring_layout(G))
@@ -122,7 +122,7 @@ class GroupExtractor():
         plt.show()
 
         print("Plot network...")
-        #plot_network(G)
+        self.plot_network(G)
 
 
 if __name__ == "__main__":
