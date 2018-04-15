@@ -20,7 +20,7 @@ class MostCommonValueExtractor():
             'chbio_13', 'chbio_14', 'chbio_15', 'chbio_16', 'chbio_17', 'chbio_18',
             'chbio_19', 'etp', 'alti',
             'awc_top', 'bs_top', 'cec_top', 'crusting', 'dgh', 'dimp', 'erodi', 'oc_top', 'pd_top', 'text',
-            'proxi_eau_fast', 'clc', 
+            'proxi_eau_fast', 'clc',
             #'day', 'month', 'year',
             'latitude', 'longitude']
 

@@ -13,6 +13,20 @@ def load():
     
     return pd.read_csv(data_paths.channel_map_diff)
 
+#                 tmp = species_distances
+#                 tmp.sort()
+#                 print(tmp[:5])
+#                 print(tmp[-5:])
+#                 x = species
+#                 y = species_distances
+
+#                 plt.figure()
+#                 plt.bar(x,y,align='center') # A bar chart
+#                 plt.xlabel("species")
+#                 plt.ylabel('dist')
+#                 plt.show()
+#                 #plt.savefig(data_paths.species_channel_map_dir + str(specie) + ".png", bbox_inches='tight')
+
 class SpeciesDiffExtractor():
     def __init__(self):
         self.data = Data()
