@@ -5,3 +5,6 @@
 pixel_count = 32
 
 threshold = 20
+
+### Sets the count of digits for rounding the test and trainset in the analysis.
+round_data_ndigits = 1

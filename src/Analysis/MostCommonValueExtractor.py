@@ -5,16 +5,20 @@ from Data import Data
 from tqdm import tqdm
 from collections import Counter
 import os
+import settings
 
 def load():
-    assert os.path.exists(data_paths.max_values_species)
+    assert os.path.exists(data_paths.most_common_values)
     
-    return pd.read_csv(data_paths.max_values_species)
+    return pd.read_csv(data_paths.most_common_values)
 
 class MostCommonValueExtractor():
     def __init__(self):
-        self.data = Data()
-        self.data.load_train()
+        data = Data()
+        data.load_train()
+        self.csv = data.train
+        self.species = data.species
+
         self.cols_to_consider = ['chbio_1', 'chbio_2', 'chbio_3', 'chbio_4', 'chbio_5', 'chbio_6',
             'chbio_7', 'chbio_8', 'chbio_9', 'chbio_10', 'chbio_11', 'chbio_12',
             'chbio_13', 'chbio_14', 'chbio_15', 'chbio_16', 'chbio_17', 'chbio_18',
@@ -28,13 +32,13 @@ class MostCommonValueExtractor():
         result_cols = self.cols_to_consider + ['occurence', 'species_glc_id']
         resulting_rows = []
 
-        for specie in tqdm(self.data.species):
-            specie_csv = self.data.train[self.data.train["species_glc_id"] == specie]
+        for specie in tqdm(self.species):
+            specie_csv = self.csv[self.csv["species_glc_id"] == specie]
             row = []
 
             for col in self.cols_to_consider:
                 c = Counter(specie_csv[col])
-                most_common_value, occ = c.most_common(1)[0]
+                most_common_value, _ = c.most_common(1)[0]
                 row.append(most_common_value)
 
             row.append(len(specie_csv.index))
@@ -49,7 +53,7 @@ class MostCommonValueExtractor():
     def _create(self):
         print("Getting most common values...")
         most_common_value_matrix = self._get_most_common_value_matrix_df()
-        most_common_value_matrix.to_csv(data_paths.max_values_species, index=False)
+        most_common_value_matrix.to_csv(data_paths.most_common_values, index=False)
 
 if __name__ == "__main__":
     MostCommonValueExtractor()._create()
