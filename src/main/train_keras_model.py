@@ -37,7 +37,7 @@ if __name__ == '__main__':
 
     print("saving Model...")
 
-    model.save(data_paths.current_training_model)
+    model.save_weights(data_paths.current_training_model)
 
     print("Finished!")
 

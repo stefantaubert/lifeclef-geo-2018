@@ -63,7 +63,8 @@ def make_submission_for_current_training():
     classes = np.load(data_paths.current_training_species_map)
 
     predictions = np.load(data_paths.current_training_results)
-    df = make_submission_df(classes, predictions)
+    glc_ids = np.load(data_paths.current_training_glc_ids)
+    df = make_submission_df(classes, predictions, glc_ids)
 
     print("Save submission...")
     df.to_csv(data_paths.current_training_submission, index=False)
