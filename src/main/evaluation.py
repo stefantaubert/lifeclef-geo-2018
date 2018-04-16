@@ -10,7 +10,7 @@ from itertools import chain
 def evaluate_with_mrr():
     print("Evaluate submission...")
     print("Load data...")
-    df = pd.read_csv(data_paths.submission_val)
+    df = pd.read_csv(data_paths.xgb_submission)
     x_text = pd.read_csv(data_paths.occurrences_train_gen)
     y = x_text["species_glc_id"]
     c_classes = len(np.load(data_paths.xgb_species_map))
