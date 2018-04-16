@@ -8,9 +8,8 @@ from data_reading import batch_generator as bg
 import data_paths
 import pickle
 import numpy as np
-from keras import load_model
+from keras.models import load_model
 import settings as stg
-
 from submission_maker import make_submission_for_current_training
 from evaluation import evaluate_current_training_results
 
