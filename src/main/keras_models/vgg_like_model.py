@@ -32,6 +32,7 @@ def get_model(output_shape, channel_count):
                      activation='relu',
                      kernel_size=(3, 3),
                      strides=(1, 1),
+                     padding='same',
                      data_format='channels_first'))
     model.add(MaxPooling2D(pool_size=(2,2),
                                data_format='channels_first'))
@@ -51,6 +52,7 @@ def get_model(output_shape, channel_count):
                      activation='relu',
                      kernel_size=(3, 3),
                      strides=(1, 1),
+                     padding='same',
                      data_format='channels_first'))
     model.add(MaxPooling2D(pool_size=(2,2),
                                data_format='channels_first'))
@@ -70,6 +72,7 @@ def get_model(output_shape, channel_count):
                      activation='relu',
                      kernel_size=(3, 3),
                      strides=(1, 1),
+                     padding='same',
                      data_format='channels_first'))
     model.add(AveragePooling2D(pool_size=(16, 16),
                                     data_format='channels_first'))
