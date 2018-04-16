@@ -42,8 +42,29 @@ def generate__train_image_list():
     pickle.dump(species_map, open(data_paths.train_samples_species_map, 'wb'))
 
 
-#def generate_test_image_list():
+def generate_test_image_list():
+    samples = []
 
+    df = pd.read_csv(data_paths.occurrences_test, sep=';', low_memory=False)
+
+    print("Reading CSV...")
+
+    
+    for index, row in tqdm(df.iterrows(), miniters=100):
+        current_patch_dirname = row["patch_dirname"]
+        current_patch_id = row["patch_id"]
+
+        #Create Test Sample Entry, contains
+        #Dirname of image patch, ID of image patch  
+        sample =[current_patch_dirname, current_patch_id]
+        
+        samples.append(sample)
+    
+    print("Writing Data...")
+
+    samples = np.array(samples, dtype=np.uint32)
+
+    np.save(data_paths.test_samples, samples)
 
 if __name__ == '__main__':
     generate__train_image_list()

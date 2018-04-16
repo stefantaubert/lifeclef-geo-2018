@@ -20,6 +20,7 @@ def getNextImageBatch(samples, species_map):
         x_batch = np.zeros((stg.BATCH_SIZE, 33, 64, 64), dtype=np.uint8)
         y_batch = np.zeros((stg.BATCH_SIZE, len(species_map.keys())))
         species_ids_batch = np.zeros(stg.BATCH_SIZE)
+        glc_ids_batch = np.zeros(stg.BATCH_SIZE)
         current_batch_slot = 0
 
         for sample in chunk:
@@ -30,39 +31,43 @@ def getNextImageBatch(samples, species_map):
             x_batch[current_batch_slot] = x
             y_batch[current_batch_slot] = y
             species_ids_batch[current_batch_slot] = sample[2]
+            glc_ids_batch[current_batch_slot] = sample[1]
             current_batch_slot += 1
 
         x_batch = x_batch[:current_batch_slot]
         y_batch = y_batch[:current_batch_slot]
         species_ids_batch = species_ids_batch[:current_batch_slot]
+        glc_ids_batch = glc_ids_batch[:current_batch_slot]
 
-        yield x_batch, y_batch, species_ids_batch
+        yield x_batch, y_batch, species_ids_batch, glc_ids_batch
 
 def nextBatch(samples, species_map):
-    for x, y, species_ids in it.cycle(getNextImageBatch(samples, species_map)):
+    for x, y, species_ids, glc_ids in it.cycle(getNextImageBatch(samples, species_map)):
         yield (x, y)
 
 def nextValidationBatch(samples, species_map):
-    for x, y, species_ids in getNextImageBatch(samples, species_map):
-        yield (x, y, species_ids)
+    for x, y, species_ids, glc_ids in getNextImageBatch(samples, species_map):
+        yield (x, y, species_ids, glc_ids)
 
 
 #Code für Single Channel Batches
+#TODO: Extra Generator dafür machen
 
 
 def nextSingleChannelBatch(samples, species_map, channel_index):
-    for x, y, species_ids in it.cycle(getNextSingleChannelImageBatch(samples, species_map, channel_index)):
+    for x, y, species_ids, glc_ids in it.cycle(getNextSingleChannelImageBatch(samples, species_map, channel_index)):
         yield (x, y)
 
 def nextSingleChannelValidationBatch(samples, species_map, channel_index):
-    for x, y, species_ids in getNextSingleChannelImageBatch(samples, species_map, channel_index):
-        yield (x, y, species_ids)
+    for x, y, species_ids, glc_ids in getNextSingleChannelImageBatch(samples, species_map, channel_index):
+        yield (x, y, species_ids, glc_ids)
 
 def getNextSingleChannelImageBatch(samples, species_map, channel_index):
     for chunk in getDatasetChunk(samples):
         x_batch = np.zeros((stg.BATCH_SIZE, 1, 64, 64), dtype=np.uint8)
         y_batch = np.zeros((stg.BATCH_SIZE, len(species_map.keys())))
         species_ids_batch = np.zeros(stg.BATCH_SIZE)
+        glc_ids_batch = np.zeros(stg.BATCH_SIZE)
         current_batch_slot = 0
 
         for sample in chunk:
@@ -73,10 +78,12 @@ def getNextSingleChannelImageBatch(samples, species_map, channel_index):
             x_batch[current_batch_slot] = x[channel_index]
             y_batch[current_batch_slot] = y
             species_ids_batch[current_batch_slot] = sample[2]
+            glc_ids_batch[current_batch_slot] = sample[1]
             current_batch_slot += 1
 
         x_batch = x_batch[:current_batch_slot]
         y_batch = y_batch[:current_batch_slot]
         species_ids_batch = species_ids_batch[:current_batch_slot]
+        glc_ids_batch = glc_ids_batch[:current_batch_slot]
 
-        yield x_batch, y_batch, species_ids_batch
+        yield x_batch, y_batch, species_ids_batch, glc_ids_batch

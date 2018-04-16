@@ -22,5 +22,7 @@ current_training_gt = root + "Current_Training_Results/gt.npy"
 current_training_results = root + "Current_Training_Results/results.npy"
 current_training_species_map = root + "Current_Training_Results/species_map.py"
 current_training_submission = root + "Current_Training_Results/submission.csv"
+current_training_glc_ids = root + "Current_Training_Results/glc_ids.npy"
+
 
 current_training_model = root + 'Current_Training_Results/model.h5'
