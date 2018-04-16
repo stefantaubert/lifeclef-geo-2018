@@ -1,6 +1,7 @@
 import numpy as np
 import data_paths
 import tifffile
+import settings as stg
 
 def loadImage(sample):
     patch_dir_name = sample[0]
@@ -10,15 +11,15 @@ def loadImage(sample):
     return img
 
 def getDatasetChunk(samples):
-    for i in range(0, len(samples), 32):
-        yield samples[i:i+32]
+    for i in range(0, len(samples), stg.BATCH_SIZE):
+        yield samples[i:i+stg.BATCH_SIZE]
 
 def getNextImageBatch(samples, species_map):
     for chunk in getDatasetChunk(samples):
         #TODO: replace with Constants from settings
-        x_batch = np.zeros((32, 33, 64, 64), dtype=np.uint8)
-        y_batch = np.zeros((32, len(species_map.keys())))
-        species_ids_batch = np.zeros(32)
+        x_batch = np.zeros((stg.BATCH_SIZE, 33, 64, 64), dtype=np.uint8)
+        y_batch = np.zeros((stg.BATCH_SIZE, len(species_map.keys())))
+        species_ids_batch = np.zeros(stg.BATCH_SIZE)
         current_batch_slot = 0
 
         for sample in chunk:

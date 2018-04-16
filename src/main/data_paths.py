@@ -13,12 +13,14 @@ occurrences_test_gen = root + "occurrences_test_gen_" + str(settings.pixel_count
 
 submission_val = root + "submissions/submission_val.csv"
 
-image_train_set_y = root + "Numpy_Files/ImageFileList/train_y.npy"
-image_train_set_x = root + "Numpy_Files/ImageFileList/train_x.npy"
-train_samples = root + "Numpy_Files/Train/samples.npy"
-train_samples_species_map = root + "Numpy_Files/Train/species_map.py"
+train_samples = root + "ImageLists/Train/samples.npy"
+train_samples_species_map = root + "ImageLists/Train/species_map.py"
+
+test_samples = root + 'ImageLists/Test/samples.npy'
 
 current_training_gt = root + "Current_Training_Results/gt.npy"
 current_training_results = root + "Current_Training_Results/results.npy"
 current_training_species_map = root + "Current_Training_Results/species_map.py"
 current_training_submission = root + "Current_Training_Results/submission.csv"
+
+current_training_model = root + 'Current_Training_Results/model.h5'

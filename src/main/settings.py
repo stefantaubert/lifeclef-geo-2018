@@ -9,3 +9,7 @@ train_val_split = 0.1
 ### Gibt die Anzahl an Pixeln^2 pro Quadrant eines Bildes an.
 ### Minimum: 1 -> entspricht 4 mittlersten Pixel, Maximum: 32 entspricht allen Pixel
 pixel_count = 32
+
+BATCH_SIZE = 32
+
+EPOCHS = 5
