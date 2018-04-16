@@ -35,8 +35,8 @@ class SimilarSpeciesExtractor():
                     distance = array[i][j]
 
                     if distance <= settings.threshold:
-                        current_species = i + 1
-                        other_species = j + 1
+                        current_species = self.data.species[i]
+                        other_species = self.data.species[j]
                         similar_species[current_species].append(other_species)
         
         return similar_species

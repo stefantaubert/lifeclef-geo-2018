@@ -52,5 +52,8 @@ class MostCommonValuesPerSpeciesDiagram:
         return plt
         
 if __name__ == "__main__":
-    #MostCommonValuesPerSpeciesDiagram().plot(82).show()
-    MostCommonValuesPerSpeciesDiagram().plot_all_species()
+    plot = [890, 186]
+    d = MostCommonValuesPerSpeciesDiagram()
+    for p in plot:
+       d.plot(p)
+    #MostCommonValuesPerSpeciesDiagram().plot_all_species()
