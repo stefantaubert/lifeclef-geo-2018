@@ -28,7 +28,6 @@ class MostCommonValuesPerSpeciesDiagram:
         assert len(specie_csv.index) == 1
 
         counts = {}
-        occ = 0
         ignore_columns = ['occurence', 'species_glc_id']
         columns = specie_csv.columns.values
         species_row = specie_csv.iloc[[0]].iloc[0]
@@ -51,6 +50,7 @@ class MostCommonValuesPerSpeciesDiagram:
 
         plt.savefig(data_paths.species_channel_map_dir + str(specie) + ".png", bbox_inches='tight')
         return plt
+        
 if __name__ == "__main__":
-    #MostCommonValuesPerSpeciesDiagram().plot(775).show()
+    #MostCommonValuesPerSpeciesDiagram().plot(82).show()
     MostCommonValuesPerSpeciesDiagram().plot_all_species()
