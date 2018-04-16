@@ -38,24 +38,17 @@ def make_submission_df(classes, predictions, glc_ids):
     submission_df = pd.DataFrame(submission, columns = ['glc_id', 'species_glc_id', 'probability', 'rank'])
     return submission_df
 
-def make_submission():
+def make_xgb_submission():
     print("Make submission...")
-    # y_ids = np.load(data_paths.y_ids)
 
-    # np.save(data_paths.species_map_training, np.unique(y_ids))
+    classes = np.load(data_paths.xgb_species_map)
 
-    classes = np.load(data_paths.species_map_training)
-
-    predictions = np.load(data_paths.prediction)
+    predictions = np.load(data_paths.xgb_prediction)
+    glc_ids = np.load(data_paths.xgb_glc_ids)
     df = make_submission_df(classes, predictions, glc_ids)
 
     print("Save submission...")
-    df.to_csv(data_paths.submission_val, index=False)
-
-    # y = None
-    # with open(data_paths.species_map, 'rb') as f:
-    #     y = pickle.load(f)
-        
+    df.to_csv(data_paths.xgb_submission, index=False)
 
 def make_submission_for_current_training():
     print("Make submission...")
