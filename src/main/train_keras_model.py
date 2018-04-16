@@ -27,7 +27,7 @@ if __name__ == '__main__':
     top3_acc = metrics.get_top3_accuracy()
     top50_acc = metrics.get_top50_accuracy()
 
-    model = vgg_like_model.get_model(len(species_map.keys()))
+    model = vgg_like_model.get_model(len(species_map.keys()), 33)
 
     model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy', top3_acc, top50_acc])
 
