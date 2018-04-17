@@ -1,25 +1,22 @@
 import pandas as pd
 import numpy as np
 import data_paths
-from Data import Data
 from tqdm import tqdm
 from collections import Counter
 import os
 import settings
 import math
+import pickle
 import SimilarSpeciesExtractor
 import networkx as nx
 import matplotlib.pyplot as plt
 
-def load():
-    assert os.path.exists(data_paths.channel_map_diff)
-    
-    return pd.read_csv(data_paths.channel_map_diff)
-
-class GroupExtractor():
+class GroupAnalysis():
     def __init__(self):
-        self.data = Data()
-        self.data.load_train()
+        csv, species, species_c = TextPreprocessing.load_train()
+        self.csv = csv
+        self.species = species
+        self.species_count = species_c
 
     def get_group_lengths(self, groups):
         group_counts = {}
@@ -91,6 +88,13 @@ class GroupExtractor():
             res.append(group_prop)
         return res
 
+    def get_named_groups_dict(self, groups):
+        result = {}
+        for i in range(len(groups)):
+            group = groups[i]
+            result[i] = group
+        return result
+
     def _create(self):
         print("Create groups...")
         similar_species_dict = SimilarSpeciesExtractor.load()
@@ -102,6 +106,9 @@ class GroupExtractor():
         group_file = open(data_paths.groups, 'w')
         for item in groups:
             group_file.write("%s\n" % item)
+
+        named_groups_dict = self.get_named_groups_dict(groups)
+        pickle.dump(named_groups_dict, open(data_paths.named_groups, 'wb'))
         print("Completed.")
 
         group_counts = self.get_group_lengths(groups)
@@ -140,6 +147,12 @@ class GroupExtractor():
         plt.close()
         plt.close(fig)
 
+    def extract(self):
+        if not os.path.exists(data_paths.named_groups):
+            self._create()
+        else: 
+            print("Groups already exist.")
+            
 
 if __name__ == "__main__":
     GroupExtractor()._create()

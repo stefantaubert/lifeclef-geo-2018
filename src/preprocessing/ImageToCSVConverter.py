@@ -6,13 +6,39 @@ import tifffile
 import pickle
 import settings
 import sys
-from data_reading.PixelValueExtractor import get_pixel_value
-  
+import PixelValueExtractor
+import os
+
+def load_occurences_train():
+    assert os.path.exists(data_paths.occurrences_train_gen)
+
+    csv = pd.read_csv(data_paths.occurrences_train_gen)
+    
+    return csv
+
+def load_occurences_test():
+    assert os.path.exists(data_paths.occurrences_test_gen)
+    
+    csv = pd.read_csv(data_paths.occurrences_test_gen)
+
+    return csv
+
+def extract_occurences_train():
+    if not os.path.exists(data_paths.occurrences_train_gen):
+        ImageToCSVConverter()._create_train()
+    else:
+        print("Occurences train already exists.")
+
+def extract_occurences_test():
+    if not os.path.exists(data_paths.occurrences_test_gen):
+        ImageToCSVConverter()._create_test()
+    else:
+        print("Occurences test already exists.")
+
 class ImageToCSVConverter:
-    def __init__(self, pixel_count):
+    def __init__(self):
         self.count_channels = 33
         self.image_dimension = 64     
-        self.pixel_count = pixel_count  
         self.result_cols = [
             'chbio_1', 'chbio_2', 'chbio_3', 'chbio_4', 'chbio_5', 'chbio_6',
             'chbio_7', 'chbio_8', 'chbio_9', 'chbio_10', 'chbio_11', 'chbio_12',
@@ -21,7 +47,7 @@ class ImageToCSVConverter:
             'proxi_eau_fast', 'clc', 
             'day', 'month', 'year', 'latitude', 'longitude', 'patch_id']
 
-    def _create_dataset_df(self, path_occurences, batch_dir):
+    def get_dataset_df(self, path_occurences, batch_dir):
         x_text = []
         df = pd.read_csv(path_occurences, sep=';', low_memory=False)
         species_id_column_name = 'species_glc_id'
@@ -41,7 +67,7 @@ class ImageToCSVConverter:
             csv_values = []
 
             for i in range(len(img)):
-                mean = get_pixel_value(img[i], self.pixel_count)
+                mean = PixelValueExtractor.get_pixel_value(img[i], settings.pixel_count)
                 csv_values.append(mean)
 
             csv_values.append(row.day)
@@ -63,16 +89,11 @@ class ImageToCSVConverter:
         
         return result_ser
 
+        
     def _create_train(self):
-        df = self._create_dataset_df(data_paths.occurrences_train, data_paths.patch_train)
+        df = self.get_dataset_df(data_paths.occurrences_train, data_paths.patch_train)
         df.to_csv(data_paths.occurrences_train_gen, index=False)
    
     def _create_test(self):
-        df = self._create_dataset_df(data_paths.occurrences_test, data_paths.patch_train)
+        df = self.get_dataset_df(data_paths.occurrences_test, data_paths.patch_train)
         df.to_csv(data_paths.occurrences_test_gen, index=False)
-
-    def create_datasets(self):    
-        print("Creating trainset...")
-        self._create_train()
-        print("Creating testset...")
-        self._create_test()

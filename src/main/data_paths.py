@@ -1,6 +1,6 @@
 import settings
 
-root_lines = open("../../config/data_root").read().split('\n')
+root_lines = open("../config/data_root").read().split('\n')
 root = root_lines[0]
 
 patch_train = root + "patchTrain"
@@ -17,6 +17,8 @@ train_samples = root + "ImageLists/Train/samples.npy"
 train_samples_species_map = root + "ImageLists/Train/species_map.py"
 
 test_samples = root + 'ImageLists/Test/samples.npy'
+
+named_groups = root + "analysis/named_groups_p32_r0_o20_t20.npy"
 
 xgb_dir = root + "xgb/"
 xgb_species_map = xgb_dir + "species_map.npy"
