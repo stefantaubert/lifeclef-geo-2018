@@ -33,13 +33,14 @@ if __name__ == '__main__':
     predictions = []
     glc_ids = []
 
-    for x, y, species_ids, glc_ids in bg.nextValidationBatch(val_samples, species_map):
-        ground_truth.extend(species_ids)
+    for x, y, batch_species_ids, batch_glc_ids in bg.nextValidationBatch(val_samples, species_map):
+        ground_truth.extend(batch_species_ids)
         predictions.extend(model.predict_on_batch(x))
-        glc_ids.extend(glc_ids)
+        glc_ids.extend(batch_glc_ids)
 
     ground_truth = np.array(ground_truth)
     predictions = np.array(predictions)
+    glc_ids = np.array(glc_ids)
 
     np.save(data_paths.current_training_gt, ground_truth)
     np.save(data_paths.current_training_results, predictions)
@@ -47,4 +48,4 @@ if __name__ == '__main__':
     pickle.dump(species_map, open(data_paths.current_training_species_map, 'wb'))
 
     make_submission_for_current_training()
-    evaluate_current_training_results
+    evaluate_current_training_results()
