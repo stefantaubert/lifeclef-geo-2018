@@ -10,12 +10,12 @@ from itertools import chain
 def evaluate_with_mrr():
     print("Evaluate submission...")
     print("Load data...")
-    df = pd.read_csv(data_paths.submission_val)
+    df = pd.read_csv(data_paths.xgb_submission)
     x_text = pd.read_csv(data_paths.occurrences_train_gen)
-    y = np.load(data_paths.y_ids)
-    c_classes = len(np.load(data_paths.species_map_training))
+    y = x_text["species_glc_id"]
+    c_classes = len(np.load(data_paths.xgb_species_map))
     
-    x_train, x_valid, y_train, y_valid = train_test_split(x_text, y, test_size=settings.train_val_split, random_state=settings.seed)
+    _, _, _, y_valid = train_test_split(x_text, y, test_size=settings.train_val_split, random_state=settings.seed)
     
     print("Calculate MRR-Score...")    
     ranks = get_ranks(df, y_valid, c_classes)
@@ -50,5 +50,5 @@ def get_ranks(submissions_df, solutions, c_classes):
 
 
 if __name__ == '__main__':
-    #evaluate_with_mrr()
-    evaluate_current_training_results()
+    evaluate_with_mrr()
+    #evaluate_current_training_results()

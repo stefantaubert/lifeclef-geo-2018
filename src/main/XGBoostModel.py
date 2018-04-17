@@ -8,105 +8,73 @@ import xgboost as xgb
 import data_paths
 import submission_maker
 import evaluation
-import DataReader
 import settings
 import time
 import json
+import os
 
-def run_Model():
-    print("Run model...")
-    #x_text = np.load(data_paths.x_text)
+class XGBModel():
+    def __init__(self):
+        self.create_output_dir_if_not_exists()
 
-    x_text = pd.read_csv(data_paths.occurrences_train_gen)
+    def create_output_dir_if_not_exists(self):
+        if not os.path.exists(data_paths.xgb_dir):
+            os.makedirs(data_paths.xgb_dir)
 
-    x_text = x_text[[ 'chbio_1', 'chbio_2', 'chbio_3', 'chbio_4', 'chbio_5', 'chbio_6',
-    'chbio_7', 'chbio_8', 'chbio_9', 'chbio_10', 'chbio_11', 'chbio_12',
-    'chbio_13', 'chbio_14', 'chbio_15', 'chbio_16', 'chbio_17', 'chbio_18',
-    'chbio_19', 
-    # 'etp', 'alti', 'awc_top', 'bs_top', 'cec_top', 'crusting', 'dgh', 'dimp', 'erodi', 'oc_top', 'pd_top', 'text',
-    # 'proxi_eau_fast', 'clc', 'latitude', 'longitude'
-    ]]
+    def run(self):
+        print("Run model...")
+        #x_text = np.load(data_paths.x_text)
 
-    y = np.load(data_paths.y_ids)
+        x_text = pd.read_csv(data_paths.occurrences_train_gen)
+        y = x_text["species_glc_id"]
+        train_columns = [ 'chbio_1', 'chbio_2', 'chbio_3', 'chbio_4', 'chbio_5', 'chbio_6',
+        'chbio_7', 'chbio_8', 'chbio_9', 'chbio_10', 'chbio_11', 'chbio_12',
+        'chbio_13', 'chbio_14', 'chbio_15', 'chbio_16', 'chbio_17', 'chbio_18',
+        'chbio_19', 
+        # 'etp', 'alti', 'awc_top', 'bs_top', 'cec_top', 'crusting', 'dgh', 'dimp', 'erodi', 'oc_top', 'pd_top', 'text',
+        # 'proxi_eau_fast', 'clc', 'latitude', 'longitude'
+        ]
 
-    # species_count = np.load(data_paths.y_array).shape[1]
-    
-    x_train, x_valid, y_train, y_valid = train_test_split(x_text, y, test_size=settings.train_val_split, random_state=settings.seed)
-
-    if (False):
-        # clf = DecisionTreeClassifier()
-        # clf.n_classes_ = species_count
-        # clf.fit(x_train, y_train)
-        # pred = clf.predict_proba(x_valid)
-        classes_ = np.unique(y)
-
-        # Die Parameter für XGBoost erstellen.
-        params = {}
-        params['objective'] = 'multi:softmax'
-        params['eval_metric'] = 'merror'
-        # params['eta'] = 0.02
-        # params['max_depth'] = 3
-        # params['subsample'] = 0.6
-        # params['base_score'] = 0.2
-        params['num_class'] = len(classes_) + 1 # da species_id 1-basiert ist
-        # params['scale_pos_weight'] = 0.36 #für test set
-
-        # Berechnungen mit der GPU ausführen
-        params['updater'] = 'grow_gpu'
-
-        # Datenmatrix für die Eingabedaten erstellen.
-        d_train = xgb.DMatrix(x_train, label=y_train)
-        d_valid = xgb.DMatrix(x_valid, label=y_valid)
-        np.save(data_paths.species_map_training, classes_)
-
-        # Um den Score für das Validierungs-Set während des Trainings zu berechnen, muss eine Watchlist angelegt werden.
-        watchlist = [(d_train, 'train'), (d_valid, 'valid')]
-
-        # Modell trainieren.
-        # Geschwindigkeit ca. 1000 pro Minute auf der P6000
-        # zeigt alle 10 Schritte den Score für das Validierungs-Set an
-        print("Training model...")
-        bst = xgb.train(params, d_train, 10, watchlist, verbose_eval=1)
-
-        # Modell speichern.
-        # bst.dump_model(data_paths.model_dump)
-        # bst.save_model(data_paths.model)
-       
-        print("Predict data...")
-        pred = bst.predict(d_valid)
-        np.save(data_paths.prediction, pred)
+        # species_count = np.load(data_paths.y_array).shape[1]
         
-    else:
+        x_train, x_valid, y_train, y_valid = train_test_split(x_text, y, test_size=settings.train_val_split, random_state=settings.seed)
+        
+        validation_glc_ids = x_valid["patch_id"]
+        np.save(data_paths.xgb_glc_ids, validation_glc_ids)
+
+        x_train = x_train[train_columns]
+        x_valid = x_valid[train_columns]
+        
         xg = XGBClassifier(
             objective="multi:softmax",
             eval_metric="merror",
             random_state=settings.seed,
             n_jobs=-1,
-            n_estimators=149,
+            n_estimators=200,
             predictor='gpu_predictor',
         )
 
         print("Fit model...")
         xg.fit(x_train, y_train, eval_set=[(x_train, y_train), (x_valid, y_valid)])
-        np.save(data_paths.species_map_training, xg.classes_)
+        np.save(data_paths.xgb_species_map, xg.classes_)
 
-        print("Save model...")
-        xg.dump_model(data_paths.model_dump)
-        xg.save_model(data_paths.model)
+        # print("Save model...")
+        # xg.dump_model(data_paths.model_dump)
+        # xg.save_model(data_paths.model)
 
         print("Predict data...")
         pred = xg.predict_proba(x_valid)
 
         print("Save predictions...")
-        np.save(data_paths.prediction, pred)
+        np.save(data_paths.xgb_prediction, pred)
 
 
 if __name__ == '__main__':
     start_time = time.time()
 
-    DataReader.read_and_write_data()
-    run_Model()
-    submission_maker.make_submission()
+    #DataReader.read_and_write_data()
+    XGBModel().run()
+    submission_maker.make_xgb_submission()
     evaluation.evaluate_with_mrr()
 
     print("Total duration:", time.time() - start_time, "s")

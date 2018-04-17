@@ -5,6 +5,7 @@ from Data import Data
 from tqdm import tqdm
 from collections import Counter
 import os
+import settings
 import math
 import SimilarSpeciesExtractor
 import networkx as nx
@@ -19,11 +20,6 @@ class GroupExtractor():
     def __init__(self):
         self.data = Data()
         self.data.load_train()
-
-    def plot_network(self, G):
-        nx.draw_networkx_labels(G,pos=nx.spring_layout(G))
-        nx.draw(G, node_size=20)
-        plt.show()
 
     def get_group_lengths(self, groups):
         group_counts = {}
@@ -101,10 +97,17 @@ class GroupExtractor():
        
         G = self.dict_to_graph(similar_species_dict)
         groups = self.get_groups_of_graph(G)
+
+        print("Save groups to file...")
+        group_file = open(data_paths.groups, 'w')
+        for item in groups:
+            group_file.write("%s\n" % item)
+        print("Completed.")
+
         group_counts = self.get_group_lengths(groups)
 
         species_propabilities = self.get_species_propabilities()
-        print(species_propabilities)
+        #print(species_propabilities)
 
         group_probs = self.get_group_propabilities(groups, species_propabilities)
         groups_for_lengths = self.get_groups_for_lengts(groups)
@@ -113,16 +116,29 @@ class GroupExtractor():
 
         #print(group_length_probs)
         print("Count of groups:", len(groups))
-        print("Group overwiew (count of species: groups):", group_counts)
+        print("Group overview (count of species: groups):", group_counts)
+        print("Export diagrams...")
 
         x = list(group_length_probs.keys())
         y = list(group_length_probs.values())
 
+        fig = plt.figure(figsize=(20, 20))        
         plt.pie(y, labels=x)
-        plt.show()
+        plt.title("Group length summed probabilities (" + str(len(groups)) + " groups for " + str(self.data.species_count) + " species) @threshold=" + str(settings.threshold))
+        plt.savefig(data_paths.group_length_probabilities, bbox_inches='tight')
+        #plt.show()
+        plt.close()
+        plt.close(fig)
 
         print("Plot network...")
-        self.plot_network(G)
+        fig = plt.figure(figsize=(20, 20))   
+        plt.title("Groupnetwork (" + str(len(groups)) + " groups for " + str(self.data.species_count) + " species) @threshold=" + str(settings.threshold))
+        #nx.draw_networkx_labels(G,pos=nx.spring_layout(G))
+        nx.draw(G, node_size=20)
+        plt.savefig(data_paths.group_network, bbox_inches='tight')
+        #plt.show()
+        plt.close()
+        plt.close(fig)
 
 
 if __name__ == "__main__":
