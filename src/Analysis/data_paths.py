@@ -19,7 +19,13 @@ heatmaps = root + "analysis/Heatmaps/"
 occurrences_train = root + "occurrences_train.csv"
 occurrences_test = root + "occurrences_test.csv"
 
-most_common_values = root + "analysis/most_common_values" + get_suffix() + ".csv"
+preprocessing_dir = root + "preprocessing/"
+most_common_values = preprocessing_dir + "most_common_values" + get_suffix() + ".csv"
+named_groups = preprocessing_dir + "named_groups" + get_suffix_groups() + ".npy"
+groups = preprocessing_dir + "groups" + get_suffix_groups() + ".txt"
+similar_species = preprocessing_dir + "similar_species" + get_suffix() + ".npy"
+channel_map_diff = preprocessing_dir + "channel_map_diff" + get_suffix() + ".csv"
+
 most_common_values_diagram = root + "analysis/most_common_values" + get_suffix() + ".pdf"
 species_occurences_per_value = root + "analysis/species_occurences_per_value" + get_suffix() + ".pdf"
 species_value_occurences = root + "analysis/species_value_occurences" + get_suffix() + ".pdf"
@@ -28,9 +34,7 @@ values_occurences_test = root + "analysis/values_occurences_test" + get_suffix()
 
 group_network = root + "analysis/group_network" + get_suffix_groups() + ".pdf"
 group_length_probabilities = root + "analysis/group_length_probabilities" + get_suffix_groups() + ".pdf"
-groups = root + "analysis/groups" + get_suffix_groups() + ".txt"
 species_occurences = root + "analysis/species_occurences.csv"
 species_channel_map_dir = root + "analysis/channel_maps" + get_suffix() + "/"
 value_occurences_species_dir = root + "analysis/value_occurences_species" + get_suffix() + "/"
-channel_map_diff = root + "analysis/channel_map_diff" + get_suffix() + ".csv"
-similar_species = root + "analysis/similar_species" + get_suffix() + ".npy"
+

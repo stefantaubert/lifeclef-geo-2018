@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 import data_paths
-from Data import Data
+import TextPreprocessing
 from tqdm import tqdm
 from collections import Counter
 import os
@@ -12,12 +12,18 @@ def load():
     
     return pd.read_csv(data_paths.most_common_values)
 
+def extract():
+    if not os.path.exists(data_paths.most_common_values):
+        MostCommonValueExtractor()._create()
+    else: 
+        print("Most common values already exist.")
+
 class MostCommonValueExtractor():
     def __init__(self):
-        data = Data()
-        data.load_train()
-        self.csv = data.train
-        self.species = data.species
+        csv, species, species_c = TextPreprocessing.load_train()
+        self.csv = csv
+        self.species = species
+        self.species_count = species_c
 
         self.cols_to_consider = ['chbio_1', 'chbio_2', 'chbio_3', 'chbio_4', 'chbio_5', 'chbio_6',
             'chbio_7', 'chbio_8', 'chbio_9', 'chbio_10', 'chbio_11', 'chbio_12',
@@ -56,4 +62,4 @@ class MostCommonValueExtractor():
         most_common_value_matrix.to_csv(data_paths.most_common_values, index=False)
 
 if __name__ == "__main__":
-    MostCommonValueExtractor()._create()
+    extract()

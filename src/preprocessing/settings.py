@@ -13,5 +13,5 @@ threshold = 20
 
 min_occurence = 20
 
-### Sets the count of digits for rounding the test and trainset in the analysis.
+### Sets the count of digits for rounding the test and trainset in the analysis. Range: [0, 12]
 round_data_ndigits = 0
