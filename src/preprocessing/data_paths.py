@@ -13,7 +13,7 @@ def get_suffix_prot():
     return get_suffix_pro() + "_t" + str(settings.threshold)
 
 # auf linux muss ein ../ extra davor
-root_lines = open("../config/data_root").read().split('\n')
+root_lines = open("../../config/data_root").read().split('\n')
 root = root_lines[0]
 
 patch_train = root + "patchTrain"
