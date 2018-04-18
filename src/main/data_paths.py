@@ -23,7 +23,7 @@ xgb_species_map = xgb_dir + "species_map.npy"
 xgb_prediction = xgb_dir + "prediction.npy"
 xgb_glc_ids = xgb_dir + "glc_ids.npy"
 xgb_submission = xgb_dir + "submission.csv"
-xgb_train = root + "preprocessing/train_with_groups_p32_r0_o20_t20.csv"
+xgb_train = root + "preprocessing/train_p32_r0_o20.csv"
 
 current_training_gt = root + "Current_Training_Results/gt.npy"
 current_training_results = root + "Current_Training_Results/results.npy"
