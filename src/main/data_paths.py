@@ -8,8 +8,8 @@ patch_test = root + "patchTest"
 
 occurrences_train = root + "occurrences_train.csv"
 occurrences_test = root + "occurrences_test.csv"
-occurrences_train_gen = root + "occurrences_train_gen_" + str(settings.pixel_count) + ".csv"
-occurrences_test_gen = root + "occurrences_test_gen_" + str(settings.pixel_count) + ".csv"
+occurrences_train_gen = root + "occurrences_train_gen_p" + str(settings.pixel_count) + ".csv"
+occurrences_test_gen = root + "occurrences_test_gen_p" + str(settings.pixel_count) + ".csv"
 
 submission_val = root + "submissions/submission_val.csv"
 
