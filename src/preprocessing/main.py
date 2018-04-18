@@ -23,4 +23,4 @@ def create_datasets():
 
 if __name__ == "__main__":
     create_datasets()
-    extract_groups()
+    #extract_groups()

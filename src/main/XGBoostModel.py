@@ -72,7 +72,6 @@ class XGBModel():
 if __name__ == '__main__':
     start_time = time.time()
 
-    #DataReader.read_and_write_data()
     XGBModel().run()
     submission_maker.make_xgb_submission()
     evaluation.evaluate_with_mrr()
