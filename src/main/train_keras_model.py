@@ -33,7 +33,8 @@ if __name__ == '__main__':
 
     print("start Training...")
 
-    model.fit_generator(bg.nextBatch(samples, species_map), epochs=stg.EPOCHS, steps_per_epoch=len(samples)/stg.BATCH_SIZE, verbose=1)
+    model.fit_generator(bg.nextBatch(samples, species_map), epochs=stg.EPOCHS, steps_per_epoch=len(samples)/stg.BATCH_SIZE,
+                        verbose=1, validation_data=bg.nextBatch(val_samples, species_map), validation_steps=len(val_samples)/stg.BATCH_SIZE  )
 
     print("saving Model...")
 

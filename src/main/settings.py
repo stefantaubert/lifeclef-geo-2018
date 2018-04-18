@@ -12,4 +12,4 @@ pixel_count = 32
 
 BATCH_SIZE = 32
 
-EPOCHS = 30
+EPOCHS = 1
