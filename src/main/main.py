@@ -25,4 +25,4 @@ def startXGBoostGroups():
     print("Total duration:", time.time() - start_time, "s")
 
 if __name__ == "__main__":
-    startXGBoost()
+    startXGBoostGroups()
