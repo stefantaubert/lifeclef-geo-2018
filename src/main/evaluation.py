@@ -13,8 +13,13 @@ def evaluate_with_mrr():
     df = pd.read_csv(data_paths.xgb_submission)
     x_text = pd.read_csv(data_paths.xgb_train)
     y = x_text["species_glc_id"]
-    c_classes = len(np.load(data_paths.xgb_species_map))
-    
+    group_map = np.load(data_paths.xgb_group_map)
+        
+    c_classes = 0
+    for group in group_map:
+        for _ in group:
+            c_classes += 1
+            
     _, _, _, y_valid = train_test_split(x_text, y, test_size=settings.train_val_split, random_state=settings.seed)
     
     print("Calculate MRR-Score...")    

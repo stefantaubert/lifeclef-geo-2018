@@ -101,7 +101,7 @@ def make_xgb_submission():
 def make_xgb_groups_submission():
     print("Make submission...")
 
-    groups = np.load(data_paths.xgb_species_map)
+    groups = np.load(data_paths.xgb_group_map)
 
     predictions = np.load(data_paths.xgb_prediction)
     glc_ids = np.load(data_paths.xgb_glc_ids)

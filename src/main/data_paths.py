@@ -23,6 +23,7 @@ train_samples_species_map = root + "ImageLists/Train/species_map.py"
 test_samples = root + 'ImageLists/Test/samples.npy'
 
 xgb_dir = root + "xgb/"
+xgb_group_map = xgb_dir + "group_map.npy"
 xgb_species_map = xgb_dir + "species_map.npy"
 xgb_prediction = xgb_dir + "prediction.npy"
 xgb_glc_ids = xgb_dir + "glc_ids.npy"
