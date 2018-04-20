@@ -13,10 +13,10 @@ def evaluate_with_mrr():
     df = pd.read_csv(data_paths.xgb_submission)
     x_text = pd.read_csv(data_paths.xgb_train)
     y = x_text["species_glc_id"]
-    group_map = np.load(data_paths.xgb_group_map)
+    named_groups = np.load(data_paths.xgb_named_groups)
         
     c_classes = 0
-    for _, species in group_map.items():
+    for _, species in named_groups.items():
         for _ in species:
             c_classes += 1
 
