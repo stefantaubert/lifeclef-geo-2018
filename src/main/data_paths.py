@@ -1,6 +1,6 @@
 import settings
 
-root_lines = open("../config/data_root").read().split('\n')
+root_lines = open("../../config/data_root").read().split('\n')
 root = root_lines[0]
 
 patch_train = root + "patchTrain"
@@ -26,11 +26,21 @@ xgb_prediction = xgb_dir + "prediction.npy"
 xgb_glc_ids = xgb_dir + "glc_ids.npy"
 xgb_submission = xgb_dir + "submission.csv"
 
-current_training_gt = root + "Current_Training_Results/gt.npy"
-current_training_results = root + "Current_Training_Results/results.npy"
-current_training_species_map = root + "Current_Training_Results/species_map.py"
-current_training_submission = root + "Current_Training_Results/submission.csv"
-current_training_glc_ids = root + "Current_Training_Results/glc_ids.npy"
+#keras single model training paths
+keras_training_gt = root + "keras_training_results/gt.npy"
+keras_training_results = root + "keras_training_results/results.npy"
+keras_training_species_map = root + "keras_training_results/species_map.py"
+keras_training_submission = root + "keras_training_results/submission.csv"
+keras_training_glc_ids = root + "keras_training_results/glc_ids.npy"
+keras_training_model = root + 'keras_training_results/model.h5'
 
+#keras multi model training paths
 
-current_training_model = root + 'Current_Training_Results/model.h5'
+keras_multi_model_training_gt = root + "keras_multi_model_training_results/gt.npy"
+keras_multi_model_training_results = root + "keras_multi_model_training_results/results.npy"
+keras_multi_model_training_species_map = root + "keras_multi_model_training_results/species_map.py"
+keras_multi_model_training_submission = root + "keras_multi_model_training_results/submission.csv"
+keras_multi_model_training_glc_ids = root + "keras_multi_model_training_results/glc_ids.npy"
+keras_multi_model_training_model1 = root + 'keras_multi_model_training_results/model1.h5'
+keras_multi_model_training_model2 = root + 'keras_multi_model_training_results/model2.h5'
+keras_multi_model_training_model3 = root + 'keras_multi_model_training_results/model3.h5'

@@ -50,17 +50,18 @@ def make_xgb_submission():
     print("Save submission...")
     df.to_csv(data_paths.xgb_submission, index=False)
 
-def make_submission_for_current_training():
+def make_submission_from_files(species_map_path, predictions_path, glc_ids_path, submission_path):
     print("Make submission...")
 
-    classes = np.load(data_paths.current_training_species_map)
+    classes = np.load(species_map_path)
 
-    predictions = np.load(data_paths.current_training_results)
-    glc_ids = np.load(data_paths.current_training_glc_ids)
+    predictions = np.load(predictions_path)
+    glc_ids = np.load(glc_ids_path)
     df = make_submission_df(classes, predictions, glc_ids)
 
     print("Save submission...")
-    df.to_csv(data_paths.current_training_submission, index=False)
+    df.to_csv(submission_path, index=False)
+
 
 if __name__ == '__main__':
     make_submission_for_current_training()
