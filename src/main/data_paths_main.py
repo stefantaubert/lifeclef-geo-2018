@@ -4,7 +4,7 @@ sys.path.append("D:/dev/Python/life-clef-geo-2018/code/src/preprocessing")
 
 import settings_main
 
-root_lines = open("../../config/data_root").read().split('\n')
+root_lines = open("../config/data_root").read().split('\n')
 root = root_lines[0]
 
 patch_train = root + "patchTrain"
