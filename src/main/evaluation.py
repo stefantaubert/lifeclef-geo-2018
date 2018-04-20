@@ -16,10 +16,10 @@ def evaluate_with_mrr():
     group_map = np.load(data_paths.xgb_group_map)
         
     c_classes = 0
-    for group in group_map:
-        for _ in group:
+    for _, species in group_map.items():
+        for _ in species:
             c_classes += 1
-            
+
     _, _, _, y_valid = train_test_split(x_text, y, test_size=settings.train_val_split, random_state=settings.seed)
     
     print("Calculate MRR-Score...")    
@@ -35,7 +35,7 @@ def evaluate_current_training_results():
     y = np.load(data_paths.current_training_gt)
     c_classes = len(np.load(data_paths.current_training_species_map))
     
-    print("Calculate MRR-Score...")    
+    print("Calculate MRR-Score...")
     ranks = get_ranks(df, y, c_classes)
     mrr_score = mrr.mrr_score(ranks)
     print("MRR-Score:", mrr_score * 100,"%")
