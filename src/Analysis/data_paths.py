@@ -7,7 +7,7 @@ def get_suffix_groups():
     return "_p" + str(settings.pixel_count) + "_r" + str(settings.round_data_ndigits) + "_o" + str(settings.min_occurence) + "_t" + str(settings.threshold)
 
 # auf linux muss ein ../ extra davor
-root_lines = open("../config/data_root").read().split('\n')
+root_lines = open("../../config/data_root").read().split('\n')
 root = root_lines[0]
 
 occurrences_train_gen = root + "occurrences_train_gen_" + str(settings.pixel_count) + ".csv"

@@ -5,6 +5,31 @@ import submission_maker
 import numpy as np
 
 class TestMakeSubmissionMethods(unittest.TestCase):
+
+    def test_group_submission(self):
+        groups = {11: [4,5], 22:[6]}
+        props = {4: 0.4, 5: 0.5, 6: 0.6}
+        classes = [4,5,6]
+        groups_map = [11,22]
+        prediction = [
+            [0.9, 0.5],
+            [0.7, 0.8],
+        ]
+
+        glc_ids = [1,2]
+
+        submission = submission_maker.make_submission_groups(groups_map, prediction, glc_ids, groups, props)
+        
+        self.assertEqual(len(classes)*len(prediction), len(submission)) # Anzahl Klassen * Anzahl an Predictions (Größe des Validierungssets)
+
+        ### glc_id,species_glc_id,probability,rank ### 
+        self.assertEqual([1, 5, 0.9, 1], submission[0])
+        self.assertEqual([1, 4, 0.9, 2], submission[1])
+        self.assertEqual([1, 6, 0.5, 3], submission[2])
+        self.assertEqual([2, 6, 0.8, 1], submission[3])
+        self.assertEqual([2, 5, 0.7, 2], submission[4])
+        self.assertEqual([2, 4, 0.7, 3], submission[5])
+
     def test1(self):
         classes = ["9", "3", "7"]
 
