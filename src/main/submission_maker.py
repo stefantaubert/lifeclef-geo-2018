@@ -116,7 +116,7 @@ def make_xgb_groups_submission():
     submission_df = pd.DataFrame(data, columns = ['glc_id', 'species_glc_id', 'probability', 'rank'])
     
     print("Save submission...")
-    submission_df.to_csv(data_paths.current_training_submission, index=False)
+    submission_df.to_csv(data_paths.xgb_submission, index=False)
 
 def make_submission_for_current_training():
     print("Make submission...")
