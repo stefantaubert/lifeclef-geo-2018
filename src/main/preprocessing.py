@@ -2,7 +2,6 @@
 #Reading and Saving the Train Set
 
 from data_reading import imageList_generator
-from data_reading.ImageToCSVConverter import ImageToCSVConverter
 import settings_main as settings
 
 if __name__ == '__main__':

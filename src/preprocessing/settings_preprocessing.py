@@ -10,7 +10,7 @@ threshold = 20
 
 ### Contains the minimal occurence for a species that a species is left in the trainset.
 ### Remarks: after changing this value, you have to run MostCommonValueExtractor, SpeciesDiffExtractor, SimilarSpeciesExtractor and GroupExtractor again.
-min_occurence = 20
+min_occurence = 10
 
 ### Sets the count of digits for rounding the test and trainset in the analysis. Range: [0, 12]
 round_data_ndigits = 0
