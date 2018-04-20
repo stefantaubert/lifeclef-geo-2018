@@ -24,5 +24,5 @@ def create_datasets():
     TextPreprocessing.extract_test()
 
 if __name__ == "__main__":
-    create_datasets()
-    #extract_groups()
+    #create_datasets()
+    extract_groups()
