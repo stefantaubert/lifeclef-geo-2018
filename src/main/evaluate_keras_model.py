@@ -12,20 +12,20 @@ import settings_main as stg
 from keras_models import vgg_like_model
 
 
-from submission_maker import make_submission_for_current_training
-from evaluation import evaluate_current_training_results
+from submission_maker import make_submission_from_files
+from evaluation import evaluate_results_from_files
 
 if __name__ == '__main__':
     samples = np.load(data_paths.train_samples)
     split = np.int(len(samples)*stg.train_val_split)
     samples, val_samples = samples[:split, :], samples[:split, :]
     print(len(val_samples))
-    with open(data_paths.train_samples_species_map, 'rb') as f:
+    with open(data_paths.keras_training_species_map, 'rb') as f:
         species_map = pickle.load(f)
 
     model = vgg_like_model.get_model(len(species_map.keys()), 33)
 
-    model.load_weights(data_paths.current_training_model)
+    model.load_weights(data_paths.keras_training_model)
 
     model.compile(optimizer='adam', loss='binary_crossentropy')
 
@@ -42,10 +42,15 @@ if __name__ == '__main__':
     predictions = np.array(predictions)
     glc_ids = np.array(glc_ids)
 
-    np.save(data_paths.current_training_gt, ground_truth)
-    np.save(data_paths.current_training_results, predictions)
-    np.save(data_paths.current_training_glc_ids, glc_ids)
-    pickle.dump(species_map, open(data_paths.current_training_species_map, 'wb'))
+    np.save(data_paths.keras_training_gt, ground_truth)
+    np.save(data_paths.keras_training_results, predictions)
+    np.save(data_paths.keras_training_glc_ids, glc_ids)
 
-    make_submission_for_current_training()
-    evaluate_current_training_results()
+    make_submission_from_files(species_map_path=data_paths.keras_training_species_map,
+                               predictions_path=data_paths.keras_training_results,
+                               glc_ids_path=data_paths.keras_training_glc_ids,
+                               submission_path=data_paths.keras_training_submission)
+                               
+    evaluate_results_from_files(submission_path=data_paths.keras_training_submission,
+                                gt_path=data_paths.keras_training_gt,
+                                species_map_path=data_paths.keras_training_species_map)

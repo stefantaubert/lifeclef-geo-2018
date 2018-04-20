@@ -27,13 +27,12 @@ def evaluate_with_mrr():
     mrr_score = mrr.mrr_score(ranks)
     print("MRR-Score:", mrr_score * 100,"%")
 
-
-def evaluate_current_training_results():
+def evaluate_results_from_files(submission_path, gt_path, species_map_path):
     print("Evaluate submission...")
     print("Load data...")
-    df = pd.read_csv(data_paths.current_training_submission)
-    y = np.load(data_paths.current_training_gt)
-    c_classes = len(np.load(data_paths.current_training_species_map))
+    df = pd.read_csv(submission_path)
+    y = np.load(gt_path)
+    c_classes = len(np.load(species_map_path))
     
     print("Calculate MRR-Score...")
     ranks = get_ranks(df, y, c_classes)
