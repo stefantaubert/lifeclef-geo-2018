@@ -29,7 +29,7 @@ xgb_glc_ids = xgb_dir + "glc_ids.npy"
 xgb_submission = xgb_dir + "submission.csv"
 xgb_train = root + "preprocessing/train_p32_r0_o20.csv"
 xgb_train_groups = root + "preprocessing/train_with_groups_p32_r0_o20_t20.csv"
-xgb_named_groups = "preprocessing/named_groups_p32_r0_o20_t20.npy"
+xgb_named_groups = root + "preprocessing/named_groups_p32_r0_o20_t20.npy"
 xgb_species_occurences = root + "analysis/species_occurences.csv"
 
 current_training_gt = root + "Current_Training_Results/gt.npy"
