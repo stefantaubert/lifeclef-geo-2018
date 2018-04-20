@@ -106,7 +106,7 @@ def make_xgb_groups_submission():
     predictions = np.load(data_paths.xgb_prediction)
     glc_ids = np.load(data_paths.xgb_glc_ids)
     species_occ = pd.read_csv(data_paths.xgb_species_occurences)
-    named_groups = pd.read_csv(data_paths.xgb_named_groups)
+    named_groups = np.load(data_paths.xgb_named_groups)
     
     species_occ_dict = {}
     for _, row in species_occ.iterrows():
