@@ -1,4 +1,4 @@
-import settings
+import settings_main as settings
 import numpy as np
 np.random.seed(settings.seed)
 

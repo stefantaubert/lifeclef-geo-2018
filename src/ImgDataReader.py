@@ -4,12 +4,10 @@ import data_paths
 from tqdm import tqdm
 import tifffile
 import pickle
-import settings
+import global_settings as settings
 import sys
 
 #Try -> leeres numpy file erstellen, mit mmap mode öffnen, img appenden, speichern
-
-
 
 count_channels = 33
 image_dimension = 64

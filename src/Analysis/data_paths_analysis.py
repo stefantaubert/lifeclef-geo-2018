@@ -1,4 +1,4 @@
-import settings
+import settings_analysis as settings
 
 def get_suffix():
     return "_p" + str(settings.pixel_count) + "_r" + str(settings.round_data_ndigits) + "_o" + str(settings.min_occurence)

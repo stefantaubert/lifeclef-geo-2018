@@ -1,7 +1,7 @@
 import networkx as nx
 import matplotlib.pyplot as plt
 import pickle
-import data_paths
+import data_paths_main as data_paths
 from species_group import SpeciesGroup
 a = [1, 2, 3, 4]
 b = [2, 1, 3, 5, 6]

@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-import data_paths
+import data_paths_analysis as data_paths
 from collections import Counter
 from itertools import repeat, chain
 import matplotlib.pyplot as plt

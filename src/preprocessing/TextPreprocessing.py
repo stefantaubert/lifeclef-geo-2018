@@ -1,10 +1,10 @@
 import ImageToCSVConverter
 import numpy as np
 import pandas as pd
-import data_paths
+import data_paths_pre as data_paths
 from tqdm import tqdm
 import pickle
-import settings
+import settings_preprocessing
 import sys
 from tqdm import tqdm
 from collections import Counter
@@ -54,13 +54,13 @@ class TextPreprocessing:
 
     def _create_train(self):
         df = ImageToCSVConverter.load_occurences_train()
-        df = df.round(settings.round_data_ndigits)
-        df = self.remove_occurences_df(df, settings.min_occurence)
+        df = df.round(settings_preprocessing.round_data_ndigits)
+        df = self.remove_occurences_df(df, settings_preprocessing.min_occurence)
         df.to_csv(data_paths.train, index=False)
    
     def _create_test(self):
         df = ImageToCSVConverter.load_occurences_test()
-        df = df.round(settings.round_data_ndigits)
+        df = df.round(settings_preprocessing.round_data_ndigits)
         df.to_csv(data_paths.test, index=False)
 
     def remove_occurences_df(self, df, occ):
@@ -68,7 +68,7 @@ class TextPreprocessing:
         counter = Counter(df.species_glc_id.values)
         ignore_species = []
         for species, count in counter.most_common():
-            if count < settings.min_occurence:
+            if count < settings_preprocessing.min_occurence:
                 ignore_species.append(species)
         ignore_species.sort()
 

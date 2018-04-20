@@ -2,9 +2,9 @@ src_dir = "D:/dev/Python/life-clef-geo-2018/code/src"
 import sys  
 sys.path.append("D:/dev/Python/life-clef-geo-2018/code/src/preprocessing")
 
-import settings
+import settings_main
 
-root_lines = open("../../config/data_root").read().split('\n')
+root_lines = open("../config/data_root").read().split('\n')
 root = root_lines[0]
 
 patch_train = root + "patchTrain"
@@ -12,8 +12,8 @@ patch_test = root + "patchTest"
 
 occurrences_train = root + "occurrences_train.csv"
 occurrences_test = root + "occurrences_test.csv"
-occurrences_train_gen = root + "occurrences_train_gen_p" + str(settings.pixel_count) + ".csv"
-occurrences_test_gen = root + "occurrences_test_gen_p" + str(settings.pixel_count) + ".csv"
+occurrences_train_gen = root + "occurrences_train_gen_p" + str(settings_main.pixel_count) + ".csv"
+occurrences_test_gen = root + "occurrences_test_gen_p" + str(settings_main.pixel_count) + ".csv"
 
 submission_val = root + "submissions/submission_val.csv"
 

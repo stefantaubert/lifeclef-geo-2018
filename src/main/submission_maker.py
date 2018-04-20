@@ -1,5 +1,5 @@
 import numpy as np
-import data_paths
+import data_paths_main as data_paths
 import pickle
 from tqdm import tqdm
 from scipy.stats import rankdata

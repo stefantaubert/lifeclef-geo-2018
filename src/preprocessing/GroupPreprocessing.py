@@ -1,7 +1,7 @@
 from tqdm import tqdm
 import os
 import pickle
-import data_paths
+import data_paths_pre as data_paths
 import pandas as pd
 import GroupExtractor
 import TextPreprocessing

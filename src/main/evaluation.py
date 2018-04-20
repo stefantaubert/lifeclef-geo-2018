@@ -1,9 +1,9 @@
-import data_paths
+import data_paths_main as data_paths
 import pandas as pd
 import mrr
 from tqdm import tqdm
 import numpy as np
-import settings 
+import settings_main as settings
 from sklearn.model_selection import train_test_split
 from itertools import chain
 

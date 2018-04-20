@@ -4,7 +4,6 @@ import evaluation
 import submission_maker
 import numpy as np
 import mrr
-import evaluation
 
 class TestEvaluationRanksMethod(unittest.TestCase):
     def test1(self):

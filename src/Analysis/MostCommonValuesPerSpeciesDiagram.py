@@ -1,5 +1,5 @@
 import pandas as pd
-import data_paths
+import data_paths_analysis as data_paths
 from tqdm import tqdm
 import matplotlib.pyplot as plt
 from Data import Data

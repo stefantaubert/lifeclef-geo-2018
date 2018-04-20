@@ -1,9 +1,9 @@
 import pandas as pd
-import data_paths
+import data_paths_analysis as data_paths
 from tqdm import tqdm
 import matplotlib.pyplot as plt
 from Data import Data
-import settings
+import settings_analysis as settings
 
 class ValuesOccurencesDiagram():
     '''Plots a diagram which shows the occurences of all different values per channel of the complete set. Values are rounded to integer.'''
