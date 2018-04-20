@@ -10,8 +10,8 @@ def get_suffix_groups():
 root_lines = open("../../config/data_root").read().split('\n')
 root = root_lines[0]
 
-occurrences_train_gen = root + "occurrences_train_gen_" + str(settings.pixel_count) + ".csv"
-occurrences_test_gen = root + "occurrences_test_gen_" + str(settings.pixel_count) + ".csv"
+occurrences_train_gen = root + "occurrences_train_gen_p" + str(settings.pixel_count) + ".csv"
+occurrences_test_gen = root + "occurrences_test_gen_p" + str(settings.pixel_count) + ".csv"
 
 patch_train = root + "patchTrain"
 heatmaps = root + "analysis/Heatmaps/"
