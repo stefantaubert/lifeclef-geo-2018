@@ -110,7 +110,7 @@ def make_xgb_groups_submission():
     
     species_occ_dict = {}
     for _, row in species_occ.iterrows():
-        species_occ_dict[str(row["species"])] = float(row["percents"])
+        species_occ_dict[row["species"]] = row["percents"]
 
     data = make_submission_groups(groups, predictions, glc_ids, named_groups, species_occ_dict)
     submission_df = pd.DataFrame(data, columns = ['glc_id', 'species_glc_id', 'probability', 'rank'])
