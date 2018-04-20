@@ -48,7 +48,6 @@ def get_ranks(submissions_df, solutions, c_classes):
     return submissions_df["rank"].values
 
 
-
 if __name__ == '__main__':
     evaluate_with_mrr()
     #evaluate_current_training_results()

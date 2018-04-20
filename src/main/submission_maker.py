@@ -132,4 +132,5 @@ def make_submission_for_current_training():
     submission_df.to_csv(data_paths.current_training_submission, index=False)
 
 if __name__ == '__main__':
-    make_submission_for_current_training()
+    #make_submission_for_current_training()
+    make_xgb_groups_submission()
