@@ -6,7 +6,7 @@
 #saves the model
 
 from data_reading import batch_generator as bg
-import data_paths
+import data_paths_main as data_paths
 import pickle
 import numpy as np
 import keras

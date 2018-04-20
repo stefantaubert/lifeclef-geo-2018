@@ -5,6 +5,8 @@ import SpeciesDiffExtractor
 import TextPreprocessing
 import ImageToCSVConverter
 import GroupPreprocessing
+import sys
+sys.path.append('../')
 
 def extract_groups():
     ImageToCSVConverter.extract_occurences_train()
@@ -22,5 +24,5 @@ def create_datasets():
     TextPreprocessing.extract_test()
 
 if __name__ == "__main__":
-    create_datasets()
+    #create_datasets()
     extract_groups()

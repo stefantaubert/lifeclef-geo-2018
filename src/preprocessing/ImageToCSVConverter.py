@@ -1,10 +1,10 @@
 import numpy as np
 import pandas as pd
-import data_paths
+import data_paths_pre as data_paths
 from tqdm import tqdm
 import tifffile
 import pickle
-import settings
+import settings_preprocessing
 import sys
 import PixelValueExtractor
 import os
@@ -67,7 +67,7 @@ class ImageToCSVConverter:
             csv_values = []
 
             for i in range(len(img)):
-                mean = PixelValueExtractor.get_pixel_value(img[i], settings.pixel_count)
+                mean = PixelValueExtractor.get_pixel_value(img[i], settings_preprocessing.pixel_count)
                 csv_values.append(mean)
 
             csv_values.append(row.day)

@@ -1,16 +1,16 @@
-import settings
+import settings_preprocessing
 
 def get_suffix_p():
-    return "_p" + str(settings.pixel_count)
+    return "_p" + str(settings_preprocessing.pixel_count)
 
 def get_suffix_pr():
-    return get_suffix_p() + "_r" + str(settings.round_data_ndigits)
+    return get_suffix_p() + "_r" + str(settings_preprocessing.round_data_ndigits)
 
 def get_suffix_pro():
-    return get_suffix_pr() + "_o" + str(settings.min_occurence)
+    return get_suffix_pr() + "_o" + str(settings_preprocessing.min_occurence)
 
 def get_suffix_prot():
-    return get_suffix_pro() + "_t" + str(settings.threshold)
+    return get_suffix_pro() + "_t" + str(settings_preprocessing.threshold)
 
 # auf linux muss ein ../ extra davor
 root_lines = open("../config/data_root").read().split('\n')

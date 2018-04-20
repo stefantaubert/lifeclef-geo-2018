@@ -1,11 +1,11 @@
 import pandas as pd
 import numpy as np
-import data_paths
+import data_paths_pre as data_paths
 import TextPreprocessing
 from tqdm import tqdm
 from collections import Counter
 import os
-import settings
+
 
 def load():
     assert os.path.exists(data_paths.most_common_values)

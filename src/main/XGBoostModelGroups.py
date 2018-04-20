@@ -25,7 +25,7 @@ class XGBModel():
         print("Run model...")
         #x_text = np.load(data_paths.x_text)
 
-        x_text = pd.read_csv(data_paths.xgb_train)
+        x_text = pd.read_csv(data_paths.xgb_train_groups)
         y = x_text["species_glc_id"]
         train_columns = [ 'chbio_1', 'chbio_2', 'chbio_3', 'chbio_4', 'chbio_5', 'chbio_6',
         'chbio_7', 'chbio_8', 'chbio_9', 'chbio_10', 'chbio_11', 'chbio_12',
@@ -50,13 +50,13 @@ class XGBModel():
             eval_metric="merror",
             random_state=settings.seed,
             n_jobs=-1,
-            n_estimators=24,
+            n_estimators=1,
             predictor='gpu_predictor',
         )
 
         print("Fit model...")
         xg.fit(x_train, y_train, eval_set=[(x_train, y_train), (x_valid, y_valid)])
-        np.save(data_paths.xgb_species_map, xg.classes_)
+        np.save(data_paths.xgb_group_map, xg.classes_)
 
         # print("Save model...")
         # xg.dump_model(data_paths.model_dump)

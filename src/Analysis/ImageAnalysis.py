@@ -1,10 +1,10 @@
 import numpy as np
 import pandas as pd
-import data_paths
+import data_paths_analysis as data_paths
 from tqdm import tqdm
 import tifffile
 import pickle
-import settings
+import settings_analysis as settings
 import sys
 import seaborn
 import matplotlib.pyplot as plt

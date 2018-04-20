@@ -1,9 +1,9 @@
 import pandas as pd
-import data_paths
+import data_paths_analysis as data_paths
 from tqdm import tqdm
 import matplotlib.pyplot as plt
 from Data import Data
-import settings
+import settings_analysis as settings
 import numpy as np
 from collections import Counter
 
@@ -13,7 +13,7 @@ class SpeciesOccurences():
         data = Data()
         data.load_train()
         self.csv = data.train
-        print("Count of different species:", data.species_count)
+        #print("Count of different species:", data.species_count)
         self.species_values = self.csv["species_glc_id"].values
         counter = Counter(self.species_values)
         countRows = len(self.csv.index)

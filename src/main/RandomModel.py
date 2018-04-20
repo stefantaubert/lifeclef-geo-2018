@@ -4,11 +4,11 @@ import time
 from scipy.stats import rankdata
 from sklearn.model_selection import train_test_split
 from xgboost import XGBClassifier
-import data_paths
+import data_paths_main as data_paths
 import submission_maker
 import evaluation
 import DataReader
-import settings
+import settings_main as settings
 import time
 import random
 from collections import Counter

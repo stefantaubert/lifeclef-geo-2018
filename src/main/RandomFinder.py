@@ -1,8 +1,8 @@
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
-import data_paths
-import settings
+import data_paths_main as data_paths
+import settings_main as settings
 
 rand = 0
 x_text = np.load(data_paths.x_text)

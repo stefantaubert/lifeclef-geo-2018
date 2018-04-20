@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
-import data_paths
-import settings
+import data_paths_pre as data_paths
+import settings_preprocessing
 from tqdm import tqdm
 from collections import Counter
 import os
@@ -42,7 +42,7 @@ class SimilarSpeciesExtractor():
                 if not is_current_species:
                     distance = array[i][j]
 
-                    if distance <= settings.threshold:
+                    if distance <= settings_preprocessing.threshold:
                         current_species = self.species[i]
                         other_species = self.species[j]
                         similar_species[current_species].append(other_species)
