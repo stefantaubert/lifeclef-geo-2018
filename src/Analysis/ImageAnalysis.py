@@ -1,3 +1,4 @@
+import module_support_analysis
 import numpy as np
 import pandas as pd
 import data_paths_analysis as data_paths
@@ -25,7 +26,7 @@ def analyse_tiffs(species_id, df):
 
     species_count = 0
 
-    for index, row in tqdm(df.iterrows(), miniters=100):
+    for _, row in tqdm(df.iterrows(), miniters=100):
         current_species_glc_id = row["species_glc_id"]
         if current_species_glc_id == species_id:
             current_patch_dirname = row["patch_dirname"]

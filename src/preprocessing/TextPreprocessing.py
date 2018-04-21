@@ -45,13 +45,6 @@ def extract_test():
         print("Testset already exists.")
 
 class TextPreprocessing:
-    def __init__(self):
-        self.create_output_dir_if_not_exists()
-
-    def create_output_dir_if_not_exists(self):
-        if not os.path.exists(data_paths.preprocessing_dir):
-            os.makedirs(data_paths.preprocessing_dir)
-
     def _create_train(self):
         df = ImageToCSVConverter.load_occurences_train()
         df = df.round(settings_preprocessing.round_data_ndigits)

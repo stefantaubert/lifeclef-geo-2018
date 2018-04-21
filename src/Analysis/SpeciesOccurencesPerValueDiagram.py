@@ -1,18 +1,17 @@
+import module_support_analysis
 import pandas as pd
 import data_paths_analysis as data_paths
 from tqdm import tqdm
 import matplotlib.pyplot as plt
-from Data import Data
+import main_preprocessing
 
 class SpeciesOccurencesPerValueDiagram():
     '''Plots a diagram which shows the occurences of all different values per channel of the complete set. Values are rounded to integer.'''
 
     def __init__(self, rows, cols):
-        self.data = Data()
-        self.data.load_train()
         self.rows = rows
         self.cols = cols
-        self.csv = self.data.train
+        self.csv = pd.read_csv(data_paths.train)
 
         drop = ["patch_id", "day", "month", "year"]      
 
@@ -56,4 +55,5 @@ class SpeciesOccurencesPerValueDiagram():
 
 
 if __name__ == '__main__':
+    main_preprocessing.create_trainset()
     SpeciesOccurencesPerValueDiagram(5, 7).plot_data()

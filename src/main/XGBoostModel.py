@@ -14,18 +14,11 @@ import json
 import os
 
 class XGBModel():
-    def __init__(self):
-        self.create_output_dir_if_not_exists()
-
-    def create_output_dir_if_not_exists(self):
-        if not os.path.exists(data_paths.xgb_dir):
-            os.makedirs(data_paths.xgb_dir)
-
     def run(self):
         print("Run model...")
         #x_text = np.load(data_paths.x_text)
 
-        x_text = pd.read_csv(data_paths.xgb_train)
+        x_text = pd.read_csv(data_paths.train)
         y = x_text["species_glc_id"]
         train_columns = [ 'chbio_1', 'chbio_2', 'chbio_3', 'chbio_4', 'chbio_5', 'chbio_6',
         'chbio_7', 'chbio_8', 'chbio_9', 'chbio_10', 'chbio_11', 'chbio_12',

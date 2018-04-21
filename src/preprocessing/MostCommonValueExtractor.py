@@ -6,7 +6,6 @@ from tqdm import tqdm
 from collections import Counter
 import os
 
-
 def load():
     assert os.path.exists(data_paths.most_common_values)
     

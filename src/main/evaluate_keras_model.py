@@ -12,7 +12,7 @@ import settings_main as stg
 from keras_models import vgg_like_model
 
 
-from submission_maker import make_submission_from_files
+from submission import make_submission_from_files
 from evaluation import evaluate_results_from_files
 
 if __name__ == '__main__':

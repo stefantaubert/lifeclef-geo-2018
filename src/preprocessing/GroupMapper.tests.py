@@ -1,5 +1,5 @@
 import unittest
-from GroupPreprocessing import map_groups
+from GroupMapper import map_groups
 
 class TestMapGroupsMethod(unittest.TestCase):
     def test1(self):

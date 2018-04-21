@@ -1,3 +1,4 @@
+import module_support_analysis
 import pandas as pd
 import numpy as np
 import data_paths_analysis as data_paths
@@ -10,7 +11,13 @@ import pickle
 import SimilarSpeciesExtractor
 import networkx as nx
 import matplotlib.pyplot as plt
-
+import main_preprocessing
+import TextPreprocessing
+            
+def run():
+    main_preprocessing.extract_groups()
+    GroupAnalysis()._create()
+    
 class GroupAnalysis():
     def __init__(self):
         csv, species, species_c = TextPreprocessing.load_train()
@@ -63,8 +70,8 @@ class GroupAnalysis():
         return groups
 
     def get_species_propabilities(self):
-        row_count = len(self.data.train.index)
-        counter = Counter(self.data.train.species_glc_id.values)
+        row_count = len(self.csv.index)
+        counter = Counter(self.csv.species_glc_id.values)
         res = {}
         for item, c in counter.most_common():
             res[item] = c / row_count * 100
@@ -102,15 +109,6 @@ class GroupAnalysis():
         G = self.dict_to_graph(similar_species_dict)
         groups = self.get_groups_of_graph(G)
 
-        print("Save groups to file...")
-        group_file = open(data_paths.groups, 'w')
-        for item in groups:
-            group_file.write("%s\n" % item)
-
-        named_groups_dict = self.get_named_groups_dict(groups)
-        pickle.dump(named_groups_dict, open(data_paths.named_groups, 'wb'))
-        print("Completed.")
-
         group_counts = self.get_group_lengths(groups)
 
         species_propabilities = self.get_species_propabilities()
@@ -131,28 +129,31 @@ class GroupAnalysis():
 
         fig = plt.figure(figsize=(20, 20))        
         plt.pie(y, labels=x)
-        plt.title("Group length summed probabilities (" + str(len(groups)) + " groups for " + str(self.data.species_count) + " species) @threshold=" + str(settings.threshold))
+        plt.title("Group length summed probabilities (" + str(len(groups)) + " groups for " + str(self.species_count) + " species) @threshold=" + str(settings.threshold))
         plt.savefig(data_paths.group_length_probabilities, bbox_inches='tight')
         #plt.show()
         plt.close()
         plt.close(fig)
+        print("Finished (1/2).", data_paths.group_length_probabilities)
 
         print("Plot network...")
         fig = plt.figure(figsize=(20, 20))   
-        plt.title("Groupnetwork (" + str(len(groups)) + " groups for " + str(self.data.species_count) + " species) @threshold=" + str(settings.threshold))
+        plt.title("Groupnetwork (" + str(len(groups)) + " groups for " + str(self.species_count) + " species) @threshold=" + str(settings.threshold))
         #nx.draw_networkx_labels(G,pos=nx.spring_layout(G))
-        nx.draw(G, node_size=20)
+        nx.draw(G, node_size=12)
         plt.savefig(data_paths.group_network, bbox_inches='tight')
         #plt.show()
         plt.close()
         plt.close(fig)
+        print("Finished (2/2).", data_paths.group_network)
 
     def extract(self):
         if not os.path.exists(data_paths.named_groups):
             self._create()
-        else: 
+        else:
             print("Groups already exist.")
             
 
 if __name__ == "__main__":
-    GroupExtractor()._create()
+    main_preprocessing.extract_groups()
+    GroupAnalysis()._create()

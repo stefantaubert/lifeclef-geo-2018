@@ -1,3 +1,4 @@
+import module_support_pre
 import MostCommonValueExtractor
 import GroupExtractor
 import SimilarSpeciesExtractor
@@ -5,8 +6,6 @@ import SpeciesDiffExtractor
 import TextPreprocessing
 import ImageToCSVConverter
 import GroupPreprocessing
-import sys
-sys.path.append('../')
 
 def extract_groups():
     ImageToCSVConverter.extract_occurences_train()
@@ -17,9 +16,12 @@ def extract_groups():
     GroupExtractor.extract()
     GroupPreprocessing.map()
 
-def create_datasets():
+def create_trainset():
     ImageToCSVConverter.extract_occurences_train()
     TextPreprocessing.extract_train()
+
+def create_datasets():
+    create_trainset()
     ImageToCSVConverter.extract_occurences_test()
     TextPreprocessing.extract_test()
 

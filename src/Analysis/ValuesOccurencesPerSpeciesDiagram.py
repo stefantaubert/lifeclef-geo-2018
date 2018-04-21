@@ -1,18 +1,17 @@
+import module_support_analysis
 import pandas as pd
 import data_paths_analysis as data_paths
 from tqdm import tqdm
 import matplotlib.pyplot as plt
-from Data import Data
 import os
+import main_preprocessing
 
 class ValuesOccurencesPerSpeciesDiagram:
     '''Plots a diagram for one species which shows the occurences for all values of each channel.'''
     
     def __init__(self):
-        data = Data()
-        data.load_train()
-        self.csv = data.train
-        self.all_species = data.species
+        self.csv = pd.read_csv(data_paths.train)
+        self.all_species = self.csv["species_glc_id"]
         self.rows = 5
         self.cols = 7
         self.counter = 0
@@ -39,8 +38,9 @@ class ValuesOccurencesPerSpeciesDiagram:
             if col not in ignore_columns:
                 self.plot(specie_csv, col)
         print("Rendering and saving plot...")
-        plt.savefig(data_paths.value_occurences_species_dir + str(species) + ".pdf", bbox_inches='tight')
-        print("Saving completed.")
+        file_name = data_paths.value_occurences_species_dir + str(species) + ".pdf"
+        plt.savefig(file_name, bbox_inches='tight')
+        print("Saving completed.", file_name)
 
         return plt
 
@@ -68,4 +68,6 @@ class ValuesOccurencesPerSpeciesDiagram:
             plt.title("Channels for species_glc_id: " + str(self.species_id) + ", Occurence: " + str(self.occurence))
 
 if __name__ == "__main__":
+    main_preprocessing.create_trainset()
+    
     ValuesOccurencesPerSpeciesDiagram().plot_species(890)

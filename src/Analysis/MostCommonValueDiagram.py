@@ -1,9 +1,10 @@
+import module_support_analysis
 import pandas as pd
 import data_paths_analysis as data_paths
 from tqdm import tqdm
 import matplotlib.pyplot as plt
-from Data import Data
 import MostCommonValueExtractor
+import main_preprocessing
 
 class MostCommonValueDiagram:
     '''Draws a diagram which shows the occurences for the most common values for all species'''
@@ -46,4 +47,5 @@ class MostCommonValueDiagram:
         plt.ylabel('occurence')
 
 if __name__ == "__main__":
+    main_preprocessing.extract_groups()
     MostCommonValueDiagram(5,7).plot_data()
