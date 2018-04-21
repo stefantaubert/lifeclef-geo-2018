@@ -10,7 +10,7 @@ def make_xgb_submission():
 
     predictions = np.load(data_paths.xgb_prediction)
     glc_ids = np.load(data_paths.xgb_glc_ids)
-    df = submission_maker.make_submission_df(classes, predictions, glc_ids)
+    df = submission_maker.make_submission_df(settings.TOP_N_SUBMISSION_RANKS, classes, predictions, glc_ids)
 
     print("Save submission...")
     df.to_csv(data_paths.xgb_submission, index=False)
@@ -30,7 +30,7 @@ def make_xgb_groups_submission():
     for _, row in species_occ.iterrows():
         species_occ_dict[row["species"]] = row["percents"]
 
-    submission_df = submission_maker.make_submission_groups_df(groups, predictions, glc_ids, named_groups, species_occ_dict)
+    submission_df = submission_maker.make_submission_groups_df(settings.TOP_N_SUBMISSION_RANKS, groups, predictions, glc_ids, named_groups, species_occ_dict)
     
     print("Save submission...")
     submission_df.to_csv(data_paths.xgb_submission, index=False)
@@ -42,7 +42,7 @@ def make_submission_from_files(species_map_path, predictions_path, glc_ids_path,
 
     predictions = np.load(predictions_path)
     glc_ids = np.load(glc_ids_path)
-    df = submission_maker.make_submission_df(classes, predictions, glc_ids)
+    df = submission_maker.make_submission_df(settings.TOP_N_SUBMISSION_RANKS, classes, predictions, glc_ids)
 
     print("Save submission...")
     df.to_csv(submission_path, index=False)

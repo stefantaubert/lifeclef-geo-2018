@@ -13,7 +13,11 @@ import networkx as nx
 import matplotlib.pyplot as plt
 import main_preprocessing
 import TextPreprocessing
-
+            
+def run():
+    main_preprocessing.extract_groups()
+    GroupAnalysis()._create()
+    
 class GroupAnalysis():
     def __init__(self):
         csv, species, species_c = TextPreprocessing.load_train()
