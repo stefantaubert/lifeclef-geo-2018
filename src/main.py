@@ -25,7 +25,7 @@ def startXGBoostGroups():
     main_preprocessing.create_datasets()
     XGBoostModelGroups.XGBModel().run()
     submission.make_xgb_groups_submission()
-    evaluation.evaluate_with_mrr()
+    evaluation.evaluate_xgb_groups()
 
     seconds = time.time() - start_time
     print("Total duration:", round(seconds / 60, 2), "min")
