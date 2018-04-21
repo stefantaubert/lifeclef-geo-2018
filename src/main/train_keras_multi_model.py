@@ -5,6 +5,7 @@
 #fits the model on the batch generator using the train samples and the species map
 #saves the model
 
+import module_support_main
 from data_reading import single_channel_batch_generator as scbg
 import data_paths_main as data_paths
 import pickle

@@ -1,8 +1,10 @@
+import module_support_main
 import numpy as np
 import data_paths_main as data_paths
 import tifffile
 import settings_main as stg
 import itertools as it
+
 
 def loadImage(sample):
     patch_dir_name = sample[0]
