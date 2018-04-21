@@ -14,7 +14,7 @@ import json
 import os
 
 class XGBModel():
-    def run(self):
+    def run(self, predict_testdata=False):
         print("Run model...")
         #x_text = np.load(data_paths.x_text)
 
@@ -32,8 +32,7 @@ class XGBModel():
         
         x_train, x_valid, y_train, y_valid = train_test_split(x_text, y, test_size=settings.train_val_split, random_state=settings.seed)
         
-        validation_glc_ids = x_valid["patch_id"]
-        np.save(data_paths.xgb_glc_ids, validation_glc_ids)
+        np.save(data_paths.xgb_glc_ids, x_valid["patch_id"])
 
         x_train = x_train[train_columns]
         x_valid = x_valid[train_columns]
@@ -52,11 +51,21 @@ class XGBModel():
         np.save(data_paths.xgb_species_map, xg.classes_)
 
         # print("Save model...")
-        xg.dump_model(data_paths.xgb_dump)
-        xg.save_model(data_paths.xgb_model)
+        # xg.dump_model(data_paths.xgb_dump)
+        # xg.save_model(data_paths.xgb_model)
 
-        print("Predict data...")
+        print("Predict validation data...")
         pred = xg.predict_proba(x_valid)
 
-        print("Save predictions...")
+        print("Save validation predictions...")
         np.save(data_paths.xgb_prediction, pred)
+
+        if predict_testdata:
+            print("Predict test data...")    
+            testset = pd.read_csv(data_paths.test)
+            np.save(data_paths.xgb_test_glc_ids, testset["patch_id"])
+            testset = testset[train_columns]
+            pred_test = xg.predict_proba(testset)
+
+            print("Save test predictions...")
+            np.save(data_paths.xgb_test_prediction, pred_test)

@@ -8,7 +8,7 @@ import data_paths_analysis
 import SpeciesOccurences
 
 def make_xgb_submission():
-    print("Make submission...")
+    print("Make validation submission...")
 
     classes = np.load(data_paths.xgb_species_map)
 
@@ -16,9 +16,20 @@ def make_xgb_submission():
     glc_ids = np.load(data_paths.xgb_glc_ids)
     df = submission_maker.make_submission_df(settings.TOP_N_SUBMISSION_RANKS, classes, predictions, glc_ids)
 
-    print("Save submission...")
+    print("Save validation submission...")
     df.to_csv(data_paths.xgb_submission, index=False)
 
+def make_xgb_test_submission():
+    print("Make test submission...")
+
+    classes = np.load(data_paths.xgb_species_map)
+
+    predictions = np.load(data_paths.xgb_test_prediction)
+    glc_ids = np.load(data_paths.xgb_test_glc_ids)
+    df = submission_maker.make_submission_df(settings.TOP_N_SUBMISSION_RANKS, classes, predictions, glc_ids)
+
+    print("Save test submission...")
+    df.to_csv(data_paths.xgb_test_submission, index=False)
 
 def make_xgb_groups_submission():
     print("Make submission...")
