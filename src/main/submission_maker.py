@@ -86,7 +86,7 @@ def _make_submission(top_n, classes, predictions, glc_ids):
     return submission
 
 def _get_df(submission):
-    submission_df = pd.DataFrame(submission, columns = ['glc_id', 'species_glc_id', 'probability', 'rank'])
+    submission_df = pd.DataFrame(submission, columns = ['patch_id', 'species_glc_id', 'probability', 'rank'])
     return submission_df
 
 def make_submission_df(top_n, classes, predictions, glc_ids):
