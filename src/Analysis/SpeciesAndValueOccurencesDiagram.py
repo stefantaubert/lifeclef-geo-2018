@@ -1,17 +1,16 @@
+import module_support_analysis
 import pandas as pd
 import data_paths_analysis as data_paths
 from tqdm import tqdm
 import matplotlib.pyplot as plt
-from Data import Data
+import main_preprocessing
 
 class SpeciesAndValueOccurencesDiagram():
 
     def __init__(self, rows, cols):
-        self.data = Data()
-        self.data.load_train()
         self.rows = rows
         self.cols = cols
-        self.csv = self.data.train
+        self.csv = pd.read_csv(data_paths.train)
 
         drop = ["patch_id", "day", "month", "year"]      
 
@@ -55,4 +54,5 @@ class SpeciesAndValueOccurencesDiagram():
         plt.xlabel(col_name)
 
 if __name__ == '__main__':
+    main_preprocessing.extract_groups()
     SpeciesAndValueOccurencesDiagram(5, 7).plot_data()

@@ -1,9 +1,10 @@
+import module_support_analysis
 import pandas as pd
 import data_paths_analysis as data_paths
 from tqdm import tqdm
 import matplotlib.pyplot as plt
-from Data import Data
 import settings_analysis as settings
+import main_preprocessing
 
 class ValuesOccurencesDiagram():
     '''Plots a diagram which shows the occurences of all different values per channel of the complete set. Values are rounded to integer.'''
@@ -28,8 +29,8 @@ class ValuesOccurencesDiagram():
         
         print("Rendering and saving plot...")
         plt.savefig(dest_pdf, bbox_inches='tight')
-        print("Saving completed.")
-        plt.show()
+        print("Saving completed.", dest_pdf)
+        #plt.show()
         plt.close(fig)
 
     def plot(self, col_name):
@@ -54,9 +55,10 @@ class ValuesOccurencesDiagram():
         plt.ylabel('occurence')
 
 if __name__ == '__main__':
-    data = Data()
-    # data.load_train()
-    # ValuesOccurencesDiagram(5, 7, data.train).plot_data(data_paths.values_occurences_train)
+    main_preprocessing.create_datasets()
+    
+    # train = pd.read_csv(data_paths.train)
+    # ValuesOccurencesDiagram(5, 7, train).plot_data(data_paths.values_occurences_train)
 
-    data.load_test()
-    ValuesOccurencesDiagram(5, 7, data.test).plot_data(data_paths.values_occurences_test)
+    test = pd.read_csv(data_paths.test)
+    ValuesOccurencesDiagram(5, 7, test).plot_data(data_paths.values_occurences_test)

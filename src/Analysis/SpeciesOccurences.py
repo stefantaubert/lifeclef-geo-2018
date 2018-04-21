@@ -1,18 +1,17 @@
+import module_support_analysis
 import pandas as pd
 import data_paths_analysis as data_paths
 from tqdm import tqdm
 import matplotlib.pyplot as plt
-from Data import Data
 import settings_analysis as settings
 import numpy as np
 from collections import Counter
+import main_preprocessing
 
 class SpeciesOccurences():
 
     def __init__(self):
-        data = Data()
-        data.load_train()
-        self.csv = data.train
+        self.csv = pd.read_csv(data_paths.train)
         #print("Count of different species:", data.species_count)
         self.species_values = self.csv["species_glc_id"].values
         counter = Counter(self.species_values)
@@ -49,5 +48,7 @@ class SpeciesOccurences():
         plt.show()
 
 if __name__ == '__main__':
+    main_preprocessing.create_trainset()
     species_occurences = SpeciesOccurences()
     species_occurences.save_csv()
+    print("Species occurences saved.")

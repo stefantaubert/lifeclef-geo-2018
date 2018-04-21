@@ -2,7 +2,7 @@ import settings_main as settings
 import numpy as np
 np.random.seed(settings.seed)
 
-import submission_maker
+import submission
 import evaluation
 import DataReader
 import settings
@@ -190,7 +190,7 @@ if __name__ == '__main__':
 
     #DataReader.read_and_write_data()
     run_Model()
-    submission_maker.make_submission()
+    submission.make_submission()
     evaluation.evaluate_with_mrr()
     
     print("Total duration:", time.time() - start_time, "s")

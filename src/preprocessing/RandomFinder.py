@@ -1,12 +1,15 @@
+import module_support_pre
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
-import data_paths_main as data_paths
+import data_paths_pre as data_paths
 import settings_main as settings
+import main_preprocessing
 
+main_preprocessing.create_datasets()
 rand = 0
-x_text = np.load(data_paths.x_text)
-y = np.load(data_paths.y_ids)
+x_text = pd.read_csv(data_paths.train)
+y = list(x_text["species_glc_id"])
 
 found_rand = False
 
@@ -18,8 +21,8 @@ while not found_rand:
 
     # Entferne Spezies aus dem Validierungsset, falls diese Spezies nicht im Trainingsset vorkommt
     for index in range(0, len(y_valid)):
-        item = y_valid[index]
-        if item not in y_train:
+        species = y_valid[index]
+        if species not in y_train:
             is_valid = False
 
     if not is_valid:

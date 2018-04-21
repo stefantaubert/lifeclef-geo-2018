@@ -1,10 +1,11 @@
+import module_support_analysis
 import pandas as pd
 import data_paths_analysis as data_paths
 from tqdm import tqdm
 import matplotlib.pyplot as plt
-from Data import Data
 import MostCommonValueExtractor
 import os
+import main_preprocessing
 
 class MostCommonValuesPerSpeciesDiagram:
     '''Draws a diagram which shows of an species the most common value for each channel.'''
@@ -52,6 +53,7 @@ class MostCommonValuesPerSpeciesDiagram:
         return plt
         
 if __name__ == "__main__":
+    main_preprocessing.extract_groups()
     plot = [890, 186]
     d = MostCommonValuesPerSpeciesDiagram()
     for p in plot:
