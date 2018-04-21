@@ -13,7 +13,6 @@ def get_suffix_pro():
 def get_suffix_prot():
     return get_suffix_pro() + "_t" + str(settings.threshold)
 
-# auf linux muss ein ../ extra davor
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
 config_path = parentdir + "/config/data_root"

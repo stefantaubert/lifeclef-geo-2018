@@ -15,7 +15,7 @@ def evaluate_with_mrr():
     x_text = pd.read_csv(data_paths.train)
     y = x_text["species_glc_id"]
     named_groups = np.load(data_paths.named_groups)
-        
+    
     c_classes = 0
     for _, species in named_groups.items():
         for _ in species:

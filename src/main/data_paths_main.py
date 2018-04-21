@@ -16,6 +16,8 @@ xgb_species_map = xgb_dir + "species_map.npy"
 xgb_prediction = xgb_dir + "prediction.npy"
 xgb_glc_ids = xgb_dir + "glc_ids.npy"
 xgb_submission = xgb_dir + "submission.csv"
+xgb_dump = xgb_dir + "dump"
+xgb_model = xgb_dir + "model"
 # xgb_species_occurences = root + "analysis/species_occurences.csv"
 
 #keras single model training paths

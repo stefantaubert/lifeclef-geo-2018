@@ -20,10 +20,10 @@ class XGBModel():
 
         x_text = pd.read_csv(data_paths.train)
         y = x_text["species_glc_id"]
-        train_columns = [ 'chbio_1', 'chbio_2', 'chbio_3', 'chbio_4', 'chbio_5', 'chbio_6',
-        'chbio_7', 'chbio_8', 'chbio_9', 'chbio_10', 'chbio_11', 'chbio_12',
-        'chbio_13', 'chbio_14', 'chbio_15', 'chbio_16', 'chbio_17', 'chbio_18',
-        'chbio_19', 
+        train_columns = [ 'chbio_1', 
+        #'chbio_2', 'chbio_3', 'chbio_4', 'chbio_5', 'chbio_6',
+        #'chbio_7', 'chbio_8', 'chbio_9', 'chbio_10', 'chbio_11', 'chbio_12',
+        #'chbio_13', 'chbio_14', 'chbio_15', 'chbio_16', 'chbio_17', 'chbio_18','chbio_19', 
         # 'etp', 'alti', 'awc_top', 'bs_top', 'cec_top', 'crusting', 'dgh', 'dimp', 'erodi', 'oc_top', 'pd_top', 'text',
         # 'proxi_eau_fast', 'clc', 'latitude', 'longitude'
         ]
@@ -43,7 +43,7 @@ class XGBModel():
             eval_metric="merror",
             random_state=settings.seed,
             n_jobs=-1,
-            n_estimators=24,
+            n_estimators=1,
             predictor='gpu_predictor',
         )
 
@@ -52,8 +52,8 @@ class XGBModel():
         np.save(data_paths.xgb_species_map, xg.classes_)
 
         # print("Save model...")
-        # xg.dump_model(data_paths.model_dump)
-        # xg.save_model(data_paths.model)
+        xg.dump_model(data_paths.xgb_dump)
+        xg.save_model(data_paths.xgb_model)
 
         print("Predict data...")
         pred = xg.predict_proba(x_valid)
