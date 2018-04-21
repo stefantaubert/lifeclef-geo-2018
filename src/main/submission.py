@@ -23,10 +23,10 @@ def make_xgb_test_submission():
     print("Make test submission...")
 
     classes = np.load(data_paths.xgb_species_map)
-    classes = [int(c) for c in classes]
 
     predictions = np.load(data_paths.xgb_test_prediction)
     glc_ids = np.load(data_paths.xgb_test_glc_ids)
+    glc_ids = [int(g) for g in glc_ids]
     df = submission_maker.make_submission_df(settings.TOP_N_SUBMISSION_RANKS, classes, predictions, glc_ids)
 
     print("Save test submission...")
