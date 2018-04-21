@@ -7,6 +7,7 @@ import settings_analysis as settings
 import numpy as np
 from collections import Counter
 import main_preprocessing
+import os
 
 class SpeciesOccurences():
 
@@ -47,8 +48,15 @@ class SpeciesOccurences():
 
         plt.show()
 
+def create():
+    if not os.path.exists(data_paths.species_occurences):
+        main_preprocessing.create_trainset()
+        species_occurences = SpeciesOccurences()
+        species_occurences.save_csv()
+        print("Species occurences saved.")
+    else:
+        print("Species occurences already saved.")
+
+
 if __name__ == '__main__':
-    main_preprocessing.create_trainset()
-    species_occurences = SpeciesOccurences()
-    species_occurences.save_csv()
-    print("Species occurences saved.")
+    create()

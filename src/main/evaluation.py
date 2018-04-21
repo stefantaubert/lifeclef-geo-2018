@@ -1,3 +1,4 @@
+import module_support_main
 import data_paths_main as data_paths
 import pandas as pd
 import mrr
@@ -10,10 +11,10 @@ from itertools import chain
 def evaluate_with_mrr():
     print("Evaluate submission...")
     print("Load data...")
-    df = pd.read_csv(data_paths.xgb_submission)
-    x_text = pd.read_csv(data_paths.xgb_train)
+    df = pd.read_csv(data_paths.xgb_submission) 
+    x_text = pd.read_csv(data_paths.train)
     y = x_text["species_glc_id"]
-    named_groups = np.load(data_paths.xgb_named_groups)
+    named_groups = np.load(data_paths.named_groups)
         
     c_classes = 0
     for _, species in named_groups.items():
