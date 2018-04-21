@@ -23,13 +23,14 @@ def make_xgb_test_submission():
     print("Make test submission...")
 
     classes = np.load(data_paths.xgb_species_map)
+    classes = [int(c) for c in classes]
 
     predictions = np.load(data_paths.xgb_test_prediction)
     glc_ids = np.load(data_paths.xgb_test_glc_ids)
     df = submission_maker.make_submission_df(settings.TOP_N_SUBMISSION_RANKS, classes, predictions, glc_ids)
 
     print("Save test submission...")
-    df.to_csv(data_paths.xgb_test_submission, index=False)
+    df.to_csv(data_paths.xgb_test_submission, index=False, sep=";")
 
 def make_xgb_groups_submission():
     print("Make submission...")
@@ -66,4 +67,4 @@ def make_submission_from_files(species_map_path, predictions_path, glc_ids_path,
 
 if __name__ == '__main__':
     #make_submission_for_current_training()
-    make_xgb_groups_submission()
+    make_xgb_test_submission()
