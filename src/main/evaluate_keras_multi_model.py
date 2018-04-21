@@ -1,8 +1,8 @@
 from data_reading import single_channel_batch_generator as scbg
-import data_paths
+import data_paths_main as data_paths
 import pickle
 import numpy as np
-import settings as stg
+import settings_main as stg
 from keras_models import vgg_like_model
 
 

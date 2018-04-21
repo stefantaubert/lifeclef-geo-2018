@@ -1,7 +1,7 @@
 import numpy as np
-import data_paths
+import data_paths_main as data_paths
 import tifffile
-import settings as stg
+import settings_main as stg
 import itertools as it
 
 def loadImage(sample):
