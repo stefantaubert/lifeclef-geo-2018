@@ -13,7 +13,7 @@ def startXGBoost():
     XGBoostModel.XGBModel().run(True)
     submission.make_xgb_submission()
     submission.make_xgb_test_submission()
-    evaluation.evaluate_with_mrr()
+    evaluation.evaluate_xgb_normal()
 
     seconds = time.time() - start_time
     print("Total duration:", round(seconds / 60, 2), "min")

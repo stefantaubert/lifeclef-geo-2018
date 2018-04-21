@@ -8,7 +8,7 @@ import settings_main as settings
 from sklearn.model_selection import train_test_split
 from itertools import chain
 
-def evaluate_with_mrr():
+def evaluate_xgb_groups():
     print("Evaluate submission...")
     print("Load data...")
     df = pd.read_csv(data_paths.xgb_submission) 
@@ -20,6 +20,21 @@ def evaluate_with_mrr():
     for _, species in named_groups.items():
         for _ in species:
             c_classes += 1
+
+    _, _, _, y_valid = train_test_split(x_text, y, test_size=settings.train_val_split, random_state=settings.seed)
+    
+    print("Calculate MRR-Score...")    
+    ranks = get_ranks(df, y_valid, c_classes)
+    mrr_score = mrr.mrr_score(ranks)
+    print("MRR-Score:", mrr_score * 100,"%")
+
+def evaluate_xgb_normal():
+    print("Evaluate submission...")
+    print("Load data...")
+    df = pd.read_csv(data_paths.xgb_submission)
+    x_text = pd.read_csv(data_paths.train)
+    y = x_text["species_glc_id"]
+    c_classes = len(np.load(data_paths.xgb_species_map))
 
     _, _, _, y_valid = train_test_split(x_text, y, test_size=settings.train_val_split, random_state=settings.seed)
     
@@ -54,5 +69,5 @@ def get_ranks(submissions_df, solutions, c_classes):
 
 
 if __name__ == '__main__':
-    evaluate_with_mrr()
+    evaluate_xgb_normal()
     #evaluate_current_training_results()
