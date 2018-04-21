@@ -6,7 +6,7 @@
 #saves the model
 
 from data_reading import single_channel_batch_generator as scbg
-import data_paths
+import data_paths_main as data_paths
 import pickle
 import numpy as np
 import keras
@@ -15,7 +15,7 @@ import tensorflow as tf
 from keras_models import vgg_like_model
 from keras.callbacks import ModelCheckpoint
 
-import settings as stg
+import settings_main as stg
 
 if __name__ == '__main__':
     tf.reset_default_graph()
