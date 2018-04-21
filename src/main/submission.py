@@ -1,7 +1,11 @@
+import module_support_main
 import numpy as np
 import data_paths_main as data_paths
+import settings_main as settings
 import pandas as pd
 import submission_maker
+import data_paths_analysis
+import SpeciesOccurences
 
 def make_xgb_submission():
     print("Make submission...")
@@ -23,7 +27,8 @@ def make_xgb_groups_submission():
 
     predictions = np.load(data_paths.xgb_prediction)
     glc_ids = np.load(data_paths.xgb_glc_ids)
-    species_occ = pd.read_csv(data_paths.xgb_species_occurences)
+    SpeciesOccurences.create()
+    species_occ = pd.read_csv(data_paths_analysis.species_occurences)
     named_groups = np.load(data_paths.named_groups)
     
     species_occ_dict = {}

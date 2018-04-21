@@ -15,13 +15,5 @@ min_occurence = 10
 ### Sets the count of digits for rounding the test and trainset in the analysis. Range: [0, 12]
 round_data_ndigits = 0
 
-### Gibt den Seed für den Split und das Training an.
-### Contains the seed which is used to split the trainset and for training
-seed = 4 # hier ist bei 0.1 jede Spezies aus dem Validierungsset im Trainingsset vorhanden
-
-### Gibt das Split-Verhältnis von Trainings- und Validierungsset an.
-### Contains the split ratio for trainset
-train_val_split = 0.1
-
 # not used?
 #read_data_count = -1 # seed: 39609
