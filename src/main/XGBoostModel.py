@@ -50,9 +50,9 @@ class XGBModel():
         xg.fit(x_train, y_train, eval_set=[(x_train, y_train), (x_valid, y_valid)])
         np.save(data_paths.xgb_species_map, xg.classes_)
 
-        # print("Save model...")
-        # xg.dump_model(data_paths.xgb_dump)
-        # xg.save_model(data_paths.xgb_model)
+        print("Save model...")
+        xg.dump_model(data_paths.xgb_dump)
+        xg.save_model(data_paths.xgb_model)
 
         print("Predict validation data...")
         pred = xg.predict_proba(x_valid)
