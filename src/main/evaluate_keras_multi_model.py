@@ -11,8 +11,8 @@ from evaluation import evaluate_results_from_files
 
 if __name__ == '__main__':
     samples = np.load(data_paths.train_samples)
-    split = np.int(len(samples)*stg.train_val_split)
-    samples, val_samples = samples[:split, :], samples[:split, :]
+    split = 1 - np.int(len(samples)*stg.train_val_split)
+    samples, val_samples = samples[:split, :], samples[split:, :]
     print(len(val_samples))
     with open(data_paths.keras_multi_model_training_species_map, 'rb') as f:
         species_map = pickle.load(f)
@@ -64,7 +64,7 @@ if __name__ == '__main__':
                                predictions_path=data_paths.keras_multi_model_training_results,
                                glc_ids_path=data_paths.keras_multi_model_training_glc_ids,
                                submission_path=data_paths.keras_multi_model_training_submission)
-                               
+              
     evaluate_results_from_files(submission_path=data_paths.keras_multi_model_training_submission,
                                 gt_path=data_paths.keras_multi_model_training_gt,
                                 species_map_path=data_paths.keras_multi_model_training_species_map)

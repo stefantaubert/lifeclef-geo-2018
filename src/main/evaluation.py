@@ -34,7 +34,7 @@ def evaluate_results_from_files(submission_path, gt_path, species_map_path):
     df = pd.read_csv(submission_path)
     y = np.load(gt_path)
     c_classes = len(np.load(species_map_path))
-    
+
     print("Calculate MRR-Score...")
     ranks = get_ranks(df, y, c_classes)
     mrr_score = mrr.mrr_score(ranks)

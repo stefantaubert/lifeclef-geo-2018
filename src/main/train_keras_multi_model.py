@@ -15,10 +15,14 @@ import metrics
 import tensorflow as tf
 from keras_models import vgg_like_model
 from keras.callbacks import ModelCheckpoint
-
+import os
 import settings_main as stg
+from data_reading.imageList_generator import generate_train_image_list
 
 if __name__ == '__main__':
+    if not os.path.exists(data_paths.train_samples):
+        generate_train_image_list()
+
     tf.reset_default_graph()
     a = tf.constant([1, 1, 1, 1, 1], dtype=tf.float32)
     graph_level_seed = 1
@@ -27,9 +31,9 @@ if __name__ == '__main__':
     b = tf.nn.dropout(a, 0.5, seed=operation_level_seed)
 
     samples = np.load(data_paths.train_samples)
-    split = np.int(len(samples)*stg.train_val_split)
-    samples, val_samples = samples[:split, :], samples[:split, :]
-    print(len(val_samples))
+    split = 1 - np.int(len(samples)*stg.train_val_split)
+    samples, val_samples = samples[:split, :], samples[split:, :]
+
     with open(data_paths.train_samples_species_map, 'rb') as f:
         species_map = pickle.load(f)
 
