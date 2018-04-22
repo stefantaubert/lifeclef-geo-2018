@@ -4,6 +4,14 @@ import evaluation
 import mrr
 
 class TestMrrEvaluationMethod(unittest.TestCase):
+    def test_mrr_zeros(self):
+        score = mrr.mrr_score([1, 2, 3, 0, 8, 0, 0, 7])
+        self.assertEqual(1/8 * (1/1 + 1/2 + 1/3 + 1/8 + 1/7), score)
+
+    def test_mrr_zero(self):
+        score = mrr.mrr_score([0])
+        self.assertEqual(0, score)
+        
     def test_mrr1(self):
         score = mrr.mrr_score([1])
         self.assertEqual(1, score)

@@ -41,11 +41,12 @@ def _make_submission_groups(top_n, groups_map, predictions, glc_ids, groups, pro
                 rank_counter += 1
                 ranks.append(rank_counter)
 
+            species_s = [int(x) for x in species_s]
             classes.extend(species_s)
 
             cur_predictions.extend(group_species_count * [group_prediction])
         
-        current_glc_id_array = len(classes) * [current_glc_id]
+        current_glc_id_array = len(classes) * [int(current_glc_id)]
         submissions = [list(a) for a in zip(current_glc_id_array, classes, cur_predictions, ranks)]
         submissions = submissions[:top_n]
         submission.extend(submissions)
@@ -63,6 +64,9 @@ def _make_submission(top_n, classes, predictions, glc_ids):
     count_species = len(classes)
     assert top_n <= count_species
     submission = []
+    # Convert float to int
+    glc_ids = [int(g) for g in glc_ids]
+    classes = [int(c) for c in classes]
 
     for i in tqdm(range(count_predictions)):
         species = list(classes)
@@ -86,7 +90,7 @@ def _make_submission(top_n, classes, predictions, glc_ids):
     return submission
 
 def _get_df(submission):
-    submission_df = pd.DataFrame(submission, columns = ['glc_id', 'species_glc_id', 'probability', 'rank'])
+    submission_df = pd.DataFrame(submission, columns = ['patch_id', 'species_glc_id', 'probability', 'rank'])
     return submission_df
 
 def make_submission_df(top_n, classes, predictions, glc_ids):

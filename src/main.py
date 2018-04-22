@@ -1,10 +1,37 @@
 import module_support
 import main_preprocessing
-import model_runner
+import time 
+import XGBoostModel
+import XGBoostModelGroups
+import submission
+import evaluation
 
-def run_xgb_groups():
+def startXGBoost():
+    start_time = time.time()
+
+    main_preprocessing.create_datasets()
+    XGBoostModel.XGBModel().run(True)
+    submission.make_xgb_test_submission()
+    submission.make_xgb_submission()
+    evaluation.evaluate_xgb()
+
+    seconds = time.time() - start_time
+    print("Total duration:", round(seconds / 60, 2), "min")
+
+def startXGBoostGroups():
+    ## preprocessing is already done
+    start_time = time.time()
+
+    main_preprocessing.create_datasets()
     main_preprocessing.extract_groups()
-    model_runner.startXGBoostGroups()
+    XGBoostModelGroups.XGBModel().run(True)
+    submission.make_xgb_groups_test_submission()
+    submission.make_xgb_groups_submission()
+    evaluation.evaluate_xgb()
+
+    seconds = time.time() - start_time
+    print("Total duration:", round(seconds / 60, 2), "min")
 
 if __name__ == "__main__":
-    run_xgb_groups()
+    startXGBoost()
+    #startXGBoostGroups()

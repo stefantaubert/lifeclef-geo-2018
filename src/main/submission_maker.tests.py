@@ -71,7 +71,7 @@ class TestMakeSubmissionMethods(unittest.TestCase):
         self.assertEqual([1, 5, 0.9, 1], submission[0])
         self.assertEqual([2, 6, 0.8, 1], submission[1])
 
-    def test1(self):
+    def test_convert_to_int(self):
         top_n = 3
         classes = ["9", "3", "7"]
 
@@ -80,19 +80,19 @@ class TestMakeSubmissionMethods(unittest.TestCase):
             [0.7, 0.6, 0.5]
         ]
 
-        glc_ids = [2,4]
+        glc_ids = [2.0,4.0]
  
         submission = submission_maker._make_submission(top_n, classes, prediction, glc_ids)
  
         self.assertEqual(3*2, len(submission)) # Anzahl Klassen * Anzahl an Predictions (Größe des Validierungssets)
 
         ### glc_id,species_glc_id,probability,rank ### 
-        self.assertEqual([2, "7", 0.7, 1], submission[0])
-        self.assertEqual([2, "3", 0.6, 2], submission[1])
-        self.assertEqual([2, "9", 0.5, 3], submission[2])
-        self.assertEqual([4, "9", 0.7, 1], submission[3])
-        self.assertEqual([4, "3", 0.6, 2], submission[4])
-        self.assertEqual([4, "7", 0.5, 3], submission[5])
+        self.assertEqual([2, 7, 0.7, 1], submission[0])
+        self.assertEqual([2, 3, 0.6, 2], submission[1])
+        self.assertEqual([2, 9, 0.5, 3], submission[2])
+        self.assertEqual([4, 9, 0.7, 1], submission[3])
+        self.assertEqual([4, 3, 0.6, 2], submission[4])
+        self.assertEqual([4, 7, 0.5, 3], submission[5])
     
     def test_top_3(self):
         species_map = [5, 6, 7]
@@ -214,12 +214,12 @@ class TestMakeSubmissionMethods(unittest.TestCase):
         self.assertEqual(3*2, len(submission)) # Anzahl Klassen * Anzahl an Predictions (Größe des Validierungssets)
 
         ### glc_id,species_glc_id,probability,rank ### 
-        self.assertEqual([1, "7", 0.7, 1], submission[0])
-        self.assertEqual([1, "3", 0.6, 2], submission[1])
-        self.assertEqual([1, "9", 0.5, 3], submission[2])
-        self.assertEqual([2, "9", 0.7, 1], submission[3])
-        self.assertEqual([2, "3", 0.6, 2], submission[4])
-        self.assertEqual([2, "7", 0.5, 3], submission[5])
+        self.assertEqual([1, 7, 0.7, 1], submission[0])
+        self.assertEqual([1, 3, 0.6, 2], submission[1])
+        self.assertEqual([1, 9, 0.5, 3], submission[2])
+        self.assertEqual([2, 9, 0.7, 1], submission[3])
+        self.assertEqual([2, 3, 0.6, 2], submission[4])
+        self.assertEqual([2, 7, 0.5, 3], submission[5])
 
     def test_df(self):
         top_n = 3
@@ -236,12 +236,12 @@ class TestMakeSubmissionMethods(unittest.TestCase):
         self.assertEqual(3*2, len(submission_df.index))
 
         submission_matrix = submission_df.as_matrix()
-        self.assertEqual([1, "7", 0.7, 1], list(submission_matrix[0]))
-        self.assertEqual([1, "3", 0.6, 2], list(submission_matrix[1]))
-        self.assertEqual([1, "9", 0.5, 3], list(submission_matrix[2]))
-        self.assertEqual([2, "9", 0.7, 1], list(submission_matrix[3]))
-        self.assertEqual([2, "3", 0.6, 2], list(submission_matrix[4]))
-        self.assertEqual([2, "7", 0.5, 3], list(submission_matrix[5]))
+        self.assertEqual([1, 7, 0.7, 1], list(submission_matrix[0]))
+        self.assertEqual([1, 3, 0.6, 2], list(submission_matrix[1]))
+        self.assertEqual([1, 9, 0.5, 3], list(submission_matrix[2]))
+        self.assertEqual([2, 9, 0.7, 1], list(submission_matrix[3]))
+        self.assertEqual([2, 3, 0.6, 2], list(submission_matrix[4]))
+        self.assertEqual([2, 7, 0.5, 3], list(submission_matrix[5]))
 
 
 if __name__ == '__main__':

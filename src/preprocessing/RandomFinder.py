@@ -8,7 +8,7 @@ import main_preprocessing
 
 main_preprocessing.create_datasets()
 rand = 0
-x_text = pd.read_csv(data_paths.train)
+x_text = pd.read_csv(data_paths.train, nrows=10000)
 y = list(x_text["species_glc_id"])
 
 found_rand = False
