@@ -6,7 +6,8 @@ def mrr_score(ranks):
 
     # MRR berechnen
     for rank in ranks:
-        sum += 1 / float(rank)
+        if rank != 0:
+            sum += 1 / float(rank)
 
     mrr_score = 1.0 / Q * sum
 
