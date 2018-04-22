@@ -41,7 +41,8 @@ def _make_submission_groups(top_n, groups_map, predictions, glc_ids, groups, pro
                 rank_counter += 1
                 ranks.append(rank_counter)
 
-            classes.extend(int(species_s))
+            species_s = [int(x) for x in species_s]
+            classes.extend(species_s)
 
             cur_predictions.extend(group_species_count * [group_prediction])
         
