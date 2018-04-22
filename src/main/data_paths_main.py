@@ -19,7 +19,6 @@ xgb_submission = xgb_dir + "submission.csv"
 xgb_test_prediction = xgb_dir + "test_prediction.npy"
 xgb_test_glc_ids = xgb_dir + "test_glc_ids.npy"
 xgb_test_submission = xgb_dir + "test_submission.csv"
-xgb_dump = xgb_dir + "dump"
 xgb_model = xgb_dir + "model"
 # xgb_species_occurences = root + "analysis/species_occurences.csv"
 

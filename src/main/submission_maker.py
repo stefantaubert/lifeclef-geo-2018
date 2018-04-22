@@ -64,6 +64,9 @@ def _make_submission(top_n, classes, predictions, glc_ids):
     count_species = len(classes)
     assert top_n <= count_species
     submission = []
+    # Convert float to int
+    glc_ids = [int(g) for g in glc_ids]
+    classes = [int(c) for c in classes]
 
     for i in tqdm(range(count_predictions)):
         species = list(classes)

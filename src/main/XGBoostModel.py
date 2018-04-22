@@ -11,6 +11,7 @@ import evaluation
 import settings_main as settings
 import time
 import json
+import pickle
 import os
 
 class XGBModel():
@@ -51,8 +52,7 @@ class XGBModel():
         np.save(data_paths.xgb_species_map, xg.classes_)
 
         print("Save model...")
-        xg.dump_model(data_paths.xgb_dump)
-        xg.save_model(data_paths.xgb_model)
+        pickle.dump(xg, open(data_paths.xgb_model, "wb"))
 
         print("Predict validation data...")
         pred = xg.predict_proba(x_valid)
