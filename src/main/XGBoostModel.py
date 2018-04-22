@@ -42,7 +42,7 @@ class XGBModel():
             eval_metric="merror",
             random_state=settings.seed,
             n_jobs=-1,
-            n_estimators=20,
+            n_estimators=1,
             predictor='gpu_predictor',
         )
 
