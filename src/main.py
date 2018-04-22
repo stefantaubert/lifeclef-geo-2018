@@ -23,6 +23,7 @@ def startXGBoostGroups():
     start_time = time.time()
 
     main_preprocessing.create_datasets()
+    main_preprocessing.extract_groups()
     XGBoostModelGroups.XGBModel().run(True)
     submission.make_xgb_groups_submission()
     submission.make_xgb_groups_test_submission()
