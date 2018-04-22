@@ -41,11 +41,11 @@ def _make_submission_groups(top_n, groups_map, predictions, glc_ids, groups, pro
                 rank_counter += 1
                 ranks.append(rank_counter)
 
-            classes.extend(species_s)
+            classes.extend(int(species_s))
 
             cur_predictions.extend(group_species_count * [group_prediction])
         
-        current_glc_id_array = len(classes) * [current_glc_id]
+        current_glc_id_array = len(classes) * [int(current_glc_id)]
         submissions = [list(a) for a in zip(current_glc_id_array, classes, cur_predictions, ranks)]
         submissions = submissions[:top_n]
         submission.extend(submissions)

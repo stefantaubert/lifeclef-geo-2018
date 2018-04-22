@@ -13,7 +13,7 @@ def startXGBoost():
     XGBoostModel.XGBModel().run(True)
     submission.make_xgb_submission()
     submission.make_xgb_test_submission()
-    evaluation.evaluate_xgb_normal()
+    evaluation.evaluate_xgb()
 
     seconds = time.time() - start_time
     print("Total duration:", round(seconds / 60, 2), "min")
@@ -23,9 +23,10 @@ def startXGBoostGroups():
     start_time = time.time()
 
     main_preprocessing.create_datasets()
-    XGBoostModelGroups.XGBModel().run()
+    XGBoostModelGroups.XGBModel().run(True)
     submission.make_xgb_groups_submission()
-    evaluation.evaluate_xgb_groups()
+    submission.make_xgb_groups_test_submission()
+    evaluation.evaluate_xgb()
 
     seconds = time.time() - start_time
     print("Total duration:", round(seconds / 60, 2), "min")
