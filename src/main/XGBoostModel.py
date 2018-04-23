@@ -52,6 +52,7 @@ class XGBModel():
                 n_jobs=-1,
                 n_estimators=10,
                 predictor='gpu_predictor',
+                tree_method='gpu_hist',
                 max_depth=8,
                 learning_rate=0.1,
             )
