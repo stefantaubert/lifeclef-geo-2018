@@ -48,3 +48,7 @@ def nextBatch(samples, species_map):
 def nextValidationBatch(samples, species_map):
     for x, y, species_ids, glc_ids in getNextImageBatch(samples, species_map):
         yield (x, y, species_ids, glc_ids)
+
+def nextTestBatch(samples, species_map):
+    for x, _, _, glc_ids in getNextImageBatch(samples, species_map)
+        yield (x, glc_ids)

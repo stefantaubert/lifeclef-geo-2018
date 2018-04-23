@@ -2,7 +2,7 @@
 
 BATCH_SIZE = 32
 
-EPOCHS = 50
+EPOCHS = 20
 
 ### Contains the number of top ranks which will be included in the submissionfile.
 TOP_N_SUBMISSION_RANKS = 100

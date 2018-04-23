@@ -10,15 +10,13 @@ import pickle
 import numpy as np
 import settings_main as stg
 from keras_models import vgg_like_model
-
-
 from submission import make_submission_from_files
 from evaluation import evaluate_results_from_files
 
 if __name__ == '__main__':
     samples = np.load(data_paths.train_samples)
-    split = np.int(len(samples)*stg.train_val_split)
-    samples, val_samples = samples[:split, :], samples[:split, :]
+    split = 1 - np.int(len(samples)*stg.train_val_split)
+    samples, val_samples = samples[:split, :], samples[split:, :]
     print(len(val_samples))
     with open(data_paths.keras_training_species_map, 'rb') as f:
         species_map = pickle.load(f)

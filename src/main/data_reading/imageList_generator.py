@@ -2,19 +2,17 @@
 #a list of patch_ids and patch_dirnames of all images in this set,
 #and for the train set also
 #a list of target vectors and the species map used to create the target vectors
-
+import module_support
 import numpy as np
 import pandas as pd
-import data_paths
 from tqdm import tqdm
 import tifffile
 import pickle
-import settings
 import sys
-import data_paths
+import data_paths_main as data_paths
 
 
-def generate__train_image_list():
+def generate_train_image_list():
     samples = []
 
     df = pd.read_csv(data_paths.occurrences_train, sep=';', low_memory=False)
@@ -55,8 +53,8 @@ def generate_test_image_list():
         current_patch_id = row["patch_id"]
 
         #Create Test Sample Entry, contains
-        #Dirname of image patch, ID of image patch  
-        sample =[current_patch_dirname, current_patch_id]
+        #Dirname of image patch, ID of image patch, species is set to 1 but will bei ignored later
+        sample =[current_patch_dirname, current_patch_id, 1]
         
         samples.append(sample)
     
@@ -67,4 +65,5 @@ def generate_test_image_list():
     np.save(data_paths.test_samples, samples)
 
 if __name__ == '__main__':
-    generate__train_image_list()
+    #generate__train_image_list()
+    generate_test_image_list()

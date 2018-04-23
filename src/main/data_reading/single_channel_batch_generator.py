@@ -51,3 +51,7 @@ def nextValidationBatch(samples, species_map, channel_index):
     for x, y, species_ids, glc_ids in getNextSingleChannelImageBatch(samples, species_map, channel_index):
         yield (x, y, species_ids, glc_ids)
 
+def nextTestBatch(samples, species_map, channel_index):
+    for x, _, _, glc_ids in getNextSingleChannelImageBatch(samples, species_map, channel_index):
+        yield (x, glc_ids)
+
