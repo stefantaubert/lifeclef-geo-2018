@@ -15,6 +15,10 @@ import pickle
 import os
 
 class XGBModel():
+    def mrr_eval(self, y_predicted, y_true):
+        print(y_predicted, y_true)
+        return ("test", 0.5)
+
     def run(self, predict_testdata=False):
         print("Run model...")
         #x_text = np.load(data_paths.x_text)
@@ -54,12 +58,12 @@ class XGBModel():
                 predictor='gpu_predictor',
                 tree_method='gpu_hist',
                 max_bin=256,
-                max_depth=6,
+                max_depth=1,
                 learning_rate=0.1,
             )
             
             print("Fit model...")
-            xg.fit(x_train, y_train, eval_set=[(x_train, y_train), (x_valid, y_valid)])
+            xg.fit(x_train, y_train, eval_set=[(x_train, y_train), (x_valid, y_valid)], eval_metric=self.mrr_eval)
             
             print("Save model...")
             pickle.dump(xg, open(data_paths.xgb_model, "wb"))
