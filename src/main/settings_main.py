@@ -13,4 +13,4 @@ seed = 4 # hier ist bei 0.1 jede Spezies aus dem Validierungsset im Trainingsset
 
 ### Gibt das Split-Verhältnis von Trainings- und Validierungsset an.
 ### Contains the split ratio for trainset
-train_val_split = 0.1
+train_val_split = 0.3
