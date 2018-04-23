@@ -21,12 +21,13 @@ class XGBModel():
 
         x_text = pd.read_csv(data_paths.train)
         y = x_text["species_glc_id"]
-        train_columns = [ 'chbio_1', 
-        'chbio_2', 'chbio_3', 'chbio_4', 'chbio_5', 'chbio_6',
-        'chbio_7', 'chbio_8', 'chbio_9', 'chbio_10', 'chbio_11', 'chbio_12',
-        'chbio_13', 'chbio_14', 'chbio_15', 'chbio_16', 'chbio_17', 'chbio_18','chbio_19', 
-        'etp', 'alti', 'awc_top', 'bs_top', 'cec_top', 'crusting', 'dgh', 'dimp', 'erodi', 'oc_top', 'pd_top', 'text',
-        'proxi_eau_fast', 'clc', 'latitude', 'longitude'
+        train_columns = [ 
+        'alti', 'bs_top', 'chbio_12', 'chbio_15', 'chbio_17', 'chbio_3', 'chbio_6', 'clc', 'crusting', 'dimp'
+        # 'chbio_1', 'chbio_2', 'chbio_3', 'chbio_4', 'chbio_5', 'chbio_6',
+        # 'chbio_7', 'chbio_8', 'chbio_9', 'chbio_10', 'chbio_11', 'chbio_12',
+        # 'chbio_13', 'chbio_14', 'chbio_15', 'chbio_16', 'chbio_17', 'chbio_18','chbio_19', 
+        # 'etp', 'alti', 'awc_top', 'bs_top', 'cec_top', 'crusting', 'dgh', 'dimp', 'erodi', 'oc_top', 'pd_top', 'text',
+        # 'proxi_eau_fast', 'clc', 'latitude', 'longitude'
         ]
 
         # species_count = np.load(data_paths.y_array).shape[1]
@@ -49,8 +50,10 @@ class XGBModel():
                 eval_metric="merror",
                 random_state=settings.seed,
                 n_jobs=-1,
-                n_estimators=200,
+                n_estimators=10,
                 predictor='gpu_predictor',
+                max_depth=8,
+                learning_rate=0.1,
             )
             
             print("Fit model...")

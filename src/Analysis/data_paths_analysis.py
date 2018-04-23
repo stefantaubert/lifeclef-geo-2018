@@ -6,6 +6,8 @@ analysis_dir = root + "analysis/"
 
 heatmaps = root + "analysis/Heatmaps/"
 
+most_common_values_best_features = analysis_dir + "most_common_values_best_features" + get_suffix_pro() + ".txt"
+most_common_values_unique_count = analysis_dir + "most_common_values_unique_count" + get_suffix_pro() + ".pdf"
 most_common_values_diagram = analysis_dir + "most_common_values" + get_suffix_pro() + ".pdf"
 species_occurences_per_value = analysis_dir + "species_occurences_per_value" + get_suffix_pro() + ".pdf"
 species_value_occurences = analysis_dir + "species_value_occurences" + get_suffix_pro() + ".pdf"

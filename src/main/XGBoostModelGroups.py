@@ -12,6 +12,7 @@ import settings_main as settings
 import time
 import json
 import os
+import pickle
 
 class XGBModel():
     def run(self, predict_testdata):
