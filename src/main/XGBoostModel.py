@@ -39,7 +39,7 @@ class XGBModel():
         x_train = x_train[train_columns]
         x_valid = x_valid[train_columns]
         
-        load_from_file = True
+        load_from_file = False
         
         if load_from_file:
             print("Load model from file...")
