@@ -41,7 +41,8 @@ class XGBModel():
         load_from_file = True
         
         if load_from_file:
-            xg = pickle.load(open("pima.pickle.dat", "rb"))
+            print("Load model from file...")
+            xg = pickle.load(open(data_paths.xgb_model, "rb"))
         else:
             xg = XGBClassifier(
                 objective="multi:softmax",
