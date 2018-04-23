@@ -54,8 +54,8 @@ class XGBModel():
                 predictor='gpu_predictor',
                 tree_method='gpu_hist',
                 max_bin=256,
-                max_depth=8,
-                learning_rate=0.3,
+                max_depth=6,
+                learning_rate=0.1,
             )
             
             print("Fit model...")
