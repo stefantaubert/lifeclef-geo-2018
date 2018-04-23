@@ -10,7 +10,7 @@ def startXGBoost():
     start_time = time.time()
 
     main_preprocessing.create_datasets()
-    XGBoostModel.XGBModel().run(True)
+    #XGBoostModel.XGBModel().run(True)
     submission.make_xgb_submission()
     evaluation.evaluate_xgb()
     submission.make_xgb_test_submission()

@@ -60,8 +60,8 @@ class XGBModel():
             xg.fit(x_train, y_train, eval_set=[(x_train, y_train), (x_valid, y_valid)])
             
             print("Save model...")
-            np.save(data_paths.xgb_species_map, xg.classes_)
             pickle.dump(xg, open(data_paths.xgb_model, "wb"))
+            np.save(data_paths.xgb_species_map, xg.classes_)
         
         print("Predict validation data...")
         pred = xg.predict_proba(x_valid)
