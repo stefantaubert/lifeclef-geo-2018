@@ -38,22 +38,27 @@ class XGBModel():
         x_train = x_train[train_columns]
         x_valid = x_valid[train_columns]
         
-        xg = XGBClassifier(
-            objective="multi:softmax",
-            eval_metric="merror",
-            random_state=settings.seed,
-            n_jobs=-1,
-            n_estimators=200,
-            predictor='gpu_predictor',
-        )
-
-        print("Fit model...")
-        xg.fit(x_train, y_train, eval_set=[(x_train, y_train), (x_valid, y_valid)])
-        np.save(data_paths.xgb_species_map, xg.classes_)
-
-        print("Save model...")
-        pickle.dump(xg, open(data_paths.xgb_model, "wb"))
-
+        load_from_file = True
+        
+        if load_from_file:
+            xg = pickle.load(open("pima.pickle.dat", "rb"))
+        else:
+            xg = XGBClassifier(
+                objective="multi:softmax",
+                eval_metric="merror",
+                random_state=settings.seed,
+                n_jobs=-1,
+                n_estimators=200,
+                predictor='gpu_predictor',
+            )
+            
+            print("Fit model...")
+            xg.fit(x_train, y_train, eval_set=[(x_train, y_train), (x_valid, y_valid)])
+            
+            print("Save model...")
+            np.save(data_paths.xgb_species_map, xg.classes_)
+            pickle.dump(xg, open(data_paths.xgb_model, "wb"))
+        
         print("Predict validation data...")
         pred = xg.predict_proba(x_valid)
 
