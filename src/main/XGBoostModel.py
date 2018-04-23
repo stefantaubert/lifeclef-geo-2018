@@ -38,6 +38,12 @@ class XGBModel():
         
         x_train, x_valid, y_train, y_valid = train_test_split(x_text, y, test_size=settings.train_val_split, random_state=settings.seed)
         
+        x_train = x_train.head(10000)
+        y_train = y_train[:10000]
+
+        x_valid = x_valid.head(50)
+        y_valid = y_valid[:50]
+
         np.save(data_paths.xgb_glc_ids, x_valid["patch_id"])
 
         x_train = x_train[train_columns]
