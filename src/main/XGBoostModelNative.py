@@ -29,12 +29,12 @@ class XGBModelNative():
         x_text = pd.read_csv(data_paths.train)
         y = x_text["species_glc_id"]
         train_columns = [ 
-        'alti', 'bs_top', 'chbio_12', 'chbio_15', 'chbio_17', 'chbio_3', 'chbio_6', 'clc', 'crusting', 'dimp'
-        # 'chbio_1', 'chbio_2', 'chbio_3', 'chbio_4', 'chbio_5', 'chbio_6',
-        # 'chbio_7', 'chbio_8', 'chbio_9', 'chbio_10', 'chbio_11', 'chbio_12',
-        # 'chbio_13', 'chbio_14', 'chbio_15', 'chbio_16', 'chbio_17', 'chbio_18','chbio_19', 
-        # 'etp', 'alti', 'awc_top', 'bs_top', 'cec_top', 'crusting', 'dgh', 'dimp', 'erodi', 'oc_top', 'pd_top', 'text',
-        # 'proxi_eau_fast', 'clc', 'latitude', 'longitude'
+        #'alti', 'bs_top', 'chbio_12', 'chbio_15', 'chbio_17', 'chbio_3', 'chbio_6', 'clc', 'crusting', 'dimp'
+        'chbio_1', 'chbio_2', 'chbio_3', 'chbio_4', 'chbio_5', 'chbio_6',
+        'chbio_7', 'chbio_8', 'chbio_9', 'chbio_10', 'chbio_11', 'chbio_12',
+        'chbio_13', 'chbio_14', 'chbio_15', 'chbio_16', 'chbio_17', 'chbio_18','chbio_19', 
+        'etp', 'alti', 'awc_top', 'bs_top', 'cec_top', 'crusting', 'dgh', 'dimp', 'erodi', 'oc_top', 'pd_top', 'text',
+        'proxi_eau_fast', 'clc', 'latitude', 'longitude'
         ]
 
         # species_count = np.load(data_paths.y_array).shape[1]
@@ -57,7 +57,7 @@ class XGBModelNative():
         params['colsample_bytree'] = 1
         params['gamma'] = 0
         params['max_depth'] = 8
-        params['learning_rate'] = 0.2
+        params['learning_rate'] = 0.1
         params['min_child_weight'] = 1
         params['max_delta_step'] = 0
         params['missing'] = None
@@ -86,7 +86,7 @@ class XGBModelNative():
         d_valid = xgb.DMatrix(x_valid, label=validation_labels)
 
         print("Training model...")
-        bst = xgb.train(params, d_train, 10, verbose_eval=1, evals=[(d_train, 'train'), (d_valid, 'validation')])
+        bst = xgb.train(params, d_train, 80, verbose_eval=1, evals=[(d_train, 'train'), (d_valid, 'validation')])
 
         print("Save model...")
         bst.save_model(data_paths.xgb_model)
