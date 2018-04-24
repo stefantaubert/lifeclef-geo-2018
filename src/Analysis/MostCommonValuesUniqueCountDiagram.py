@@ -67,7 +67,7 @@ class MostCommonValuesUniqueCountDiagram:
 
     def search_combinations(self):
         print("Searching combinations...")
-        result = self.random_search_column_combinations(2, 10)[:1]
+        result = self.random_search_column_combinations(100, 20)[:5]
         amount, speciescount, score, count, combinations = result[0]
         print(str(len(combinations)), "channels can distinguish", str(round(score * 100, 2)) + "%", "of all species")
         text_file = open(data_paths.most_common_values_best_features, "w")
