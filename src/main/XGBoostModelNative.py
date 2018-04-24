@@ -59,7 +59,6 @@ class XGBModelNative():
         params['max_depth'] = 8
         params['min_child_weight'] = 1
         params['missing'] = None
-        params['n_estimators'] = 10
         params['objective'] = 'multi:softprob'
         params['reg_alpha'] = 0
         params['reg_lambda'] = 1
@@ -69,9 +68,9 @@ class XGBModelNative():
         params['subsample'] = 1
         params['eval_metric'] = 'merror'
         params['num_class'] = len(classes_) #3336
-        params['predictor'] = 'gpu_predictor'
-        params['tree_method'] = 'gpu_hist'
         params['updater'] = 'grow_gpu'
+        params['predictor'] = 'gpu_predictor'
+        params['tree_method'] = 'gpu_exact'# 'gpu_hist'
         
         # +1 because error:=label must be in [0, num_class), num_class=3336 but found 3336 in label.
 
@@ -81,8 +80,9 @@ class XGBModelNative():
         training_labels = le.transform(y_train)
                     
         # Datenmatrix für die Eingabedaten erstellen.
-        x_train.to_csv(data_paths.xgb_trainchached, index=False)
-        d_train = xgb.DMatrix(data_paths.xgb_trainchached + "#d_train.cache", label=training_labels)
+        #x_train.to_csv(data_paths.xgb_trainchached, index=False)
+        #d_train = xgb.DMatrix(data_paths.xgb_trainchached + "#d_train.cache", label=training_labels)
+        d_train = xgb.DMatrix(x_train, label=training_labels)
 
         # Um den Score für das Validierungs-Set während des Trainings zu berechnen, muss eine Watchlist angelegt werden.
         watchlist =[(x_train, y_train), (x_valid, y_valid)]
@@ -95,16 +95,16 @@ class XGBModelNative():
         evals = list(zip(evals, eval_names))
 
         print("Training model...")
-        bst = xgb.train(params, d_train, 2, verbose_eval=1, evals=evals)
+        bst = xgb.train(params, d_train, 10, verbose_eval=1, evals=evals)
+
+        print("Save model...")
+        bst.save_model(data_paths.xgb_model)
+        bst.dump_model(data_paths.xgb_model_dump)
 
         print("Predict validation data...")
         test_dmatrix = xgb.DMatrix(x_valid)
-        pred = bst.predict(test_dmatrix, output_margin=False, ntree_limit=0)
-    
-        # print("Save model...")
-        # pickle.dump(xg, open(data_paths.xgb_model, "wb"))
-        # np.save(data_paths.xgb_species_map, xg.classes_)
-        
+        pred = bst.predict(test_dmatrix)        
+
         print("Save validation predictions...")
         np.save(data_paths.xgb_prediction, pred)
 
