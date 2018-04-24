@@ -54,6 +54,7 @@ class XGBModelNative():
         params['colsample_bylevel'] = 1
         params['colsample_bytree'] = 1
         params['gamma'] = 0
+        params['max_depth'] = 8
         params['learning_rate'] = 0.1
         params['min_child_weight'] = 1
         params['max_delta_step'] = 0
@@ -69,14 +70,9 @@ class XGBModelNative():
         params['num_class'] = len(classes_) #3336
         params['updater'] = 'grow_gpu'
         #params['predictor'] = 'gpu_predictor'
-        #params['tree_method'] = 'hist'
-        params['grow_policy'] = 'depthwise' #'lossguide'
-        params['max_depth'] = 8 #0
+        #params['tree_method'] = 'gpu_hist'
+        #params['grow_policy'] = 'depthwise' #'lossguide'
         #params['max_leaves'] = 255
-
-        # +1 because error:=label must be in [0, num_class), num_class=3336 but found 3336 in label.
-
-        # Berechnungen mit der GPU ausführen
 
         le = LabelEncoder().fit(y_train)
         training_labels = le.transform(y_train)
