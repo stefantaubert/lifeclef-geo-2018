@@ -38,42 +38,42 @@ class XGBModel():
         
         x_train, x_valid, y_train, y_valid = train_test_split(x_text, y, test_size=settings.train_val_split, random_state=settings.seed)
         
-        x_train = x_train.head(10000)
-        y_train = y_train[:10000]
+        # x_train = x_train.head(10000)
+        # y_train = y_train[:10000]
 
-        x_valid = x_valid.head(50)
-        y_valid = y_valid[:50]
+        # x_valid = x_valid.head(50)
+        # y_valid = y_valid[:50]
 
         np.save(data_paths.xgb_glc_ids, x_valid["patch_id"])
 
         x_train = x_train[train_columns]
         x_valid = x_valid[train_columns]
         
-        load_from_file = False
+        #load_from_file = False
         
-        if load_from_file:
-            print("Load model from file...")
-            xg = pickle.load(open(data_paths.xgb_model, "rb"))
-        else:
-            xg = XGBClassifier(
-                objective="multi:softmax",
-                eval_metric="merror",
-                random_state=settings.seed,
-                n_jobs=-1,
-                n_estimators=10,
-                predictor='gpu_predictor',
-                tree_method='gpu_hist',
-                max_bin=256,
-                max_depth=1,
-                learning_rate=0.1,
-            )
-            
-            print("Fit model...")
-            xg.fit(x_train, y_train, eval_set=[(x_train, y_train), (x_valid, y_valid)], eval_metric=self.mrr_eval)
-            
-            print("Save model...")
-            pickle.dump(xg, open(data_paths.xgb_model, "wb"))
-            np.save(data_paths.xgb_species_map, xg.classes_)
+    #if load_from_file:
+        print("Load model from file...")
+        xg_loaded = pickle.load(open(data_paths.xgb_model, "rb"))
+    #else:
+        xg = XGBClassifier(
+            objective="multi:softmax",
+            eval_metric="merror",
+            random_state=settings.seed,
+            n_jobs=-1,
+            n_estimators=10,
+            predictor='gpu_predictor',
+            tree_method='gpu_hist',
+            #max_bin=256,
+            max_depth=8,
+            learning_rate=0.1,
+        )
+        
+        print("Fit model...")
+        xg.fit(x_train, y_train, eval_set=[(x_train, y_train), (x_valid, y_valid)], eval_metric=self.mrr_eval, xgb_model=xg_loaded)
+        
+        print("Save model...")
+        pickle.dump(xg, open(data_paths.xgb_model, "wb"))
+        np.save(data_paths.xgb_species_map, xg.classes_)
         
         print("Predict validation data...")
         pred = xg.predict_proba(x_valid)
