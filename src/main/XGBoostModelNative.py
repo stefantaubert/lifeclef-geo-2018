@@ -69,7 +69,7 @@ class XGBModelNative():
         params['subsample'] = 1
         params['eval_metric'] = 'merror'
         params['num_class'] = len(classes_) #3336
-        #params['predictor'] = 'gpu_predictor'
+        params['predictor'] = 'gpu_predictor'
         params['tree_method'] = 'gpu_hist'
         params['updater'] = 'grow_gpu'
         
@@ -81,7 +81,8 @@ class XGBModelNative():
         training_labels = le.transform(y_train)
                     
         # Datenmatrix für die Eingabedaten erstellen.
-        d_train = xgb.DMatrix(x_train, label=training_labels)
+        x_train.to_csv(data_paths.xgb_trainchached, index=False)
+        d_train = xgb.DMatrix(data_paths.xgb_trainchached + "#d_train.cache", label=training_labels)
 
         # Um den Score für das Validierungs-Set während des Trainings zu berechnen, muss eine Watchlist angelegt werden.
         watchlist =[(x_train, y_train), (x_valid, y_valid)]
