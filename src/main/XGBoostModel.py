@@ -52,8 +52,8 @@ class XGBModel():
         #load_from_file = False
         
     #if load_from_file:
-        print("Load model from file...")
-        xg_loaded = pickle.load(open(data_paths.xgb_model, "rb"))
+        #print("Load model from file...")
+        #xg_loaded = pickle.load(open(data_paths.xgb_model, "rb"))
     #else:
         xg = XGBClassifier(
             objective="multi:softmax",
@@ -69,7 +69,7 @@ class XGBModel():
         )
         
         print("Fit model...")
-        xg.fit(x_train, y_train, eval_set=[(x_train, y_train), (x_valid, y_valid)], xgb_model=xg_loaded)#, eval_metric=self.mrr_eval)
+        xg.fit(x_train, y_train, eval_set=[(x_train, y_train), (x_valid, y_valid)])#, xgb_model=xg_loaded)#, eval_metric=self.mrr_eval)
         
         print("Save model...")
         pickle.dump(xg, open(data_paths.xgb_model, "wb"))
