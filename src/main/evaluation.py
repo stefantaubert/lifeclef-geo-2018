@@ -31,3 +31,4 @@ def evaluate_results_from_files(submission_path, gt_path, species_map_path):
     ranks = get_ranks.get_ranks_df(df, y, settings.TOP_N_SUBMISSION_RANKS)
     mrr_score = mrr.mrr_score(ranks)
     print("MRR-Score:", mrr_score * 100,"%")
+

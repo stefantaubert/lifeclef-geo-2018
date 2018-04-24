@@ -1,3 +1,4 @@
+import module_support_main
 import numpy as np
 import data_paths_main as data_paths
 import settings_main as settings
@@ -81,3 +82,6 @@ def make_submission_from_files(species_map_path, predictions_path, glc_ids_path,
 
     print("Save submission...")
     df.to_csv(submission_path, index=False)
+
+if __name__ == "__main__":
+    make_xgb_submission()
