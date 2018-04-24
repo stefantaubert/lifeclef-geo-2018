@@ -1,3 +1,4 @@
+import module_support_main
 import pandas as pd
 import numpy as np
 import time
@@ -81,8 +82,8 @@ class XGBModelNative():
         # Datenmatrix für die Eingabedaten erstellen.
         #x_train.to_csv(data_paths.xgb_trainchached, index=False)
         #d_train = xgb.DMatrix(data_paths.xgb_trainchached + "#d_train.cache", label=training_labels)
-        d_train = xgb.DMatrix(x_train, label=training_labels)
-        d_valid = xgb.DMatrix(x_valid, label=validation_labels)
+        d_train = xgb.DMatrix(x_train, label=training_labels, nthread=-1)
+        d_valid = xgb.DMatrix(x_valid, label=validation_labels, nthread=-1)
 
         print("Training model...")
         bst = xgb.train(params, d_train, 10, verbose_eval=1, evals=[(d_train, 'train'), (d_valid, 'validation')])
