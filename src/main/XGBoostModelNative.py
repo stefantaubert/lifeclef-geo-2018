@@ -69,10 +69,10 @@ class XGBModelNative():
         params['updater'] = 'grow_gpu'
         params['predictor'] = 'gpu_predictor'
         params['tree_method'] = 'gpu_hist'
-        params['grow_policy'] = 'depthwise' #'lossguide'
-        params['max_depth'] = 8 #0
+        params['grow_policy'] = 'lossguide'#'depthwise'
+        params['max_depth'] = 0 #0
         params['min_child_weight'] = 1
-        #params['max_leaves'] = 255
+        params['max_leaves'] = 255
 
         # +1 because error:=label must be in [0, num_class), num_class=3336 but found 3336 in label.
 
