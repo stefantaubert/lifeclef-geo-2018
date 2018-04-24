@@ -50,6 +50,7 @@ class XGBModelNative():
         
         # Die Parameter für XGBoost erstellen.
         params = {}
+        params['updater'] = 'grow_gpu'
         params['base_score'] = 0.5
         params['booster'] = 'gbtree'
         params['colsample_bylevel'] = 1
@@ -69,7 +70,6 @@ class XGBModelNative():
         params['subsample'] = 1
         params['eval_metric'] = 'merror'
         params['num_class'] = len(classes_) #3336
-        params['updater'] = 'grow_gpu'
         #params['predictor'] = 'gpu_predictor'
         #params['tree_method'] = 'gpu_hist'
         #params['grow_policy'] = 'depthwise' #'lossguide'
@@ -82,8 +82,8 @@ class XGBModelNative():
         # Datenmatrix für die Eingabedaten erstellen.
         #x_train.to_csv(data_paths.xgb_trainchached, index=False)
         #d_train = xgb.DMatrix(data_paths.xgb_trainchached + "#d_train.cache", label=training_labels)
-        d_train = xgb.DMatrix(x_train, label=training_labels, nthread=-1)
-        d_valid = xgb.DMatrix(x_valid, label=validation_labels, nthread=-1)
+        d_train = xgb.DMatrix(x_train, label=training_labels)
+        d_valid = xgb.DMatrix(x_valid, label=validation_labels)
 
         print("Training model...")
         bst = xgb.train(params, d_train, 10, verbose_eval=1, evals=[(d_train, 'train'), (d_valid, 'validation')])
