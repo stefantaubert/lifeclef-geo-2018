@@ -68,8 +68,8 @@ class XGBModelNative():
         params['eval_metric'] = 'merror'
         params['num_class'] = len(classes_) #3336
         params['updater'] = 'grow_gpu'
-        params['predictor'] = 'gpu_predictor'
-        params['tree_method'] = 'hist'
+        #params['predictor'] = 'gpu_predictor'
+        #params['tree_method'] = 'hist'
         params['grow_policy'] = 'depthwise' #'lossguide'
         params['max_depth'] = 8 #0
         #params['max_leaves'] = 255
