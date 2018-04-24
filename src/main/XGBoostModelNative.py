@@ -56,8 +56,6 @@ class XGBModelNative():
         params['gamma'] = 0
         params['learning_rate'] = 0.1
         params['max_delta_step'] = 0
-        params['max_depth'] = 8
-        params['min_child_weight'] = 1
         params['missing'] = None
         params['objective'] = 'multi:softprob'
         params['reg_alpha'] = 0
@@ -68,34 +66,40 @@ class XGBModelNative():
         params['subsample'] = 1
         params['eval_metric'] = 'merror'
         params['num_class'] = len(classes_) #3336
-        #params['updater'] = 'grow_gpu'
+        params['updater'] = 'grow_gpu'
         params['predictor'] = 'gpu_predictor'
-        params['tree_method'] = 'gpu_exact'# 'gpu_hist'
-        
+        params['tree_method'] = 'gpu_hist'
+        params['grow_policy'] = 'depthwise' #'lossguide'
+        params['max_depth'] = 8 #0
+        params['min_child_weight'] = 1
+        #params['max_leaves'] = 255
+
         # +1 because error:=label must be in [0, num_class), num_class=3336 but found 3336 in label.
 
         # Berechnungen mit der GPU ausführen
 
         le = LabelEncoder().fit(y_train)
         training_labels = le.transform(y_train)
-                    
+        validation_labels = le.transform(y_valid)
+
         # Datenmatrix für die Eingabedaten erstellen.
         #x_train.to_csv(data_paths.xgb_trainchached, index=False)
         #d_train = xgb.DMatrix(data_paths.xgb_trainchached + "#d_train.cache", label=training_labels)
         d_train = xgb.DMatrix(x_train, label=training_labels)
+        d_valid = xgb.DMatrix(x_valid, label=validation_labels)
 
-        # Um den Score für das Validierungs-Set während des Trainings zu berechnen, muss eine Watchlist angelegt werden.
-        watchlist =[(x_train, y_train), (x_valid, y_valid)]
-        evals = list(
-                        xgb.DMatrix(x[0], label=le.transform(x[1]))
-                        for x in watchlist
-                    )
-        nevals = len(evals)
-        eval_names = ["validation_{}".format(i) for i in range(nevals)]
-        evals = list(zip(evals, eval_names))
+        # # Um den Score für das Validierungs-Set während des Trainings zu berechnen, muss eine Watchlist angelegt werden.
+        # watchlist =[(x_train, y_train), (x_valid, y_valid)]
+        # evals = list(
+        #                 xgb.DMatrix(x[0], label=le.transform(x[1]))
+        #                 for x in watchlist
+        #             )
+        # nevals = len(evals)
+        # eval_names = ["validation_{}".format(i) for i in range(nevals)]
+        # evals = list(zip(evals, eval_names))
 
         print("Training model...")
-        bst = xgb.train(params, d_train, 10, verbose_eval=1, evals=evals)
+        bst = xgb.train(params, d_train, 10, verbose_eval=1, evals=[(d_train, 'train'), (d_valid, 'validation')])
 
         print("Save model...")
         bst.save_model(data_paths.xgb_model)
