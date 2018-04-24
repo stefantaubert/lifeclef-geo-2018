@@ -32,3 +32,5 @@ def evaluate_results_from_files(submission_path, gt_path, species_map_path):
     mrr_score = mrr.mrr_score(ranks)
     print("MRR-Score:", mrr_score * 100,"%")
 
+if __name__ == "__main__":
+    evaluate_xgb()

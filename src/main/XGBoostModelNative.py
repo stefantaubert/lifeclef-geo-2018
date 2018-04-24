@@ -107,3 +107,6 @@ class XGBModelNative():
         
         print("Save validation predictions...")
         np.save(data_paths.xgb_prediction, pred)
+
+if __name__ == "__main__":
+    XGBModelNative().run()
