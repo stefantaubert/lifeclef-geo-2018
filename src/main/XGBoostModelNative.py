@@ -38,6 +38,8 @@ class XGBModelNative():
 
         # species_count = np.load(data_paths.y_array).shape[1]
         classes_ = np.unique(y)
+        np.save(data_paths.xgb_species_map, classes_)
+
         x_train, x_valid, y_train, y_valid = train_test_split(x_text, y, test_size=settings.train_val_split, random_state=settings.seed)
         
         np.save(data_paths.xgb_glc_ids, x_valid["patch_id"])
@@ -68,11 +70,10 @@ class XGBModelNative():
         params['eval_metric'] = 'merror'
         params['predictor'] = 'gpu_predictor'
         # params['tree_method'] = 'gpu_hist'
-        params['num_class'] = 3336
+        params['num_class'] = len(classes_) #3336
         params['updater'] = 'grow_gpu'
         
         # +1 because error:=label must be in [0, num_class), num_class=3336 but found 3336 in label.
-        #params['num_class'] = len(classes_)
 
         # Berechnungen mit der GPU ausführen
 
