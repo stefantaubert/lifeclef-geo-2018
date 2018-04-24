@@ -1,20 +1,19 @@
 import module_support
 import main_preprocessing
-import time 
+import time
+import XGBoostModelNative
 import XGBoostModel
 import XGBoostModelGroups
 import submission
 import evaluation
 
-def startXGBoostNavive(with_test):
+def startXGBoostNative():
     start_time = time.time()
 
     main_preprocessing.create_datasets()
-    XGBoostModel.XGBModel().run(with_test)
+    XGBoostModelNative.XGBModelNative().run()
     submission.make_xgb_submission()
     evaluation.evaluate_xgb()
-    if with_test:
-        submission.make_xgb_test_submission()
 
     seconds = time.time() - start_time
     print("Total duration:", round(seconds / 60, 2), "min")
@@ -47,5 +46,6 @@ def startXGBoostGroups():
     print("Total duration:", round(seconds / 60, 2), "min")
 
 if __name__ == "__main__":
-    startXGBoost(False)
+    startXGBoostNative()
+    #startXGBoost(False)
     #startXGBoostGroups()

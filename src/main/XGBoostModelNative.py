@@ -14,7 +14,7 @@ import json
 import pickle
 import os
 
-class XGBModel():
+class XGBModelNative():
     def mrr_eval(self, y_predicted, y_true):
         print(y_predicted, y_true)
         return ("test", 0.5)
