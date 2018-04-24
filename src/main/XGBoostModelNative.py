@@ -56,7 +56,7 @@ class XGBModelNative():
         params['colsample_bylevel'] = 1
         params['colsample_bytree'] = 1
         params['gamma'] = 0
-        params['max_depth'] = 8
+        params['max_depth'] = 10
         params['learning_rate'] = 0.1
         params['min_child_weight'] = 1
         params['max_delta_step'] = 0
