@@ -69,7 +69,7 @@ class XGBModel():
         )
         
         print("Fit model...")
-        xg.fit(x_train, y_train, eval_set=[(x_train, y_train), (x_valid, y_valid)], eval_metric=self.mrr_eval, xgb_model=xg_loaded)
+        xg.fit(x_train, y_train, eval_set=[(x_train, y_train), (x_valid, y_valid)], xgb_model=xg_loaded)#, eval_metric=self.mrr_eval)
         
         print("Save model...")
         pickle.dump(xg, open(data_paths.xgb_model, "wb"))
