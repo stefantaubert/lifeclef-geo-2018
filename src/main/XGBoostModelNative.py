@@ -68,7 +68,7 @@ class XGBModelNative():
         params['subsample'] = 1
         params['eval_metric'] = 'merror'
         params['num_class'] = len(classes_) #3336
-        params['updater'] = 'grow_gpu'
+        #params['updater'] = 'grow_gpu'
         params['predictor'] = 'gpu_predictor'
         params['tree_method'] = 'gpu_exact'# 'gpu_hist'
         
