@@ -68,9 +68,9 @@ class XGBModelNative():
         params['silent'] = 1
         params['subsample'] = 1
         params['eval_metric'] = 'merror'
-        params['predictor'] = 'gpu_predictor'
-        # params['tree_method'] = 'gpu_hist'
         params['num_class'] = len(classes_) #3336
+        #params['predictor'] = 'gpu_predictor'
+        params['tree_method'] = 'gpu_hist'
         params['updater'] = 'grow_gpu'
         
         # +1 because error:=label must be in [0, num_class), num_class=3336 but found 3336 in label.
