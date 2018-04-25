@@ -22,10 +22,13 @@ class XGBModelNative():
         print(y_predicted, y_true)
         return ("test", 0.5)
 
+    def save_after_it(self, model):
+        model.save_model(data_paths.xgb_model + str())
+        self.current_boosting_round += 1
+
     def run(self):
         print("Run model...")
         #x_text = np.load(data_paths.x_text)
-
         x_text = pd.read_csv(data_paths.train)
         y = x_text["species_glc_id"]
         train_columns = [ 
@@ -56,8 +59,8 @@ class XGBModelNative():
         params['colsample_bylevel'] = 1
         params['colsample_bytree'] = 1
         params['gamma'] = 0
-        params['max_depth'] = 8
-        params['learning_rate'] = 0.1
+        params['max_depth'] = 10
+        params['learning_rate'] = 0.05
         params['min_child_weight'] = 1
         params['max_delta_step'] = 0
         params['missing'] = None
@@ -86,7 +89,8 @@ class XGBModelNative():
         d_valid = xgb.DMatrix(x_valid, label=validation_labels)
 
         print("Training model...")
-        bst = xgb.train(params, d_train, 80, verbose_eval=1, evals=[(d_train, 'train'), (d_valid, 'validation')])
+        self.current_boosting_round = 0
+        bst = xgb.train(params, d_train, 200, verbose_eval=1, evals=[(d_train, 'train'), (d_valid, 'validation')])#, callbacks=[self.save_after_it(bst)])
 
         print("Save model...")
         bst.save_model(data_paths.xgb_model)
