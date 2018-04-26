@@ -14,8 +14,22 @@ import time
 import json
 import pickle
 import os
+import get_ranks
+import mrr
 
 from sklearn.preprocessing import LabelEncoder
+
+class XGBMrrEval():
+    def __init__(self, classes):
+        self.classes = classes
+
+    def evalute(self, y_predicted, y_true):
+        print("evaluate")
+        glc = [x for x in range(len(y_predicted))]
+        subm = submission_maker._make_submission(100, self.classes, y_predicted, glc)
+        ranks = get_ranks.get_ranks(subm, y_true, 100)
+        mrr_score = mrr.mrr_score(ranks)
+        return ("mrr", mrr_score)
 
 class XGBModelNative():
     def mrr_eval(self, y_predicted, y_true):
@@ -89,8 +103,10 @@ class XGBModelNative():
         d_valid = xgb.DMatrix(x_valid, label=validation_labels)
 
         print("Training model...")
+        
+        evaluator = XGBMrrEval(classes_)
         self.current_boosting_round = 0
-        bst = xgb.train(params, d_train, 200, verbose_eval=1, evals=[(d_train, 'train'), (d_valid, 'validation')])#, callbacks=[self.save_after_it(bst)])
+        bst = xgb.train(params, d_train, 10, verbose_eval=1, evals=[(d_train, 'train'), (d_valid, 'validation')], feval=evaluator.evalute)#, callbacks=[self.save_after_it(bst)])
 
         print("Save model...")
         bst.save_model(data_paths.xgb_model)
