@@ -125,7 +125,35 @@ class XGBModelNative():
         print("Predict test data...")    
         testset = pd.read_csv(data_paths.test)
         np.save(data_paths.xgb_test_glc_ids, testset["patch_id"])
+
+        testset = testset[train_columns]
+        testset_dmatrix = xgb.DMatrix(testset)
+        pred_test = bst.predict(testset_dmatrix)        
+
+        print("Save test predictions...")
+        np.save(data_paths.xgb_test_prediction, pred_test)
+
+    def predict_test_set_from_saved_model(self):
+        print("Run model...")
+        #x_text = np.load(data_paths.x_text)
+        train_columns = [ 
+        #'alti', 'bs_top', 'chbio_12', 'chbio_15', 'chbio_17', 'chbio_3', 'chbio_6', 'clc', 'crusting', 'dimp'
+        'chbio_1', 'chbio_2', 'chbio_3', 'chbio_4', 'chbio_5', 'chbio_6',
+        'chbio_7', 'chbio_8', 'chbio_9', 'chbio_10', 'chbio_11', 'chbio_12',
+        'chbio_13', 'chbio_14', 'chbio_15', 'chbio_16', 'chbio_17', 'chbio_18','chbio_19', 
+        'etp', 'alti', 'awc_top', 'bs_top', 'cec_top', 'crusting', 'dgh', 'dimp', 'erodi', 'oc_top', 'pd_top', 'text',
+        'proxi_eau_fast', 'clc', 'latitude', 'longitude'
+        ]
+
+        print("Load model...")
+        bst = xgb.Booster()
+        bst.load_model(data_paths.xgb_model)
+
+        print("Predict test data...")    
+        testset = pd.read_csv(data_paths.test)
+        np.save(data_paths.xgb_test_glc_ids, testset["patch_id"])
         
+        testset = testset[train_columns]
         testset_dmatrix = xgb.DMatrix(testset)
         pred_test = bst.predict(testset_dmatrix)        
 
