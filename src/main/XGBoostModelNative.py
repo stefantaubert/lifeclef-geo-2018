@@ -106,7 +106,12 @@ class XGBModelNative():
         
         evaluator = XGBMrrEval(classes_)
         self.current_boosting_round = 0
-        bst = xgb.train(params, d_train, 10, verbose_eval=1, evals=[(d_train, 'train'), (d_valid, 'validation')], feval=evaluator.evalute)#, callbacks=[self.save_after_it(bst)])
+        watchlist = [
+            #(d_train, 'train'), 
+            (d_valid, 'validation'),
+        ]
+
+        bst = xgb.train(params, d_train, 10, verbose_eval=1, evals=watchlist, feval=evaluator.evalute)#, callbacks=[self.save_after_it(bst)])
 
         print("Save model...")
         bst.save_model(data_paths.xgb_model)
