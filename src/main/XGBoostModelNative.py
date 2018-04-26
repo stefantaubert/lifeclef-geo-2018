@@ -109,7 +109,7 @@ class XGBModelNative():
             (d_valid, 'validation'),
         ]
         xgb.callback.print_evaluation() 
-        bst = xgb.train(params, d_train, 2, verbose_eval=2, evals=watchlist, feval=evaluator.evalute, callbacks=[self.save_after_it])
+        bst = xgb.train(params, d_train, 200, verbose_eval=2, evals=watchlist, feval=evaluator.evalute, callbacks=[self.save_after_it])
 
         print("Save model...")
         bst.save_model(data_paths.xgb_model)
