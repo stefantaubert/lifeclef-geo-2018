@@ -27,7 +27,7 @@ def make_xgb_test_submission():
     df = submission_maker.make_submission_df(settings.TOP_N_SUBMISSION_RANKS, classes, predictions, glc_ids)
 
     print("Save test submission...")
-    df.to_csv(data_paths.xgb_test_submission, index=False, sep=";")
+    df.to_csv(data_paths.xgb_test_submission, index=False, sep=";", header=None)
 
 def make_xgb_groups_submission():
     print("Make validation submission...")

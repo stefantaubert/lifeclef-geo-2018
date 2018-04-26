@@ -34,13 +34,9 @@ class XGBMrrEval():
         return ("mrr", mrr_score)
 
 class XGBModelNative():
-    def mrr_eval(self, y_predicted, y_true):
-        print(y_predicted, y_true)
-        return ("test", 0.5)
-
-    def save_after_it(self, model):
-        model.save_model(data_paths.xgb_model + str())
-        self.current_boosting_round += 1
+    def save_after_it(self, env):
+        print("Saving model of iteration", str(env.iteration))
+        env.model.save_model(data_paths.xgb_model + str(env.iteration))
 
     def run(self):
         print("Run model...")
@@ -76,7 +72,7 @@ class XGBModelNative():
         params['colsample_bytree'] = 1
         params['gamma'] = 0
         params['max_depth'] = 10
-        params['learning_rate'] = 0.05
+        params['learning_rate'] = 0.1
         params['min_child_weight'] = 1
         params['max_delta_step'] = 0
         params['missing'] = None
@@ -112,19 +108,29 @@ class XGBModelNative():
             #(d_train, 'train'), 
             (d_valid, 'validation'),
         ]
-
-        bst = xgb.train(params, d_train, 10, verbose_eval=1, evals=watchlist, feval=evaluator.evalute)#, callbacks=[self.save_after_it(bst)])
+        xgb.callback.print_evaluation() 
+        bst = xgb.train(params, d_train, 2, verbose_eval=2, evals=watchlist, feval=evaluator.evalute, callbacks=[self.save_after_it])
 
         print("Save model...")
         bst.save_model(data_paths.xgb_model)
         bst.dump_model(data_paths.xgb_model_dump)
 
-        print("Predict validation data...")
-        test_dmatrix = xgb.DMatrix(x_valid)
-        pred = bst.predict(test_dmatrix)        
+        # print("Predict validation data...")
+        # test_dmatrix = xgb.DMatrix(x_valid)
+        # pred = bst.predict(test_dmatrix)        
 
-        print("Save validation predictions...")
-        np.save(data_paths.xgb_prediction, pred)
+        # print("Save validation predictions...")
+        # np.save(data_paths.xgb_prediction, pred)
+
+        print("Predict test data...")    
+        testset = pd.read_csv(data_paths.test)
+        np.save(data_paths.xgb_test_glc_ids, testset["patch_id"])
+        
+        testset_dmatrix = xgb.DMatrix(testset)
+        pred_test = bst.predict(testset_dmatrix)        
+
+        print("Save test predictions...")
+        np.save(data_paths.xgb_test_prediction, pred_test)
 
 if __name__ == "__main__":
     XGBModelNative().run()

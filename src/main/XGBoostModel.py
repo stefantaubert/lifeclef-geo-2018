@@ -16,18 +16,6 @@ import pickle
 import os
 import mrr
 
-class XGBMrrEval():
-    def __init__(self, classes):
-        self.classes = classes
-
-    def evalute(self, y_predicted, y_true):
-        print("evaluate")
-        glc = [x for x in range(len(y_predicted))]
-        subm = submission_maker._make_submission(100, self.classes, y_predicted, glc)
-        ranks = get_ranks.get_ranks(subm, y_true, 100)
-        mrr_score = mrr.mrr_score(ranks)
-        return ("mrr", mrr_score)
-
 class XGBModel():
     def run(self, predict_testdata=False):
         print("Run model...")
@@ -77,7 +65,6 @@ class XGBModel():
             max_depth=8,
             learning_rate=0.1,
         )
-        evaluator = XGBMrrEval(classes)
 
         print("Fit model...")
         xg.fit(x_train, y_train, eval_set=[(x_train, y_train), (x_valid, y_valid)])#, xgb_model=xg_loaded)#, eval_metric=self.mrr_eval)

@@ -11,10 +11,12 @@ def startXGBoostNative():
     start_time = time.time()
     print("Start:", datetime.datetime.now().time())
     main_preprocessing.create_datasets()
-    XGBoostModelNative.XGBModelNative().run()
-    submission.make_xgb_submission()
-    evaluation.evaluate_xgb()
-
+    XGBoostModelNative.XGBModelNative().run(True)
+    submission.make_xgb_test_submission()
+    
+    # submission.make_xgb_submission()
+    # evaluation.evaluate_xgb()
+    
     print("End:", datetime.datetime.now().time())
     seconds = time.time() - start_time
     print("Total duration:", round(seconds / 60, 2), "min")
