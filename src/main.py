@@ -11,7 +11,7 @@ def startXGBoostNative():
     start_time = time.time()
     print("Start:", datetime.datetime.now().time())
     main_preprocessing.create_datasets()
-    XGBoostModelNative.XGBModelNative().run(True)
+    XGBoostModelNative.XGBModelNative().run()
     submission.make_xgb_test_submission()
     
     # submission.make_xgb_submission()
