@@ -20,14 +20,16 @@ import mrr
 from sklearn.preprocessing import LabelEncoder
 
 class XGBMrrEval():
-    def __init__(self, classes):
+    def __init__(self, classes, y_valid):
         self.classes = classes
+        self.y_valid = y_valid
+        self.class_count = len(self.classes)
 
     def evalute(self, y_predicted, y_true):
         print("evaluate")
         glc = [x for x in range(len(y_predicted))]
-        subm = submission_maker._make_submission(100, self.classes, y_predicted, glc)
-        ranks = get_ranks.get_ranks(subm, y_true, 100)
+        subm = submission_maker._make_submission(self.class_count, self.classes, y_predicted, glc)
+        ranks = get_ranks.get_ranks(subm, self.y_valid, self.class_count)
         mrr_score = mrr.mrr_score(ranks)
         return ("mrr", mrr_score)
 
@@ -104,7 +106,7 @@ class XGBModelNative():
 
         print("Training model...")
         
-        evaluator = XGBMrrEval(classes_)
+        evaluator = XGBMrrEval(classes_, y_valid)
         self.current_boosting_round = 0
         watchlist = [
             #(d_train, 'train'), 
