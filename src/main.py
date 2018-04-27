@@ -21,6 +21,16 @@ def startXGBoostNative():
     seconds = time.time() - start_time
     print("Total duration:", round(seconds / 60, 2), "min")
 
+def predictTestDataXGBNative(iteration):
+    start_time = time.time()
+    print("Start:", datetime.datetime.now().time())
+    main_preprocessing.create_datasets()
+    XGBoostModelNative.XGBModelNative().predict_test_set_from_saved_model(iteration)
+    submission.make_xgb_test_submission()    
+    print("End:", datetime.datetime.now().time())
+    seconds = time.time() - start_time
+    print("Total duration:", round(seconds / 60, 2), "min")
+
 def startXGBoost(with_test):
     start_time = time.time()
 
@@ -49,6 +59,7 @@ def startXGBoostGroups():
     print("Total duration:", round(seconds / 60, 2), "min")
 
 if __name__ == "__main__":
-    startXGBoostNative()
+    predictTestDataXGBNative(36)
+    #startXGBoostNative()
     #startXGBoost(False)
     #startXGBoostGroups()

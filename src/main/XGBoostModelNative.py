@@ -38,12 +38,8 @@ class XGBModelNative():
         print("Saving model of iteration", str(env.iteration))
         env.model.save_model(data_paths.xgb_model + str(env.iteration))
 
-    def run(self):
-        print("Run model...")
-        #x_text = np.load(data_paths.x_text)
-        x_text = pd.read_csv(data_paths.train)
-        y = x_text["species_glc_id"]
-        train_columns = [ 
+    def __init__(self):
+        self.train_columns = [ 
         #'alti', 'bs_top', 'chbio_12', 'chbio_15', 'chbio_17', 'chbio_3', 'chbio_6', 'clc', 'crusting', 'dimp'
         'chbio_1', 'chbio_2', 'chbio_3', 'chbio_4', 'chbio_5', 'chbio_6',
         'chbio_7', 'chbio_8', 'chbio_9', 'chbio_10', 'chbio_11', 'chbio_12',
@@ -51,6 +47,12 @@ class XGBModelNative():
         'etp', 'alti', 'awc_top', 'bs_top', 'cec_top', 'crusting', 'dgh', 'dimp', 'erodi', 'oc_top', 'pd_top', 'text',
         'proxi_eau_fast', 'clc', 'latitude', 'longitude'
         ]
+
+    def run(self):
+        print("Run model...")
+        #x_text = np.load(data_paths.x_text)
+        x_text = pd.read_csv(data_paths.train)
+        y = x_text["species_glc_id"]
 
         # species_count = np.load(data_paths.y_array).shape[1]
         classes_ = np.unique(y)
@@ -60,8 +62,8 @@ class XGBModelNative():
         
         np.save(data_paths.xgb_glc_ids, x_valid["patch_id"])
 
-        x_train = x_train[train_columns]
-        x_valid = x_valid[train_columns]
+        x_train = x_train[self.train_columns]
+        x_valid = x_valid[self.train_columns]
         
         # Die Parameter für XGBoost erstellen.
         params = {}
@@ -126,34 +128,27 @@ class XGBModelNative():
         testset = pd.read_csv(data_paths.test)
         np.save(data_paths.xgb_test_glc_ids, testset["patch_id"])
 
-        testset = testset[train_columns]
+        testset = testset[self.train_columns]
         testset_dmatrix = xgb.DMatrix(testset)
         pred_test = bst.predict(testset_dmatrix)        
 
         print("Save test predictions...")
         np.save(data_paths.xgb_test_prediction, pred_test)
 
-    def predict_test_set_from_saved_model(self):
-        print("Run model...")
-        #x_text = np.load(data_paths.x_text)
-        train_columns = [ 
-        #'alti', 'bs_top', 'chbio_12', 'chbio_15', 'chbio_17', 'chbio_3', 'chbio_6', 'clc', 'crusting', 'dimp'
-        'chbio_1', 'chbio_2', 'chbio_3', 'chbio_4', 'chbio_5', 'chbio_6',
-        'chbio_7', 'chbio_8', 'chbio_9', 'chbio_10', 'chbio_11', 'chbio_12',
-        'chbio_13', 'chbio_14', 'chbio_15', 'chbio_16', 'chbio_17', 'chbio_18','chbio_19', 
-        'etp', 'alti', 'awc_top', 'bs_top', 'cec_top', 'crusting', 'dgh', 'dimp', 'erodi', 'oc_top', 'pd_top', 'text',
-        'proxi_eau_fast', 'clc', 'latitude', 'longitude'
-        ]
-
+    def predict_test_set_from_saved_model(self, iteration_nr):
         print("Load model...")
+        path = data_paths.xgb_model + str(iteration_nr)
+        assert os.path.exists(path)
+
         bst = xgb.Booster()
-        bst.load_model(data_paths.xgb_model)
+        bst.load_model(path)
+        #bst.dump_model(data_paths.xgb_model_dump + str(iteration_nr))
 
         print("Predict test data...")    
         testset = pd.read_csv(data_paths.test)
         np.save(data_paths.xgb_test_glc_ids, testset["patch_id"])
         
-        testset = testset[train_columns]
+        testset = testset[self.train_columns]
         testset_dmatrix = xgb.DMatrix(testset)
         pred_test = bst.predict(testset_dmatrix)        
 
@@ -161,4 +156,7 @@ class XGBModelNative():
         np.save(data_paths.xgb_test_prediction, pred_test)
 
 if __name__ == "__main__":
-    XGBModelNative().run()
+    xg = XGBModelNative()
+    #xg.run()
+    xg.predict_test_set_from_saved_model(36)
+    
