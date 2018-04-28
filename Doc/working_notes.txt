@@ -1,0 +1,26 @@
+Working Notes GeoLifeClef:
+
+
+1. Analyse des Datensets:
+	- Wichtige Spalten der CSV-Datei festlegen
+	- Bilder anschauen
+		-> viele Bilder sehr ähnlich gerade bei ersten Channels, generell kaum Struktur erkennbar
+	- Häufigkeiten der Klassen ermitteln
+	- Durchschnittliche Werte des Datensets für einzelne EVs ermitteln
+	- Diagramme für Häufigste Werte einer Klasse
+		-> Diagramme der häufigen Klassen sehr ähnlich
+	- Ähnlichkeit der einzelnen Klassen ermitteln + Gruppenbildung
+		-> vorallem häufige Klassen sehr ähnlich
+	- Heatmaps für einzelne Klassen erstellt
+		-> alle Bilder einer Klasse geaveraged
+		-> wieder sehr ähnlich für häufige Klassen
+	- 
+
+2. XGBoost Model mit CSV Werten
+
+
+
+3. Keras VGG like Model mit Tiff Bildern
+	- einzelnes Modell mit allen 33 Channeln
+	- einzelne Modelle mitausgewählten Channels
+	

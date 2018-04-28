@@ -4,7 +4,7 @@
 #compiles the model
 #fits the model on the batch generator using the train samples and the species map
 #saves the model
-
+import module_support_main
 from data_reading import batch_generator as bg
 import data_paths_main as data_paths
 import pickle
@@ -15,10 +15,10 @@ import tensorflow as tf
 from keras_models import vgg_like_model
 from keras.callbacks import ModelCheckpoint
 import os
-import settings as stg
-from imageList_generator import generate_train_image_list
+import settings_main as stg
+from data_reading.imageList_generator import generate_train_image_list
 
-if __name__ == '__main__':
+def train_keras_model():
     if not os.path.exists(data_paths.train_samples):
         generate_train_image_list()
 
@@ -33,20 +33,21 @@ if __name__ == '__main__':
     samples = np.load(data_paths.train_samples)
     split = 1 - np.int(len(samples)*stg.train_val_split)
     samples, val_samples = samples[:split, :], samples[split:, :]
-    print(len(val_samples))
+
     with open(data_paths.train_samples_species_map, 'rb') as f:
         species_map = pickle.load(f)
 
     pickle.dump(species_map, open(data_paths.keras_training_species_map, 'wb'))
 
     top3_acc = metrics.get_top3_accuracy()
+    top10_acc = metrics.get_top10_accuracy()
     top50_acc = metrics.get_top50_accuracy()
 
     model = vgg_like_model.get_model(len(species_map.keys()), 33)
 
-    model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy', top3_acc, top50_acc])
+    model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy', top3_acc, top10_acc, top50_acc])
 
-    checkpoint = ModelCheckpoint(data_paths.keras_training_model, monitor='val_loss', verbose=1, save_best_only=True, mode='min')
+    checkpoint = ModelCheckpoint(data_paths.keras_training_model, monitor='val_top3_acc', verbose=1, save_best_only=True, mode='max')
 
     print("start Training...")
 
@@ -55,6 +56,9 @@ if __name__ == '__main__':
                         callbacks=[checkpoint])
 
     print("Finished!")
+
+if __name__ == '__main__':
+    train_keras_model()
 
 
 

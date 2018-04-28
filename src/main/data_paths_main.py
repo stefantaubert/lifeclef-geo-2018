@@ -43,6 +43,9 @@ keras_multi_model_training_glc_ids = keras_multi_model_training_dir + "glc_ids.n
 keras_multi_model_training_model1 = keras_multi_model_training_dir + "model1.h5"
 keras_multi_model_training_model2 = keras_multi_model_training_dir + "model2.h5"
 keras_multi_model_training_model3 = keras_multi_model_training_dir + "model3.h5"
+keras_multi_model_training_model4 = keras_multi_model_training_dir + "model4.h5"
+keras_multi_model_training_model5 = keras_multi_model_training_dir + "model5.h5"
+keras_multi_model_training_model6 = keras_multi_model_training_dir + "model6.h5"
 
 #keras single model test paths
 keras_test_dir = root + "keras_predictions/"

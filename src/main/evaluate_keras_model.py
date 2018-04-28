@@ -13,11 +13,11 @@ from keras_models import vgg_like_model
 from submission import make_submission_from_files
 from evaluation import evaluate_results_from_files
 
-if __name__ == '__main__':
+def evaluate_keras_model():
     samples = np.load(data_paths.train_samples)
     split = 1 - np.int(len(samples)*stg.train_val_split)
     samples, val_samples = samples[:split, :], samples[split:, :]
-    print(len(val_samples))
+
     with open(data_paths.keras_training_species_map, 'rb') as f:
         species_map = pickle.load(f)
 
@@ -25,7 +25,7 @@ if __name__ == '__main__':
 
     model.load_weights(data_paths.keras_training_model)
 
-    model.compile(optimizer='adam', loss='binary_crossentropy')
+    model.compile(optimizer='adam', loss='categorical_crossentropy')
 
     ground_truth = []
     predictions = []
@@ -52,3 +52,6 @@ if __name__ == '__main__':
     evaluate_results_from_files(submission_path=data_paths.keras_training_submission,
                                 gt_path=data_paths.keras_training_gt,
                                 species_map_path=data_paths.keras_training_species_map)
+
+if __name__ == '__main__':
+    evaluate_keras_model()
