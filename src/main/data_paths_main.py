@@ -17,11 +17,13 @@ xgb_group_map = xgb_dir + "group_map.npy"
 xgb_species_map = xgb_dir + "species_map.npy"
 xgb_prediction = xgb_dir + "prediction.npy"
 xgb_glc_ids = xgb_dir + "glc_ids.npy"
+#xgb_trainchached = xgb_dir + "train.txt" muss libsvm format sein (phraug2 -> pivottable von csv)
 xgb_submission = xgb_dir + "submission.csv"
 xgb_test_prediction = xgb_dir + "test_prediction.npy"
 xgb_test_glc_ids = xgb_dir + "test_glc_ids.npy"
 xgb_test_submission = xgb_dir + "test_submission.csv"
 xgb_model = xgb_dir + "model"
+xgb_model_dump = xgb_dir + "model_dump"
 # xgb_species_occurences = root + "analysis/species_occurences.csv"
 
 #keras single model training paths
