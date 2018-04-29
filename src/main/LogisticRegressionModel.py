@@ -16,6 +16,7 @@ import multiprocessing
 import submission_maker
 import get_ranks
 import mrr
+import main_preprocessing
     
 # what are your inputs, and what operation do you want to 
 # perform on each input. For example...
@@ -71,6 +72,7 @@ def evalute(y_predicted, y_true, classes):
         return ("mrr", mrr_score)
 
 if __name__ == '__main__':
+    main_preprocessing.create_datasets()
     num_cores = multiprocessing.cpu_count()
     Parallel(n_jobs=num_cores)(delayed(calc_class)(class_name) for class_name in tqdm(class_names))
 
