@@ -125,17 +125,6 @@ class XGBModelNative():
         # print("Save validation predictions...")
         # np.save(data_paths.xgb_prediction, pred)
 
-        print("Predict test data...")    
-        testset = pd.read_csv(data_paths.test)
-        np.save(data_paths.xgb_test_glc_ids, testset["patch_id"])
-
-        testset = testset[self.train_columns]
-        testset_dmatrix = xgb.DMatrix(testset)
-        pred_test = bst.predict(testset_dmatrix)        
-
-        print("Save test predictions...")
-        np.save(data_paths.xgb_test_prediction, pred_test)
-
     def predict_test_set_from_saved_model(self, iteration_nr):
         print("Load model...")
         path = data_paths.xgb_model + str(iteration_nr)
