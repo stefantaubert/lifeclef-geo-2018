@@ -68,7 +68,7 @@ class Model():
         train_target = list(map(lambda x: 1 if x == class_name else 0, self.y_train))
         #val_target = list(map(lambda x: 1 if x == class_name else 0, self.y_valid))
         #print(train_target)
-        classifier = LogisticRegression(C=0.1, solver='sag', n_jobs=-1, random_state=settings.seed, max_iter=1)
+        classifier = LogisticRegression(C=1, solver='sag', n_jobs=-1, random_state=settings.seed, max_iter=100)
 
         #cv_score = np.mean(cross_val_score(classifier, x_train, train_target, cv=3, scoring='roc_auc'))
         #scores.append(cv_score)
@@ -93,5 +93,5 @@ class Model():
 
 if __name__ == '__main__':
     m = Model()
-    m.eval_from_files()
-    #m.run()
+    #m.eval_from_files()
+    m.run()
