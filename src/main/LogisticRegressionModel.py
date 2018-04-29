@@ -60,7 +60,7 @@ class Model():
 
     def eval_from_files(self):
         species = np.load(data_paths.xgb_species_map)
-        prediction = np.load(data_paths.regression_prediction)
+        predictions = np.load(data_paths.regression_prediction)
         result = predictions.T
         print(self.evalute(result, self.y_valid, species))
 
