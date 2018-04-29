@@ -19,7 +19,7 @@ import os
 import settings_main as stg
 from data_reading.imageList_generator import generate_train_image_list
 
-if __name__ == '__main__':
+def train_keras_multi_model():
     if not os.path.exists(data_paths.train_samples):
         generate_train_image_list()
 
@@ -40,38 +40,80 @@ if __name__ == '__main__':
     pickle.dump(species_map, open(data_paths.keras_multi_model_training_species_map, 'wb'))
 
     top3_acc = metrics.get_top3_accuracy()
+    top10_acc = metrics.get_top10_accuracy()
     top50_acc = metrics.get_top50_accuracy()
     
+    metrics_list = ['accuracy', top3_acc, top10_acc, top50_acc]
+
     #train model 1
     model = vgg_like_model.get_model(len(species_map.keys()), 1)
 
-    model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy', top3_acc, top50_acc])
+    model.compile(optimizer='adam', loss='categorical_crossentropy', metrics= metrics_list)
 
     checkpoint = ModelCheckpoint(data_paths.keras_multi_model_training_model1, monitor='val_top3_acc', verbose=1, save_best_only=True, mode='max')
 
-    model.fit_generator(scbg.nextBatch(samples, species_map, 31), epochs=stg.EPOCHS, steps_per_epoch=len(samples)/stg.BATCH_SIZE,
-                        verbose=2, validation_data=scbg.nextBatch(val_samples, species_map, 31), validation_steps=len(val_samples)/stg.BATCH_SIZE,
+    model.fit_generator(scbg.nextBatch(samples, species_map, stg.model1_channel), epochs=stg.EPOCHS, steps_per_epoch=len(samples)/stg.BATCH_SIZE,
+                        verbose=1, validation_data=scbg.nextBatch(val_samples, species_map, stg.model1_channel), validation_steps=len(val_samples)/stg.BATCH_SIZE,
                         callbacks=[checkpoint])
 
     #train model 2
     model = vgg_like_model.get_model(len(species_map.keys()), 1)
 
-    model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy', top3_acc, top50_acc])
+    model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=metrics_list)
 
     checkpoint = ModelCheckpoint(data_paths.keras_multi_model_training_model2, monitor='val_top3_acc', verbose=1, save_best_only=True, mode='max')
 
-    model.fit_generator(scbg.nextBatch(samples, species_map, 32), epochs=stg.EPOCHS, steps_per_epoch=len(samples)/stg.BATCH_SIZE,
-                        verbose=2, validation_data=scbg.nextBatch(val_samples, species_map, 32), validation_steps=len(val_samples)/stg.BATCH_SIZE,
+    model.fit_generator(scbg.nextBatch(samples, species_map, stg.model2_channel), epochs=stg.EPOCHS, steps_per_epoch=len(samples)/stg.BATCH_SIZE,
+                        verbose=1, validation_data=scbg.nextBatch(val_samples, species_map, stg.model2_channel), validation_steps=len(val_samples)/stg.BATCH_SIZE,
                         callbacks=[checkpoint])
 
     #train model 3
     model = vgg_like_model.get_model(len(species_map.keys()), 1)
 
-    model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy', top3_acc, top50_acc])
+    model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=metrics_list)
 
     checkpoint = ModelCheckpoint(data_paths.keras_multi_model_training_model3, monitor='val_top3_acc', verbose=1, save_best_only=True, mode='max')
 
-    model.fit_generator(scbg.nextBatch(samples, species_map, 27), epochs=stg.EPOCHS, steps_per_epoch=len(samples)/stg.BATCH_SIZE,
-                        verbose=2, validation_data=scbg.nextBatch(val_samples, species_map, 27), validation_steps=len(val_samples)/stg.BATCH_SIZE,
+    model.fit_generator(scbg.nextBatch(samples, species_map, stg.model3_channel), epochs=stg.EPOCHS, steps_per_epoch=len(samples)/stg.BATCH_SIZE,
+                        verbose=1, validation_data=scbg.nextBatch(val_samples, species_map, stg.model3_channel), validation_steps=len(val_samples)/stg.BATCH_SIZE,
                         callbacks=[checkpoint])
 
+    #train model 4
+    model = vgg_like_model.get_model(len(species_map.keys()), 1)
+
+    model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=metrics_list)
+
+    checkpoint = ModelCheckpoint(data_paths.keras_multi_model_training_model4, monitor='val_top3_acc', verbose=1, save_best_only=True, mode='max')
+
+    model.fit_generator(scbg.nextBatch(samples, species_map, stg.model4_channel), epochs=stg.EPOCHS, steps_per_epoch=len(samples)/stg.BATCH_SIZE,
+                        verbose=1, validation_data=scbg.nextBatch(val_samples, species_map, stg.model4_channel), validation_steps=len(val_samples)/stg.BATCH_SIZE,
+                        callbacks=[checkpoint])
+
+    #train model 5
+    model = vgg_like_model.get_model(len(species_map.keys()), 1)
+
+    model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=metrics_list)
+
+    checkpoint = ModelCheckpoint(data_paths.keras_multi_model_training_model5, monitor='val_top3_acc', verbose=1, save_best_only=True, mode='max')
+
+    model.fit_generator(scbg.nextBatch(samples, species_map, stg.model5_channel), epochs=stg.EPOCHS, steps_per_epoch=len(samples)/stg.BATCH_SIZE,
+                        verbose=1, validation_data=scbg.nextBatch(val_samples, species_map, stg.model5_channel), validation_steps=len(val_samples)/stg.BATCH_SIZE,
+                        callbacks=[checkpoint])
+
+    #train model 6
+    model = vgg_like_model.get_model(len(species_map.keys()), 1)
+
+    model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=metrics_list)
+
+    checkpoint = ModelCheckpoint(data_paths.keras_multi_model_training_model6, monitor='val_top3_acc', verbose=1, save_best_only=True, mode='max')
+
+    model.fit_generator(scbg.nextBatch(samples, species_map, stg.model6_channel), epochs=stg.EPOCHS, steps_per_epoch=len(samples)/stg.BATCH_SIZE,
+                        verbose=1, validation_data=scbg.nextBatch(val_samples, species_map, stg.model6_channel), validation_steps=len(val_samples)/stg.BATCH_SIZE,
+                        callbacks=[checkpoint])
+
+if __name__ == '__main__':
+    train_keras_multi_model()
+
+
+
+#channels: 0, 12, 13, 4, 20, 21

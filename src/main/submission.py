@@ -81,7 +81,7 @@ def make_submission_from_files(species_map_path, predictions_path, glc_ids_path,
     df = submission_maker.make_submission_df(settings.TOP_N_SUBMISSION_RANKS, classes, predictions, glc_ids)
 
     print("Save submission...")
-    df.to_csv(submission_path, index=False)
+    df.to_csv(submission_path, index=False, sep=";")
 
 if __name__ == "__main__":
     make_xgb_submission()

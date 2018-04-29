@@ -9,7 +9,7 @@ from data_reading.imageList_generator import generate_test_image_list
 from submission import make_submission_from_files
 import os
 
-if __name__ == '__main__':
+def predict_keras_multi_model():
     if not os.path.exists(data_paths.test_samples):
         generate_test_image_list()
 
@@ -29,36 +29,73 @@ if __name__ == '__main__':
     model1 = vgg_like_model.get_model(len(species_map.keys()), 1)
     model2 = vgg_like_model.get_model(len(species_map.keys()), 1)
     model3 = vgg_like_model.get_model(len(species_map.keys()), 1)
+    model4 = vgg_like_model.get_model(len(species_map.keys()), 1)
+    model5 = vgg_like_model.get_model(len(species_map.keys()), 1)
+    model6 = vgg_like_model.get_model(len(species_map.keys()), 1)
 
     model1.load_weights(data_paths.keras_multi_model_training_model1)
     model2.load_weights(data_paths.keras_multi_model_training_model2)
     model3.load_weights(data_paths.keras_multi_model_training_model3)
+    model4.load_weights(data_paths.keras_multi_model_training_model4)
+    model5.load_weights(data_paths.keras_multi_model_training_model5)
+    model6.load_weights(data_paths.keras_multi_model_training_model6)
 
-    model1.compile(optimizer='adam', loss='binary_crossentropy')
-    model2.compile(optimizer='adam', loss='binary_crossentropy')
-    model3.compile(optimizer='adam', loss='binary_crossentropy')
-
+    model1.compile(optimizer='adam', loss='categorical_crossentropy')
+    model2.compile(optimizer='adam', loss='categorical_crossentropy')
+    model3.compile(optimizer='adam', loss='categorical_crossentropy')
+    model4.compile(optimizer='adam', loss='categorical_crossentropy')
+    model5.compile(optimizer='adam', loss='categorical_crossentropy')
+    model6.compile(optimizer='adam', loss='categorical_crossentropy')
+    
     model1_predictions = []
     model2_predictions = []
     model3_predictions = []
+    model4_predictions = []
+    model5_predictions = []
+    model6_predictions = []
 
     glc_ids = []
 
-    for x, batch_glc_ids in scbg.nextTestBatch(samples, species_map, 31):
+    print("Predict Model 1")
+    for x, batch_glc_ids in scbg.nextTestBatch(samples, species_map, stg.model1_channel):
         glc_ids.extend(batch_glc_ids)
         model1_predictions.extend(model1.predict_on_batch(x))
-
-    for x, batch_glc_ids in scbg.nextTestBatch(samples, species_map, 32):
+    
+    print("Predict Model 2")
+    for x, batch_glc_ids in scbg.nextTestBatch(samples, species_map, stg.model2_channel):
         model2_predictions.extend(model2.predict_on_batch(x))
 
-    for x, batch_glc_ids in scbg.nextTestBatch(samples, species_map, 27):
+    print("Predict Model 3")
+    for x, batch_glc_ids in scbg.nextTestBatch(samples, species_map, stg.model3_channel):
         model3_predictions.extend(model3.predict_on_batch(x))
 
-    model1_predictions = np.array(model1_predictions)
-    model2_predictions = np.array(model2_predictions)
-    model3_predictions = np.array(model3_predictions)
+    print("Predict Model 4")
+    for x, batch_glc_ids in scbg.nextTestBatch(samples, species_map, stg.model4_channel):
+        model4_predictions.extend(model4.predict_on_batch(x))
 
-    predictions = (model1_predictions + model2_predictions + model3_predictions) / 3
+    print("Predict Model 5")    
+    for x, batch_glc_ids in scbg.nextTestBatch(samples, species_map, stg.model5_channel):
+        model5_predictions.extend(model5.predict_on_batch(x))
+
+    print("Predict Model 6")
+    for x, batch_glc_ids in scbg.nextTestBatch(samples, species_map, stg.model6_channel):
+        model6_predictions.extend(model6.predict_on_batch(x))
+
+    print("add Model 1")
+
+    predictions = np.array(model1_predictions)
+    print("add Model 2")
+    predictions = predictions + np.array(model2_predictions)
+    print("add Model 3")
+    predictions = predictions + np.array(model3_predictions)
+    print("add Model 4")
+    predictions = predictions + np.array(model4_predictions)
+    print("add Model 5")
+    predictions = predictions + np.array(model5_predictions)
+    print("add Model 6")
+    predictions = predictions + np.array(model6_predictions)
+
+    predictions = predictions / 6
     glc_ids = np.array(glc_ids)
 
     np.save(data_paths.keras_multi_model_test_results, predictions)
@@ -68,3 +105,6 @@ if __name__ == '__main__':
                                predictions_path=data_paths.keras_multi_model_test_results,
                                glc_ids_path=data_paths.keras_multi_model_test_glc_ids,
                                submission_path=data_paths.keras_multi_model_test_submission)
+
+if __name__ == '__main__':
+    predict_keras_multi_model()

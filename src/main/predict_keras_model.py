@@ -9,7 +9,7 @@ from data_reading.imageList_generator import generate_test_image_list
 from submission import make_submission_from_files
 import os
 
-if __name__ == '__main__':
+def predict_keras_model():
     if not os.path.exists(data_paths.test_samples):
         generate_test_image_list()
 
@@ -30,7 +30,7 @@ if __name__ == '__main__':
 
     model.load_weights(data_paths.keras_training_model)
 
-    model.compile(optimizer='adam', loss='binary_crossentropy')
+    model.compile(optimizer='adam', loss='categorical_crossentropy')
 
     predictions = []
     glc_ids = []
@@ -49,3 +49,6 @@ if __name__ == '__main__':
                                data_paths.keras_test_results,
                                data_paths.keras_test_glc_ids,
                                data_paths.keras_test_submission)
+
+if __name__ == '__main__':
+    predict_keras_model()

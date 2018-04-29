@@ -1,7 +1,8 @@
+import module_support_main
 import numpy as np
-import data_paths
+import data_paths_main as data_paths
 import tifffile
-import settings as stg
+import settings_main as stg
 import itertools as it
 
 def loadImage(sample):
@@ -50,5 +51,5 @@ def nextValidationBatch(samples, species_map):
         yield (x, y, species_ids, glc_ids)
 
 def nextTestBatch(samples, species_map):
-    for x, _, _, glc_ids in getNextImageBatch(samples, species_map)
+    for x, _, _, glc_ids in getNextImageBatch(samples, species_map):
         yield (x, glc_ids)
