@@ -167,8 +167,8 @@ class XGBModelNative():
         mapper = {'f{0}'.format(i): v for i, v in enumerate(d_test.feature_names)}
         mapped = {mapper[k]: v for k, v in bst.get_fscore().items()}
         xgb.plot_importance(mapped, color='red', ax=ax)
-        # plt.show()
-        plt.draw()
+        plt.show()
+        #plt.draw()
         #plt.savefig(data_paths.features_plt)
 
 if __name__ == "__main__":
