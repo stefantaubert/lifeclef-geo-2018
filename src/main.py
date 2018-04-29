@@ -11,7 +11,6 @@ def startXGBoostNative():
     print("Start:", datetime.datetime.now().time())
     main_preprocessing.create_datasets()
     XGBoostModelNative.XGBModelNative().run()
-    submission.make_xgb_test_submission()
     
     # submission.make_xgb_submission()
     # evaluation.evaluate_xgb()
@@ -45,7 +44,7 @@ def startXGBoostGroups():
     print("Total duration:", round(seconds / 60, 2), "min")
 
 if __name__ == "__main__":
+    startXGBoostNative()
     predictTestDataXGBNative(1)
-    #startXGBoostNative()
     #startXGBoost(False)
     #startXGBoostGroups()

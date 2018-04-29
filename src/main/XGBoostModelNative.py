@@ -41,12 +41,12 @@ class XGBModelNative():
 
     def __init__(self):
         self.train_columns = [ 
-        #'alti', 'bs_top', 'chbio_12', 'chbio_15', 'chbio_17', 'chbio_3', 'chbio_6', 'clc', 'crusting', 'dimp'
-        'chbio_1', 'chbio_2', 'chbio_3', 'chbio_4', 'chbio_5', 'chbio_6',
-        'chbio_7', 'chbio_8', 'chbio_9', 'chbio_10', 'chbio_11', 'chbio_12',
-        'chbio_13', 'chbio_14', 'chbio_15', 'chbio_16', 'chbio_17', 'chbio_18','chbio_19', 
-        'etp', 'alti', 'awc_top', 'bs_top', 'cec_top', 'crusting', 'dgh', 'dimp', 'erodi', 'oc_top', 'pd_top', 'text',
-        'proxi_eau_fast', 'clc', 'latitude', 'longitude'
+        'alti', 'bs_top', 'chbio_12', 'chbio_15', 'chbio_17', 'chbio_3', 'chbio_6', 'clc', 'crusting', 'dimp'
+        # 'chbio_1', 'chbio_2', 'chbio_3', 'chbio_4', 'chbio_5', 'chbio_6',
+        # 'chbio_7', 'chbio_8', 'chbio_9', 'chbio_10', 'chbio_11', 'chbio_12',
+        # 'chbio_13', 'chbio_14', 'chbio_15', 'chbio_16', 'chbio_17', 'chbio_18','chbio_19', 
+        # 'etp', 'alti', 'awc_top', 'bs_top', 'cec_top', 'crusting', 'dgh', 'dimp', 'erodi', 'oc_top', 'pd_top', 'text',
+        # 'proxi_eau_fast', 'clc', 'latitude', 'longitude'
         ]
 
     def run(self):
@@ -112,7 +112,7 @@ class XGBModelNative():
             (d_valid, 'validation'),
         ]
         xgb.callback.print_evaluation() 
-        bst = xgb.train(params, d_train, 200, verbose_eval=2, evals=watchlist, feval=evaluator.evalute, callbacks=[self.save_after_it])
+        bst = xgb.train(params, d_train, 1, verbose_eval=2, evals=watchlist, feval=evaluator.evalute, callbacks=[self.save_after_it])
 
         print("Save model...")
         bst.save_model(data_paths.xgb_model)
