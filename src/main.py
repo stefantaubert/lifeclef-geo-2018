@@ -45,6 +45,6 @@ def startXGBoostGroups():
 
 if __name__ == "__main__":
     #startXGBoostNative()
-    predictTestDataXGBNative(1)
+    predictTestDataXGBNative(0)
     #startXGBoost(False)
     #startXGBoostGroups()
