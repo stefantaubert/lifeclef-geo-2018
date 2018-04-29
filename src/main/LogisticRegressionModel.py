@@ -4,14 +4,21 @@ import numpy as np
 from tqdm import tqdm
 from sklearn.model_selection import train_test_split
 import data_paths_main as data_paths
-
 import settings_main as settings
-
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import cross_val_score
 from sklearn.metrics import accuracy_score
 from scipy.sparse import hstack
+
+from joblib import Parallel, delayed
+import multiprocessing
+    
+# what are your inputs, and what operation do you want to 
+# perform on each input. For example...
+inputs = range(10) 
+def processInput(i):
+	return i * i
 
 print("Run model...")
 #x_text = np.load(data_paths.x_text)
@@ -24,18 +31,18 @@ class_names = np.unique(y)
 
 x_train, x_valid, y_train, y_valid = train_test_split(x_text, y, test_size=settings.train_val_split, random_state=settings.seed)
 
-#np.save(data_paths.xgb_glc_ids, x_valid["patch_id"])
-
 x_train = x_train[train_columns]
 x_valid = x_valid[train_columns]
 
 scores = []
 submission = {}
-for class_name in tqdm(class_names):
+
+    
+def calc_class(class_name):
     train_target = list(map(lambda x: 1 if x == class_name else 0, y_train))
     val_target = list(map(lambda x: 1 if x == class_name else 0, y_valid))
     #print(train_target)
-    classifier = LogisticRegression(C=0.1, solver='sag', n_jobs=4)
+    classifier = LogisticRegression(C=0.1, solver='sag', n_jobs=-1)
 
     #cv_score = np.mean(cross_val_score(classifier, x_train, train_target, cv=3, scoring='roc_auc'))
     #scores.append(cv_score)
@@ -48,4 +55,33 @@ for class_name in tqdm(class_names):
     scores.append(accuracy_score(val_target, pred_real.round()))
     submission[class_name] = pred_real
 
-print('Total ACC score is {}'.format(np.mean(scores)))
+
+def start():
+
+    #np.save(data_paths.xgb_glc_ids, x_valid["patch_id"])
+
+    num_cores = multiprocessing.cpu_count()
+        
+    results = Parallel(n_jobs=num_cores)(delayed(calc_class)(class_name) for class_name in tqdm(class_names))
+
+    # for class_name in tqdm(class_names):
+    #     train_target = list(map(lambda x: 1 if x == class_name else 0, y_train))
+    #     val_target = list(map(lambda x: 1 if x == class_name else 0, y_valid))
+    #     #print(train_target)
+    #     classifier = LogisticRegression(C=0.1, solver='sag', n_jobs=-1)
+
+    #     #cv_score = np.mean(cross_val_score(classifier, x_train, train_target, cv=3, scoring='roc_auc'))
+    #     #scores.append(cv_score)
+    #     #print('CV score for class {} is {}'.format(class_name, cv_score))
+    #     classifier.fit(x_train, train_target)
+    #     pred = classifier.predict_proba(x_valid)
+    #     #print(pred)
+    #     pred_real = pred[:, 1] # second is for class is 1
+    #     #print("acc", accuracy_score(val_target, pred_real.round()))
+    #     scores.append(accuracy_score(val_target, pred_real.round()))
+    #     submission[class_name] = pred_real
+
+    print('Total ACC score is {}'.format(np.mean(scores)))
+
+if __name__ == '__main__':
+    start()
