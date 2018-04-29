@@ -38,9 +38,6 @@ class Model():
         self.x_train = self.x_train[train_columns]
         self.x_valid = self.x_valid[train_columns]
 
-        self.scores = []
-        self.submission = {}
-
     def run(self):
         print("Run model...")
         num_cores = multiprocessing.cpu_count()
@@ -57,8 +54,14 @@ class Model():
         assert len(predictions[0]) == len(self.x_valid.index)
         result = predictions.T
         print(result)
-        self.evalute(result, self.y_valid, self.class_names)
+        mrr = self.evalute(result, self.y_valid, self.class_names)
+        print(mrr)
         #print('Total ACC score is {}'.format(np.mean(self.scores)))
+
+    def eval_from_files(self):
+        species_map = np.load(data_paths.xgb_species_map)
+        prediction = np.load(data_paths.regression_prediction)
+        print(self.evalute(result, self.y_valid, self.class_names))
 
     def calc_class(self, class_name):
         train_target = list(map(lambda x: 1 if x == class_name else 0, self.y_train))
@@ -88,4 +91,6 @@ class Model():
         return ("mrr", mrr_score)
 
 if __name__ == '__main__':
-    Model().run()
+    m = Model()
+    m.eval_from_files()
+    #m.run()
