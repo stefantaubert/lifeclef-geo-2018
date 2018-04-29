@@ -71,23 +71,24 @@ class XGBModelNative():
         params['updater'] = 'grow_gpu'
         params['base_score'] = 0.5
         params['booster'] = 'gbtree'
-        params['colsample_bylevel'] = 1
-        params['colsample_bytree'] = 1
-        params['gamma'] = 0
-        params['max_depth'] = 10
-        params['learning_rate'] = 0.1
-        params['min_child_weight'] = 1
-        params['max_delta_step'] = 0
-        params['missing'] = None
         params['objective'] = 'multi:softprob'
-        params['reg_alpha'] = 0
-        params['reg_lambda'] = 1
-        params['scale_pos_weight'] = 1
+        params['max_depth'] = 10
+        params['learning_rate'] = 0.1   
         params['seed'] = 4
+        params['colsample_bytree'] = 0.8
         params['silent'] = 1
-        params['subsample'] = 1
         params['eval_metric'] = 'merror'
         params['num_class'] = len(classes_) #3336
+        # params['colsample_bylevel'] = 1
+        # params['colsample_bytree'] = 1
+        # params['gamma'] = 0
+        # params['min_child_weight'] = 1
+        # params['max_delta_step'] = 0
+        # params['missing'] = None
+        # params['reg_alpha'] = 0
+        # params['reg_lambda'] = 1
+        # params['scale_pos_weight'] = 1
+        # params['subsample'] = 1
         #params['predictor'] = 'gpu_predictor'
         #params['tree_method'] = 'gpu_hist'
         #params['grow_policy'] = 'depthwise' #'lossguide'
@@ -106,7 +107,6 @@ class XGBModelNative():
         print("Training model...")
         
         evaluator = XGBMrrEval(classes_, y_valid)
-        self.current_boosting_round = 0
         watchlist = [
             #(d_train, 'train'), 
             (d_valid, 'validation'),
