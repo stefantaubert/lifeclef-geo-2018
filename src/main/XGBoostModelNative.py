@@ -75,10 +75,10 @@ class XGBModelNative():
         params['max_depth'] = 10
         params['learning_rate'] = 0.1   
         params['seed'] = 4
-        params['colsample_bytree'] = 0.8
+        #params['colsample_bytree'] = 0.8 #um die 
         params['silent'] = 1
         params['eval_metric'] = 'merror'
-        params['num_class'] = len(classes_) #3336
+        params['num_class'] = len(classes_) #=3336
         # params['colsample_bylevel'] = 1
         # params['colsample_bytree'] = 1
         # params['gamma'] = 0
