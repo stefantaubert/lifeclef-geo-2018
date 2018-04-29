@@ -16,6 +16,7 @@ import pickle
 import os
 import get_ranks
 import mrr
+import matplotlib.pyplot as plt
 
 from sklearn.preprocessing import LabelEncoder
 
@@ -140,20 +141,35 @@ class XGBModelNative():
         path = data_paths.xgb_model + str(iteration_nr)
         assert os.path.exists(path)
 
-        bst = xgb.Booster()
-        bst.load_model(path)
+        bst = xgb.Booster(model_file=path)
         #bst.dump_model(data_paths.xgb_model_dump + str(iteration_nr))
 
-        print("Predict test data...")    
         testset = pd.read_csv(data_paths.test)
         np.save(data_paths.xgb_test_glc_ids, testset["patch_id"])
         
         testset = testset[self.train_columns]
         testset_dmatrix = xgb.DMatrix(testset)
+        self.plt_features(bst, testset_dmatrix, iteration_nr)
+
+        print("Predict test data...")    
         pred_test = bst.predict(testset_dmatrix)        
 
         print("Save test predictions...")
         np.save(data_paths.xgb_test_prediction, pred_test)
+
+    def plt_features(self, bst, d_test, iteration_nr):
+        # Ausschlagskraft aller Features plotten
+        _, ax = plt.subplots(figsize=(12,18))
+        # print("Features names:")
+        # print(d_test.feature_names)
+        # print("Fscore Items:")
+        # print(bst.get_fscore().items())
+        mapper = {'f{0}'.format(i): v for i, v in enumerate(d_test.feature_names)}
+        mapped = {mapper[k]: v for k, v in bst.get_fscore().items()}
+        xgb.plot_importance(mapped, color='red', ax=ax)
+        # plt.show()
+        plt.draw()
+        #plt.savefig(data_paths.features_plt)
 
 if __name__ == "__main__":
     xg = XGBModelNative()
