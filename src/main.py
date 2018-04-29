@@ -2,7 +2,6 @@ import module_support
 import main_preprocessing
 import time, datetime
 import XGBoostModelNative
-import XGBoostModel
 import XGBoostModelGroups
 import submission
 import evaluation
@@ -28,19 +27,6 @@ def predictTestDataXGBNative(iteration):
     XGBoostModelNative.XGBModelNative().predict_test_set_from_saved_model(iteration)
     submission.make_xgb_test_submission()    
     print("End:", datetime.datetime.now().time())
-    seconds = time.time() - start_time
-    print("Total duration:", round(seconds / 60, 2), "min")
-
-def startXGBoost(with_test):
-    start_time = time.time()
-
-    main_preprocessing.create_datasets()
-    XGBoostModel.XGBModel().run(with_test)
-    submission.make_xgb_submission()
-    evaluation.evaluate_xgb()
-    if with_test:
-        submission.make_xgb_test_submission()
-
     seconds = time.time() - start_time
     print("Total duration:", round(seconds / 60, 2), "min")
 
