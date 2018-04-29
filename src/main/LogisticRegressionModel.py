@@ -1,7 +1,7 @@
 import module_support_main
 import pandas as pd
 import numpy as np
-
+from tqdm import tqdm
 from sklearn.model_selection import train_test_split
 import data_paths_main as data_paths
 
@@ -30,9 +30,9 @@ x_valid = x_valid[train_columns]
 
 scores = []
 submission = {}
-for class_name in class_names:
+for class_name in tqdm(class_names):
     train_target = list(map(lambda x: 1 if x == class_name else 0, y_train))
-    print(train_target)
+    #print(train_target)
     classifier = LogisticRegression(C=0.1, solver='sag')
 
     cv_score = np.mean(cross_val_score(classifier, x_train, train_target, cv=3, scoring='roc_auc'))
