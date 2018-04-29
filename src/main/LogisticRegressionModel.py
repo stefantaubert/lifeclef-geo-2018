@@ -44,17 +44,18 @@ class Model():
     def run(self):
         print("Run model...")
         num_cores = multiprocessing.cpu_count()
-        Parallel(n_jobs=num_cores)(delayed(self.calc_class)(class_name) for class_name in tqdm(self.class_names))
+        result = Parallel(n_jobs=num_cores)(delayed(self.calc_class)(class_name) for class_name in tqdm(self.class_names))
+        species = np.array([x for x, _ in result])
+        predictions = np.array([y for _, y in result])
+        print(species)
+        print(predictions)
+        np.save(data_paths.xgb_species_map, species)
+        np.save(data_paths.regression_prediction, predictions)
+        print("Saving completed", data_paths.xgb_species_map, data_paths.regression_prediction)
 
-        pickle.dump(self.submission, open(data_paths.regression_prediction, 'wb'))
-        print("Saving completed", data_paths.regression_prediction)
-        print(self.submission)
-        result = self.submission.values()
-        print(result)
-        assert len(result) == len(self.class_names)
-        assert len(result[0]) == len(self.x_valid.index)
-        arr = np.array(result)
-        result = arr.T
+        assert len(predictions) == len(self.class_names)
+        assert len(predictions[0]) == len(self.x_valid.index)
+        result = predictions.T
         print(result)
         self.evalute(result, self.y_valid, self.class_names)
         #print('Total ACC score is {}'.format(np.mean(self.scores)))
@@ -76,7 +77,7 @@ class Model():
         #score = log_loss(val_target, pred_real)
         #print('Score for class {} is {}'.format(class_name, score.round()))
         #self.scores.append(score)
-        self.submission[class_name] = pred_real
+        return (class_name, pred_real)
 
     def evalute(self, y_predicted, y_true, classes):
         print("evaluate")
