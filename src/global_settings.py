@@ -13,7 +13,7 @@ threshold = 10
 min_occurence = 0
 
 ### Sets the count of digits for rounding the test and trainset in the analysis. Range: [0, 12]
-round_data_ndigits = 12
+round_data_ndigits = 0
 
 # not used?
 #read_data_count = -1 # seed: 39609
