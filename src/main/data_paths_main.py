@@ -27,6 +27,7 @@ xgb_model_dump = xgb_dir + "model_dump"
 xgb_feature_importances = xgb_dir + "feature_importances.pdf"
 # xgb_species_occurences = root + "analysis/species_occurences.csv"
 
+log = root + "log.txt"
 regression_species = root + "regression_species.npy"
 regression_prediction = root + "regression_prediction.npy"
 
