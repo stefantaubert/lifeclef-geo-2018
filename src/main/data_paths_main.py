@@ -27,6 +27,8 @@ xgb_model_dump = xgb_dir + "model_dump"
 xgb_feature_importances = xgb_dir + "feature_importances.pdf"
 # xgb_species_occurences = root + "analysis/species_occurences.csv"
 
+regression_prediction = root + "regression_prediction"
+
 #keras single model training paths
 keras_training_dir = root + "keras_training_results/"
 keras_training_gt = keras_training_dir + "gt.npy"

@@ -16,6 +16,7 @@ from joblib import Parallel, delayed
 import multiprocessing
 import submission_maker
 import get_ranks
+import pickle
 import mrr
 import main_preprocessing
 
@@ -40,13 +41,16 @@ class Model():
         self.scores = []
         self.submission = {}
 
-    
     def run(self):
         print("Run model...")
         num_cores = multiprocessing.cpu_count()
         Parallel(n_jobs=num_cores)(delayed(self.calc_class)(class_name) for class_name in tqdm(self.class_names))
 
+        pickle.dump(self.submission, open(data_paths.regression_prediction, 'wb'))
+        print("Saving completed", data_paths.regression_prediction)
+        print(self.submission)
         result = self.submission.values()
+        print(result)
         assert len(result) == len(self.class_names)
         assert len(result[0]) == len(self.x_valid.index)
         arr = np.array(result)
@@ -57,7 +61,7 @@ class Model():
 
     def calc_class(self, class_name):
         train_target = list(map(lambda x: 1 if x == class_name else 0, self.y_train))
-        val_target = list(map(lambda x: 1 if x == class_name else 0, self.y_valid))
+        #val_target = list(map(lambda x: 1 if x == class_name else 0, self.y_valid))
         #print(train_target)
         classifier = LogisticRegression(C=0.1, solver='sag', n_jobs=-1, random_state=settings.seed, max_iter=1)
 
@@ -75,12 +79,12 @@ class Model():
         self.submission[class_name] = pred_real
 
     def evalute(self, y_predicted, y_true, classes):
-            print("evaluate")
-            glc = [x for x in range(len(y_predicted))]
-            subm = submission_maker._make_submission(len(classes), classes, y_predicted, glc)
-            ranks = get_ranks.get_ranks(subm, y_true, len(classes))
-            mrr_score = mrr.mrr_score(ranks)
-            return ("mrr", mrr_score)
+        print("evaluate")
+        glc = [x for x in range(len(y_predicted))]
+        subm = submission_maker._make_submission(len(classes), classes, y_predicted, glc)
+        ranks = get_ranks.get_ranks(subm, y_true, len(classes))
+        mrr_score = mrr.mrr_score(ranks)
+        return ("mrr", mrr_score)
 
 if __name__ == '__main__':
     Model().run()
