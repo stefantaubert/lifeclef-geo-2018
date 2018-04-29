@@ -24,6 +24,7 @@ xgb_test_glc_ids = xgb_dir + "test_glc_ids.npy"
 xgb_test_submission = xgb_dir + "test_submission.csv"
 xgb_model = xgb_dir + "model"
 xgb_model_dump = xgb_dir + "model_dump"
+xgb_feature_importances = xgb_dir + "feature_importances.pdf"
 # xgb_species_occurences = root + "analysis/species_occurences.csv"
 
 #keras single model training paths

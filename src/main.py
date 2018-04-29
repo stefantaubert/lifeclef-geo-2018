@@ -45,7 +45,7 @@ def startXGBoostGroups():
     print("Total duration:", round(seconds / 60, 2), "min")
 
 if __name__ == "__main__":
-    predictTestDataXGBNative(36)
+    predictTestDataXGBNative(10)
     #startXGBoostNative()
     #startXGBoost(False)
     #startXGBoostGroups()
