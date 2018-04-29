@@ -9,10 +9,13 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import cross_val_score
 from sklearn.metrics import accuracy_score
+from sklearn.metrics import roc_auc_score
 from scipy.sparse import hstack
-
 from joblib import Parallel, delayed
 import multiprocessing
+import submission_maker
+import get_ranks
+import mrr
     
 # what are your inputs, and what operation do you want to 
 # perform on each input. For example...
@@ -37,12 +40,14 @@ x_valid = x_valid[train_columns]
 scores = []
 submission = {}
 
-    
+np.save(data_paths.xgb_species_map, class_names)
+np.save(data_paths.xgb_glc_ids, x_valid["patch_id"])
+
 def calc_class(class_name):
     train_target = list(map(lambda x: 1 if x == class_name else 0, y_train))
     val_target = list(map(lambda x: 1 if x == class_name else 0, y_valid))
     #print(train_target)
-    classifier = LogisticRegression(C=0.1, solver='sag', n_jobs=-1)
+    classifier = LogisticRegression(C=0.1, solver='sag', n_jobs=-1, random_state=settings.seed, max_iter=1)
 
     #cv_score = np.mean(cross_val_score(classifier, x_train, train_target, cv=3, scoring='roc_auc'))
     #scores.append(cv_score)
@@ -52,36 +57,28 @@ def calc_class(class_name):
     #print(pred)
     pred_real = pred[:, 1] # second is for class is 1
     #print("acc", accuracy_score(val_target, pred_real.round()))
-    scores.append(accuracy_score(val_target, pred_real.round()))
+    score = roc_auc_score(val_target, pred_real)
+    print('ROC AUC score for class {} is {}'.format(class_name, score.round()))
+    scores.append(score)
     submission[class_name] = pred_real
 
-
-def start():
-
-    #np.save(data_paths.xgb_glc_ids, x_valid["patch_id"])
-
-    num_cores = multiprocessing.cpu_count()
-        
-    results = Parallel(n_jobs=num_cores)(delayed(calc_class)(class_name) for class_name in tqdm(class_names))
-
-    # for class_name in tqdm(class_names):
-    #     train_target = list(map(lambda x: 1 if x == class_name else 0, y_train))
-    #     val_target = list(map(lambda x: 1 if x == class_name else 0, y_valid))
-    #     #print(train_target)
-    #     classifier = LogisticRegression(C=0.1, solver='sag', n_jobs=-1)
-
-    #     #cv_score = np.mean(cross_val_score(classifier, x_train, train_target, cv=3, scoring='roc_auc'))
-    #     #scores.append(cv_score)
-    #     #print('CV score for class {} is {}'.format(class_name, cv_score))
-    #     classifier.fit(x_train, train_target)
-    #     pred = classifier.predict_proba(x_valid)
-    #     #print(pred)
-    #     pred_real = pred[:, 1] # second is for class is 1
-    #     #print("acc", accuracy_score(val_target, pred_real.round()))
-    #     scores.append(accuracy_score(val_target, pred_real.round()))
-    #     submission[class_name] = pred_real
-
-    print('Total ACC score is {}'.format(np.mean(scores)))
+def evalute(y_predicted, y_true, classes):
+        print("evaluate")
+        glc = [x for x in range(len(y_predicted))]
+        subm = submission_maker._make_submission(len(classes), classes, y_predicted, glc)
+        ranks = get_ranks.get_ranks(subm, y_true, len(classes))
+        mrr_score = mrr.mrr_score(ranks)
+        return ("mrr", mrr_score)
 
 if __name__ == '__main__':
-    start()
+    num_cores = multiprocessing.cpu_count()
+    Parallel(n_jobs=num_cores)(delayed(calc_class)(class_name) for class_name in tqdm(class_names))
+
+    result = submission.values()
+    assert len(result) == len(class_names)
+    assert len(result[0]) == len(x_valid.index)
+    arr = np.array(result)
+    result = arr.T
+    print(result)
+    evalute(result, y_valid, class_names)
+    print('Total ACC score is {}'.format(np.mean(scores)))
