@@ -46,9 +46,9 @@ class Model():
         predictions = np.array([y for _, y in result])
         print(species)
         print(predictions)
-        np.save(data_paths.xgb_species_map, species)
+        np.save(data_paths.regression_species, species)
         np.save(data_paths.regression_prediction, predictions)
-        print("Saving completed", data_paths.xgb_species_map, data_paths.regression_prediction)
+        print("Saving completed", data_paths.regression_species, data_paths.regression_prediction)
 
         assert len(predictions) == len(self.class_names)
         assert len(predictions[0]) == len(self.x_valid.index)
@@ -59,7 +59,7 @@ class Model():
         #print('Total ACC score is {}'.format(np.mean(self.scores)))
 
     def eval_from_files(self):
-        species = np.load(data_paths.xgb_species_map)
+        species = np.load(data_paths.regression_species)
         predictions = np.load(data_paths.regression_prediction)
         result = predictions.T
         print(self.evalute(result, self.y_valid, species))
