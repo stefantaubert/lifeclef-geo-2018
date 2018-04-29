@@ -10,6 +10,7 @@ import settings_main as settings
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import cross_val_score
+from sklearn.metrics import accuracy_score
 from scipy.sparse import hstack
 
 print("Run model...")
@@ -32,14 +33,19 @@ scores = []
 submission = {}
 for class_name in tqdm(class_names):
     train_target = list(map(lambda x: 1 if x == class_name else 0, y_train))
+    val_target = list(map(lambda x: 1 if x == class_name else 0, y_valid))
     #print(train_target)
-    classifier = LogisticRegression(C=0.1, solver='sag')
+    classifier = LogisticRegression(C=0.1, solver='sag', n_jobs=-1)
 
-    cv_score = np.mean(cross_val_score(classifier, x_train, train_target, cv=3, scoring='roc_auc'))
-    scores.append(cv_score)
-    print('CV score for class {} is {}'.format(class_name, cv_score))
-
+    #cv_score = np.mean(cross_val_score(classifier, x_train, train_target, cv=3, scoring='roc_auc'))
+    #scores.append(cv_score)
+    #print('CV score for class {} is {}'.format(class_name, cv_score))
     classifier.fit(x_train, train_target)
-    submission[class_name] = classifier.predict_proba(x_valid)[:, 1]
+    pred = classifier.predict_proba(x_valid)
+    print(pred)
+    pred_real = pred[:, 1]
+    #print("acc", accuracy_score(val_target, pred_real.round()))
+    scores.append(accuracy_score(val_target, pred_real.round()))
+    submission[class_name] = pred_real
 
-print('Total CV score is {}'.format(np.mean(scores)))
+print('Total ACC score is {}'.format(np.mean(scores)))
