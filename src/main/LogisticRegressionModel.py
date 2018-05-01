@@ -97,7 +97,7 @@ class Model():
         #print(train_target)
         params = {}
         params['objective'] = 'binary:logistic'
-        params['max_depth'] = 3
+        params['max_depth'] = 4
         params['learning_rate'] = 0.1
         params['seed'] = 4242
         params['silent'] = 1
@@ -109,7 +109,7 @@ class Model():
         d_valid = xgb.DMatrix(self.x_valid, label=val_target)
         d_test = xgb.DMatrix(self.x_test)
         watchlist = [(d_train, 'train'), (d_valid, 'valid')]
-        bst = xgb.train(params, d_train, 1, verbose_eval=None, evals=watchlist, early_stopping_rounds=5)
+        bst = xgb.train(params, d_train, 300, verbose_eval=None, evals=watchlist, early_stopping_rounds=5)
         #self.plt_features(bst, d_train)
         pred = bst.predict(d_valid)
         #print("validation-logloss for", str(class_name) + ":", log_loss(val_target, pred))
