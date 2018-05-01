@@ -147,7 +147,7 @@ class Model():
         # Um den Score für das Validierungs-Set während des Trainings zu berechnen, muss eine Watchlist angelegt werden.
         watchlist = [(d_train, 'train'), (d_valid, 'valid')]
     
-        bst = xgb.train(params, d_train, 300, verbose_eval=None, evals=watchlist, early_stopping_rounds=5)
+        bst = xgb.train(params, d_train, 1, verbose_eval=None, evals=watchlist, early_stopping_rounds=5)
         
         #self.plt_features(bst, d_train)
 
