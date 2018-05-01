@@ -21,6 +21,8 @@ config_path = parentdir + "/config/data_root"
 root_lines = open(config_path).read().split('\n')
 root = root_lines[0]
 
+log = root + "log.txt"
+
 patch_train = root + "patchTrain"
 patch_test = root + "patchTest"
 
@@ -42,3 +44,7 @@ channel_map_diff = preprocessing_dir + "channel_map_diff" + get_suffix_pro() + "
 
 if not os.path.exists(preprocessing_dir):
     os.makedirs(preprocessing_dir)
+
+if not os.path.exists(log):
+    file = open(log, 'w+')
+    file.close()

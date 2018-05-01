@@ -25,14 +25,13 @@ import matplotlib.pyplot as plt
 
 class Model():
     def __init__(self):
-        main_preprocessing.create_datasets() 
         x_text = pd.read_csv(data_paths.train)
         self.x_test = pd.read_csv(data_paths.test)
+        
         y = x_text["species_glc_id"]
         self.train_columns = [ 
         #'bs_top', 'alti', 'chbio_12', 'chbio_15', 'chbio_17', 'chbio_3', 'chbio_6', 'clc', 'crusting', 'dimp'
-        'chbio_1',
-         'chbio_2', 'chbio_3', 'chbio_4', 'chbio_5', 'chbio_6',
+        'chbio_1', 'chbio_2', 'chbio_3', 'chbio_4', 'chbio_5', 'chbio_6',
         'chbio_7', 'chbio_8', 'chbio_9', 'chbio_10', 'chbio_11', 'chbio_12',
         'chbio_13', 'chbio_14', 'chbio_15', 'chbio_16', 'chbio_17', 'chbio_18','chbio_19', 
         'etp', 'alti', 'awc_top', 'bs_top', 'cec_top', 'crusting', 'dgh', 'dimp', 'erodi', 'oc_top', 'pd_top', 'text',
@@ -51,79 +50,46 @@ class Model():
         self.x_valid = self.x_valid[self.train_columns]
         self.x_test = self.x_test[self.train_columns]
 
-    def run(self):
-        start_time = time.time()
-        start_datetime = datetime.datetime.now().time()
-        print("Start:", start_datetime)
+    def run(self, use_multithread = True):
         print("Run model...")
 
-        num_cores = multiprocessing.cpu_count()
-        use_multithread = True
-
         if use_multithread:
+            num_cores = multiprocessing.cpu_count()
             result = Parallel(n_jobs=num_cores)(delayed(self.calc_class_xg)(class_name) for class_name in tqdm(self.class_names))
+            #result = Parallel(n_jobs=num_cores)(delayed(self.calc_class)(class_name) for class_name in tqdm(self.class_names))
         else:
             result = []
             for class_name in tqdm(self.class_names):
                 result.append(self.calc_class_xg(class_name))
 
-        #result = Parallel(n_jobs=num_cores)(delayed(self.calc_class)(class_name) for class_name in tqdm(self.class_names))
         species = np.array([x for x, _, _ in result])
-        predictions = np.array([y for _, y, _ in result])
-        test_predictions = np.array([z for _, _, z in result])
-        # print(species)
-        # print(predictions)
+        predictions = np.array([y for _, y, _ in result]).T #T weil jede species eine Spalte ist
+        test_predictions = np.array([z for _, _, z in result]).T
         print("Finished.")
+
         print("Saving results...")
         np.save(data_paths.regression_species, species)
         np.save(data_paths.regression_prediction, predictions)
         np.save(data_paths.regression_test_prediction, test_predictions)
         print("Saving completed", data_paths.regression_species, data_paths.regression_prediction, data_paths.regression_test_prediction)
 
-        assert len(predictions) == len(self.class_names)
-        assert len(predictions[0]) == len(self.x_valid.index)
-        result = predictions.T
-        #print(result)
-        mrr = self.evalute(result, self.y_valid, species)
-        print("Validation MRR score:", str(mrr))
-        #print('Total ACC score is {}'.format(np.mean(self.scores)))
-        end_date_time = datetime.datetime.now().time()
-        print("End:", end_date_time)
-        seconds = time.time() - start_time
-        duration_min = round(seconds / 60, 2)
-        print("Total duration:", duration_min, "min")
-        Log.write("XGBoost Model\nScore: {}\nStarted: {}\nFinished: {}\nDuration: {}min\nSuffix: {}\nTraincolumns: {}\n==========".format(
-            str(mrr), 
-            str(start_datetime), 
-            str(end_date_time),
-            str(duration_min),
-            data_paths.get_suffix_pro(),
-            ", ".join(self.train_columns)))
-    
-    def eval_from_files(self):
-        species = np.load(data_paths.regression_species)
-        predictions = np.load(data_paths.regression_prediction)
-        result = predictions.T
-        print(self.evalute(result, self.y_valid, species))
-
-    def calc_class(self, class_name):
-        train_target = list(map(lambda x: 1 if x == class_name else 0, self.y_train))
-        #val_target = list(map(lambda x: 1 if x == class_name else 0, self.y_valid))
-        #print(train_target)
-        classifier = LogisticRegression(C=10, solver='sag', n_jobs=-1, random_state=settings.seed, max_iter=100)
-
-        #cv_score = np.mean(cross_val_score(classifier, x_train, train_target, cv=3, scoring='roc_auc'))
-        #scores.append(cv_score)
-        #print('CV score for class {} is {}'.format(class_name, cv_score))
-        classifier.fit(self.x_train, train_target)
-        pred = classifier.predict_proba(self.x_valid)
-        #print(pred)
-        pred_real = pred[:, 1] # second is for class is 1
-        #print("acc", accuracy_score(val_target, pred_real.round()))
-        #score = log_loss(val_target, pred_real)
-        #print('Score for class {} is {}'.format(class_name, score.round()))
-        #self.scores.append(score)
-        return (class_name, pred_real)
+    # def calc_class(self, class_name):
+    #     train_target = list(map(lambda x: 1 if x == class_name else 0, self.y_train))
+    #     #val_target = list(map(lambda x: 1 if x == class_name else 0, self.y_valid))
+    #     #print(train_target)
+    #     classifier = LogisticRegression(C=10, solver='sag', n_jobs=-1, random_state=settings.seed, max_iter=100)
+    #     #cv_score = np.mean(cross_val_score(classifier, x_train, train_target, cv=3, scoring='roc_auc'))
+    #     #scores.append(cv_score)
+    #     #print('CV score for class {} is {}'.format(class_name, cv_score))
+    #     classifier.fit(self.x_train, train_target)
+    #     pred = classifier.predict_proba(self.x_valid)
+    #     #print(pred)
+    #     pred_real = pred[:, 1] # second is for class is 1
+    #     #print("acc", accuracy_score(val_target, pred_real.round()))
+    #     #score = log_loss(val_target, pred_real)
+    #     #print('Score for class {} is {}'.format(class_name, score.round()))
+    #     #self.scores.append(score)
+    #     return (class_name, pred_real)
 
     def calc_class_xg(self, class_name):
         train_target = list(map(lambda x: 1 if x == class_name else 0, self.y_train))
@@ -139,23 +105,15 @@ class Model():
         params['eval_metric'] = 'logloss'
         params['predictor'] = 'gpu_predictor'
         params['tree_method'] = 'gpu_hist'
-        # Datenmatrix für die Eingabedaten erstellen.
         d_train = xgb.DMatrix(self.x_train, label=train_target)
         d_valid = xgb.DMatrix(self.x_valid, label=val_target)
         d_test = xgb.DMatrix(self.x_test)
-
-        # Um den Score für das Validierungs-Set während des Trainings zu berechnen, muss eine Watchlist angelegt werden.
         watchlist = [(d_train, 'train'), (d_valid, 'valid')]
-    
         bst = xgb.train(params, d_train, 1, verbose_eval=None, evals=watchlist, early_stopping_rounds=5)
-        
         #self.plt_features(bst, d_train)
-
         pred = bst.predict(d_valid)
         #print("validation-logloss for", str(class_name) + ":", log_loss(val_target, pred))
-
         pred_test = bst.predict(d_test)
-        
         #maximum = np.amax(pred)
         return (class_name, pred, pred_test)
 
@@ -174,14 +132,6 @@ class Model():
         # plt.draw()
         # plt.savefig(data_paths.xgb_feature_importances, bbox_inches='tight')
         # print("Finished.", data_paths.xgb_feature_importances)
-
-    def evalute(self, y_predicted, y_true, classes):
-        print("evaluate")
-        glc = [x for x in range(len(y_predicted))]
-        subm = submission_maker._make_submission(len(classes), classes, y_predicted, glc)
-        ranks = get_ranks.get_ranks(subm, y_true, len(classes))
-        mrr_score = mrr.mrr_score(ranks)
-        return mrr_score
 
 if __name__ == '__main__':
     m = Model()

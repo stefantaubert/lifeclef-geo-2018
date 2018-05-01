@@ -27,12 +27,10 @@ xgb_model_dump = xgb_dir + "model_dump"
 xgb_feature_importances = xgb_dir + "feature_importances.pdf"
 # xgb_species_occurences = root + "analysis/species_occurences.csv"
 
-log = root + "log.txt"
 regression_dir = root + "regression/"
 regression_species = regression_dir + "species.npy"
 regression_prediction = regression_dir + "validation_prediction.npy"
 regression_test_prediction = regression_dir + "test_prediction.npy"
-regression_test_glc_ids = regression_dir + "test_glc_ids.npy"
 regression_test_submission = regression_dir + "test_submission.csv"
 
 #keras single model training paths
@@ -70,10 +68,6 @@ keras_multi_model_test_results = keras_multi_model_test_dir + "results.npy"
 keras_multi_model_test_glc_ids = keras_multi_model_test_dir + "glc_ids.npy"
 keras_multi_model_test_submission = keras_multi_model_test_dir + "submission.csv"
 
-if not os.path.exists(log):
-    file = open(log, 'w+')
-    file.close()
-    
 if not os.path.exists(xgb_dir):
     os.makedirs(xgb_dir)
 

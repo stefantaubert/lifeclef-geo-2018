@@ -29,6 +29,17 @@ def make_xgb_test_submission():
     print("Save test submission...")
     df.to_csv(data_paths.xgb_test_submission, index=False, sep=";", header=None)
 
+def make_logistic_test_submission():
+    print("Create test submission...")
+    classes = np.load(data_paths.regression_species)
+    predictions = np.load(data_paths.regression_test_prediction)
+    x_test = pd.read_csv(data_paths.test)
+    glc_ids = x_test["patch_id"]
+    df = submission_maker.make_submission_df(settings.TOP_N_SUBMISSION_RANKS, classes, predictions, glc_ids)
+    print("Save test submission...")
+    df.to_csv(data_paths.regression_test_submission, index=False, sep=";", header=None)
+    print("Finished.", data_paths.regression_test_submission)
+
 def make_xgb_groups_submission():
     print("Make validation submission...")
 
