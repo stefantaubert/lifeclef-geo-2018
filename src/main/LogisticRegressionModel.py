@@ -58,12 +58,16 @@ class Model():
         print("Run model...")
 
         num_cores = multiprocessing.cpu_count()
-        result = []
-        for class_name in tqdm(self.class_names):
-            result.append(self.calc_class_xg(class_name))
+        use_multithread = True
+
+        if use_multithread:
+            result = Parallel(n_jobs=num_cores)(delayed(self.calc_class_xg)(class_name) for class_name in tqdm(self.class_names))
+        else:
+            result = []
+            for class_name in tqdm(self.class_names):
+                result.append(self.calc_class_xg(class_name))
 
         #result = Parallel(n_jobs=num_cores)(delayed(self.calc_class)(class_name) for class_name in tqdm(self.class_names))
-        result = Parallel(n_jobs=num_cores)(delayed(self.calc_class_xg)(class_name) for class_name in tqdm(self.class_names))
         species = np.array([x for x, _, _ in result])
         predictions = np.array([y for _, y, _ in result])
         test_predictions = np.array([z for _, _, z in result])
@@ -143,7 +147,7 @@ class Model():
         # Um den Score für das Validierungs-Set während des Trainings zu berechnen, muss eine Watchlist angelegt werden.
         watchlist = [(d_train, 'train'), (d_valid, 'valid')]
     
-        bst = xgb.train(params, d_train, 300, verbose_eval=20, evals=watchlist, early_stopping_rounds=5)
+        bst = xgb.train(params, d_train, 300, verbose_eval=None, evals=watchlist, early_stopping_rounds=5)
         
         #self.plt_features(bst, d_train)
 
