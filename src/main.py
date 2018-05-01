@@ -23,7 +23,7 @@ def startXGBRegression():
     seconds = time.time() - start_time
     duration_min = round(seconds / 60, 2)
     print("Total duration:", duration_min, "min")
-    Log.write("XGBoost Regression Model\nMRR-Score: {}\nStarted: {}\nFinished: {}\nDuration: {}min\nSuffix: {}\nTraincolumns: {}\n==========".format
+    Log.write("XGBoost Regression Model\nMRR-Score: {}\nStarted: {}\nFinished: {}\nDuration: {}min\nSuffix: {}\nTraincolumns: {}\nLearnrate: 0.05\nEarly Stopping: 10\n==========".format
     (
         str(mrr), 
         str(start_datetime), 
