@@ -96,15 +96,15 @@ class Model():
         val_target = list(map(lambda x: 1 if x == class_name else 0, self.y_valid))
         #print(train_target)
         params = {}
-        params['updater'] = 'grow_gpu'
         params['objective'] = 'binary:logistic'
         params['max_depth'] = 3
         params['learning_rate'] = 0.1
         params['seed'] = 4242
         params['silent'] = 1
         params['eval_metric'] = 'logloss'
-        params['predictor'] = 'gpu_predictor'
-        params['tree_method'] = 'gpu_hist'
+        # params['updater'] = 'grow_gpu'
+        # params['predictor'] = 'gpu_predictor'
+        # params['tree_method'] = 'gpu_hist'
         d_train = xgb.DMatrix(self.x_train, label=train_target)
         d_valid = xgb.DMatrix(self.x_valid, label=val_target)
         d_test = xgb.DMatrix(self.x_test)
