@@ -70,6 +70,10 @@ keras_multi_model_test_results = keras_multi_model_test_dir + "results.npy"
 keras_multi_model_test_glc_ids = keras_multi_model_test_dir + "glc_ids.npy"
 keras_multi_model_test_submission = keras_multi_model_test_dir + "submission.csv"
 
+if not os.path.exists(log):
+    file = open(log, 'w+')
+    file.close()
+    
 if not os.path.exists(xgb_dir):
     os.makedirs(xgb_dir)
 
