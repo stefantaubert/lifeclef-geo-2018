@@ -145,10 +145,10 @@ class Model():
     
         bst = xgb.train(params, d_train, 300, verbose_eval=20, evals=watchlist, early_stopping_rounds=5)
         
-        self.plt_features(bst, d_train)
+        #self.plt_features(bst, d_train)
 
         pred = bst.predict(d_valid)
-        print("validation-logloss for", str(class_name) + ":", log_loss(val_target, pred))
+        #print("validation-logloss for", str(class_name) + ":", log_loss(val_target, pred))
 
         pred_test = bst.predict(d_test)
         
