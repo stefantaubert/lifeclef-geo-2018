@@ -28,8 +28,12 @@ xgb_feature_importances = xgb_dir + "feature_importances.pdf"
 # xgb_species_occurences = root + "analysis/species_occurences.csv"
 
 log = root + "log.txt"
-regression_species = root + "regression_species.npy"
-regression_prediction = root + "regression_prediction.npy"
+regression_dir = root + "regression/"
+regression_species = regression_dir + "species.npy"
+regression_prediction = regression_dir + "validation_prediction.npy"
+regression_test_prediction = regression_dir + "test_prediction.npy"
+regression_test_glc_ids = regression_dir + "test_glc_ids.npy"
+regression_test_submission = regression_dir + "test_submission.csv"
 
 #keras single model training paths
 keras_training_dir = root + "keras_training_results/"
@@ -68,6 +72,9 @@ keras_multi_model_test_submission = keras_multi_model_test_dir + "submission.csv
 
 if not os.path.exists(xgb_dir):
     os.makedirs(xgb_dir)
+
+if not os.path.exists(regression_dir):
+    os.makedirs(regression_dir)
 
 if not os.path.exists(img_list_dir):
     os.makedirs(img_list_dir)
