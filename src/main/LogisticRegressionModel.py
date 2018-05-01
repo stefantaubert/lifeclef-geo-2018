@@ -102,9 +102,9 @@ class Model():
         params['seed'] = 4242
         params['silent'] = 1
         params['eval_metric'] = 'logloss'
-        # params['updater'] = 'grow_gpu'
-        # params['predictor'] = 'gpu_predictor'
-        # params['tree_method'] = 'gpu_hist'
+        params['updater'] = 'grow_gpu'
+        params['predictor'] = 'gpu_predictor'
+        params['tree_method'] = 'gpu_hist'
         d_train = xgb.DMatrix(self.x_train, label=train_target)
         d_valid = xgb.DMatrix(self.x_valid, label=val_target)
         d_test = xgb.DMatrix(self.x_test)
