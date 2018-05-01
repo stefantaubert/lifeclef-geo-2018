@@ -137,8 +137,8 @@ class Model():
         params['seed'] = 4242
         params['silent'] = 1
         params['eval_metric'] = 'logloss'
-        params['predictor'] = 'gpu_predictor'
-        params['tree_method'] = 'gpu_hist'
+        # params['predictor'] = 'gpu_predictor'
+        # params['tree_method'] = 'gpu_hist'
         # Datenmatrix für die Eingabedaten erstellen.
         d_train = xgb.DMatrix(self.x_train, label=train_target)
         d_valid = xgb.DMatrix(self.x_valid, label=val_target)
