@@ -54,9 +54,6 @@ class Model():
         self.x_valid = self.x_valid[self.train_columns]
         self.x_test = x_test[self.train_columns]
 
-    def run(self, use_multithread = True):
-        print("Run model...")
-        
         self.params = {}
         self.params['objective'] = 'binary:logistic'
         self.params['max_depth'] = 4
@@ -70,6 +67,8 @@ class Model():
         self.params['num_boost_round'] = 300
         self.params['early_stopping_rounds'] = 5
 
+    def run(self, use_multithread = True):
+        print("Run model...")
         if use_multithread:
             num_cores = multiprocessing.cpu_count()
             result = Parallel(n_jobs=num_cores)(delayed(self.calc_class_xg)(class_name) for class_name in tqdm(self.class_names))
