@@ -8,30 +8,59 @@ import evaluation
 import LogisticRegressionModel
 import Log
 import data_paths_global as data_paths
+import settings_main as settings
 
 def startXGBRegression():
     start_time = time.time()
-    start_datetime = datetime.datetime.now().time()
+    start_datetime = datetime.datetime.now()
     print("Start:", start_datetime)
     main_preprocessing.create_datasets()
-    m = LogisticRegressionModel.Model()
-    m.run()
+    m = LogisticRegressionModel.Model(use_groups=False)
+    m.run(use_multithread=True)
     submission.make_logistic_test_submission()
     mrr = evaluation.evaluate_xgb_regression()
-    end_date_time = datetime.datetime.now().time()
+    end_date_time = datetime.datetime.now()
     print("End:", end_date_time)
     seconds = time.time() - start_time
     duration_min = round(seconds / 60, 2)
     print("Total duration:", duration_min, "min")
-    Log.write("XGBoost Regression Model\nMRR-Score: {}\nStarted: {}\nFinished: {}\nDuration: {}min\nSuffix: {}\nTraincolumns: {}\nLearnrate: 0.05\nEarly Stopping: 10\n==========".format
+    writeLog("XGBoost Regression Model", start_datetime, end_date_time, duration_min, m, mrr)
+
+def startXGBRegressionGroups():
+    start_time = time.time()
+    start_datetime = datetime.datetime.now()
+    print("Start:", start_datetime)
+    main_preprocessing.create_datasets()
+    main_preprocessing.extract_groups()
+    m = LogisticRegressionModel.Model(use_groups=True)
+    m.run(use_multithread=True)
+    submission.make_logistic_test_submission_groups()
+    mrr = evaluation.evaluate_xgb_regression_groups()
+    end_date_time = datetime.datetime.now()
+    print("End:", end_date_time)
+    seconds = time.time() - start_time
+    duration_min = round(seconds / 60, 2)
+    print("Total duration:", duration_min, "min")
+    writeLog("XGBoost Regression Model with Groups", start_datetime, end_date_time, duration_min, m, mrr)
+
+def writeLog(title, start, end, duration, model, mrr):
+    log_text = str("{}\n--------------------\nMRR-Score: {}\nStarted: {}\nFinished: {}\nDuration: {}min\nSuffix: {}\nTraincolumns: {}\nSeed: {}\nSplit: {}\n".format
     (
+        title,
         str(mrr), 
-        str(start_datetime), 
-        str(end_date_time),
-        str(duration_min),
-        data_paths.get_suffix_pro(),
-        ", ".join(m.train_columns))
-    )
+        str(start), 
+        str(end),
+        str(duration),
+        data_paths.get_suffix_prot(),
+        ", ".join(model.train_columns),
+        settings.seed,
+        settings.train_val_split,
+    ))
+    log_text += "Modelparams:\n"
+    params = ["- {}: {}\n".format(x, y) for x, y in model.params.items()]
+    log_text += "".join(params) + "============================="
+    Log.write(log_text)
+    print(log_text)
 
 def startXGBoostNative():
     start_time = time.time()
@@ -71,7 +100,7 @@ def startXGBoostGroups():
     print("Total duration:", round(seconds / 60, 2), "min")
 
 if __name__ == "__main__":
-    startXGBRegression()
+    startXGBRegressionGroups()
     #startXGBoostNative()
     #predictTestDataXGBNative(0)
     #startXGBoost(False)

@@ -24,9 +24,13 @@ import xgboost as xgb
 import matplotlib.pyplot as plt
 
 class Model():
-    def __init__(self):
-        x_text = pd.read_csv(data_paths.train)
-        self.x_test = pd.read_csv(data_paths.test)
+    def __init__(self, use_groups = False):
+        if use_groups:
+            x_text = pd.read_csv(data_paths.train_with_groups)
+        else:
+            x_text = pd.read_csv(data_paths.train)
+            
+        x_test = pd.read_csv(data_paths.test)
         
         y = x_text["species_glc_id"]
         self.train_columns = [ 
@@ -48,10 +52,23 @@ class Model():
 
         self.x_train = self.x_train[self.train_columns]
         self.x_valid = self.x_valid[self.train_columns]
-        self.x_test = self.x_test[self.train_columns]
+        self.x_test = x_test[self.train_columns]
 
     def run(self, use_multithread = True):
         print("Run model...")
+        
+        self.params = {}
+        self.params['objective'] = 'binary:logistic'
+        self.params['max_depth'] = 4
+        self.params['learning_rate'] = 0.1
+        self.params['seed'] = 4242
+        self.params['silent'] = 1
+        self.params['eval_metric'] = 'logloss'
+        self.params['updater'] = 'grow_gpu'
+        self.params['predictor'] = 'gpu_predictor'
+        self.params['tree_method'] = 'gpu_hist'
+        self.params['num_boost_round'] = 400
+        self.params['early_stopping_rounds'] = 5
 
         if use_multithread:
             num_cores = multiprocessing.cpu_count()
@@ -73,6 +90,34 @@ class Model():
         np.save(data_paths.regression_test_prediction, test_predictions)
         print("Saving completed", data_paths.regression_species, data_paths.regression_prediction, data_paths.regression_test_prediction)
 
+    def calc_class_xg(self, class_name):
+        train_target = list(map(lambda x: 1 if x == class_name else 0, self.y_train))
+        val_target = list(map(lambda x: 1 if x == class_name else 0, self.y_valid))
+        d_train = xgb.DMatrix(self.x_train, label=train_target)
+        d_valid = xgb.DMatrix(self.x_valid, label=val_target)
+        d_test = xgb.DMatrix(self.x_test)
+        watchlist = [(d_train, 'train'), (d_valid, 'valid')]
+        
+        bst = xgb.train(self.params, d_train, num_boost_round=self.params["num_boost_round"], verbose_eval=1, evals=watchlist, early_stopping_rounds=self.params["early_stopping_rounds"])
+        #self.plt_features(bst, d_train)
+        pred = bst.predict(d_valid)
+        #print("validation-logloss for", str(class_name) + ":", log_loss(val_target, pred))
+        pred_test = bst.predict(d_test)
+
+        return (class_name, pred, pred_test)
+
+    def plt_features(self, bst, d_test):
+        print("Plot feature importances...")
+        _, ax = plt.subplots(figsize=(12,18))
+        xgb.plot_importance(bst, color='red', ax=ax)
+        plt.show()
+
+if __name__ == '__main__':
+    m = Model(True)
+    #m.eval_from_files()
+    m.run(False)
+
+
     # def calc_class(self, class_name):
     #     train_target = list(map(lambda x: 1 if x == class_name else 0, self.y_train))
     #     #val_target = list(map(lambda x: 1 if x == class_name else 0, self.y_valid))
@@ -90,50 +135,3 @@ class Model():
     #     #print('Score for class {} is {}'.format(class_name, score.round()))
     #     #self.scores.append(score)
     #     return (class_name, pred_real)
-
-    def calc_class_xg(self, class_name):
-        train_target = list(map(lambda x: 1 if x == class_name else 0, self.y_train))
-        val_target = list(map(lambda x: 1 if x == class_name else 0, self.y_valid))
-        #print(train_target)
-        params = {}
-        params['objective'] = 'binary:logistic'
-        params['max_depth'] = 4
-        params['learning_rate'] = 0.05
-        params['seed'] = 4242
-        params['silent'] = 1
-        params['eval_metric'] = 'logloss'
-        params['updater'] = 'grow_gpu'
-        params['predictor'] = 'gpu_predictor'
-        params['tree_method'] = 'gpu_hist'
-        d_train = xgb.DMatrix(self.x_train, label=train_target)
-        d_valid = xgb.DMatrix(self.x_valid, label=val_target)
-        d_test = xgb.DMatrix(self.x_test)
-        watchlist = [(d_train, 'train'), (d_valid, 'valid')]
-        bst = xgb.train(params, d_train, 400, verbose_eval=None, evals=watchlist, early_stopping_rounds=10)
-        #self.plt_features(bst, d_train)
-        pred = bst.predict(d_valid)
-        #print("validation-logloss for", str(class_name) + ":", log_loss(val_target, pred))
-        pred_test = bst.predict(d_test)
-        #maximum = np.amax(pred)
-        return (class_name, pred, pred_test)
-
-    def plt_features(self, bst, d_test):
-        print("Plot feature importances...")
-        # Ausschlagskraft aller Features plotten
-        _, ax = plt.subplots(figsize=(12,18))
-        # print("Features names:")
-        # print(d_test.feature_names)
-        # print("Fscore Items:")
-        # print(bst.get_fscore().items())
-        # mapper = {'f{0}'.format(i): v for i, v in enumerate(d_test.feature_names)}
-        # mapped = {mapper[k]: v for k, v in bst.get_fscore().items()}
-        xgb.plot_importance(bst, color='red', ax=ax)
-        plt.show()
-        # plt.draw()
-        # plt.savefig(data_paths.xgb_feature_importances, bbox_inches='tight')
-        # print("Finished.", data_paths.xgb_feature_importances)
-
-if __name__ == '__main__':
-    m = Model()
-    #m.eval_from_files()
-    m.run(False)
