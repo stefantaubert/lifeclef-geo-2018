@@ -67,7 +67,7 @@ class Model():
         self.params['updater'] = 'grow_gpu'
         self.params['predictor'] = 'gpu_predictor'
         self.params['tree_method'] = 'gpu_hist'
-        self.params['num_boost_round'] = 400
+        self.params['num_boost_round'] = 300
         self.params['early_stopping_rounds'] = 5
 
         if use_multithread:
@@ -98,7 +98,7 @@ class Model():
         d_test = xgb.DMatrix(self.x_test)
         watchlist = [(d_train, 'train'), (d_valid, 'valid')]
         
-        bst = xgb.train(self.params, d_train, num_boost_round=self.params["num_boost_round"], verbose_eval=1, evals=watchlist, early_stopping_rounds=self.params["early_stopping_rounds"])
+        bst = xgb.train(self.params, d_train, num_boost_round=self.params["num_boost_round"], verbose_eval=None, evals=watchlist, early_stopping_rounds=self.params["early_stopping_rounds"])
         #self.plt_features(bst, d_train)
         pred = bst.predict(d_valid)
         #print("validation-logloss for", str(class_name) + ":", log_loss(val_target, pred))
