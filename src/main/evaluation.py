@@ -38,6 +38,7 @@ def evaluate_xgb_regression_groups():
 
     groups = np.load(data_paths.regression_species)
     predictions = np.load(data_paths.regression_prediction)
+    print(predictions)
     glc = [x for x in range(len(predictions))]
 
     SpeciesOccurences.create()
