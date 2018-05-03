@@ -48,7 +48,7 @@ def evaluate_xgb_regression_groups():
     for _, row in species_occ.iterrows():
         species_occ_dict[row["species"]] = row["percents"]
 
-    subm = submission_maker.make_submission_groups_df(settings.TOP_N_SUBMISSION_RANKS, groups, predictions, glc, named_groups, species_occ_dict)
+    subm = submission_maker._make_submission_groups(settings.TOP_N_SUBMISSION_RANKS, groups, predictions, glc, named_groups, species_occ_dict)
     print(subm)
     ranks = get_ranks.get_ranks(subm, y_valid, settings.TOP_N_SUBMISSION_RANKS)
     mrr_score = mrr.mrr_score(ranks)
