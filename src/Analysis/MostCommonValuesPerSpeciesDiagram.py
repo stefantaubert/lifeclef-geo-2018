@@ -54,7 +54,7 @@ class MostCommonValuesPerSpeciesDiagram:
         
 if __name__ == "__main__":
     main_preprocessing.extract_groups()
-    plot = [890, 186]
+    plot = [193.0, 2276.0, 1317.0, 487.0, 648.0, 3082.0, 205.0, 238.0, 2093.0, 2416.0, 1423.0, 2323.0, 1556.0, 2356.0, 2294.0, 153.0, 2079.0, 889.0, 383.0]
     d = MostCommonValuesPerSpeciesDiagram()
     for p in plot:
        d.plot(p)

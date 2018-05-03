@@ -56,7 +56,7 @@ def make_logistic_submission_groups():
         species_occ_dict[row["species"]] = row["percents"]
 
     df = submission_maker.make_submission_groups_df(settings.TOP_N_SUBMISSION_RANKS, groups, predictions, glc_ids, named_groups, species_occ_dict)
-    #df = submission_maker.make_submission_df(settings.TOP_N_SUBMISSION_RANKS, classes, predictions, glc_ids)
+    
     print("Finished.")
 
     print("Save test submission...")

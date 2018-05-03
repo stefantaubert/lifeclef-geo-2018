@@ -33,7 +33,7 @@ def startXGBRegressionGroups():
     main_preprocessing.create_datasets()
     main_preprocessing.extract_groups()
     m = LogisticRegressionModel.Model(use_groups=True)
-    #m.run(use_multithread=True)
+    m.run(use_multithread=True)
     submission.make_logistic_submission_groups()
     mrr = evaluation.evaluate_xgb_regression_groups()
     end_date_time = datetime.datetime.now()

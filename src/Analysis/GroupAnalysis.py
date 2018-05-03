@@ -121,6 +121,9 @@ class GroupAnalysis():
 
         #print(group_length_probs)
         print("Count of groups:", len(groups))
+        print("Count of Species in real groups (greater than 1):", str(self.species_count - group_counts[1]))
+        biggest_group = np.amax(list(group_counts.keys()))
+        print("Biggest group:", biggest_group, "(" + str(group_counts[biggest_group]) + "x)")
         print("Group overview (count of species: groups):", group_counts)
         print("Export diagrams...")
 
@@ -140,7 +143,7 @@ class GroupAnalysis():
         fig = plt.figure(figsize=(20, 20))   
         plt.title("Groupnetwork (" + str(len(groups)) + " groups for " + str(self.species_count) + " species) @threshold=" + str(settings.threshold))
         #nx.draw_networkx_labels(G,pos=nx.spring_layout(G))
-        nx.draw(G, node_size=12)
+        nx.draw(G, node_size=3)
         plt.savefig(data_paths.group_network, bbox_inches='tight')
         #plt.show()
         plt.close()

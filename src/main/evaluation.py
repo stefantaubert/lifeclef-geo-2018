@@ -52,7 +52,7 @@ def evaluate_xgb_regression_groups():
     subm = submission_maker._make_submission_groups(settings.TOP_N_SUBMISSION_RANKS, groups, predictions, glc, named_groups, species_occ_dict)
     df = submission_maker._get_df(subm)
     df.to_csv(data_paths.regression_val_submission)
-    #print(subm)
+
     ranks = get_ranks.get_ranks(subm, y_valid, settings.TOP_N_SUBMISSION_RANKS)
     mrr_score = mrr.mrr_score(ranks)
     print("MRR-Score:", mrr_score * 100,"%")
