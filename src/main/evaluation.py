@@ -49,6 +49,7 @@ def evaluate_xgb_regression_groups():
         species_occ_dict[row["species"]] = row["percents"]
 
     subm = submission_maker.make_submission_groups_df(settings.TOP_N_SUBMISSION_RANKS, groups, predictions, glc, named_groups, species_occ_dict)
+    print(subm)
     ranks = get_ranks.get_ranks(subm, y_valid, settings.TOP_N_SUBMISSION_RANKS)
     mrr_score = mrr.mrr_score(ranks)
     print("MRR-Score:", mrr_score * 100,"%")
@@ -80,4 +81,4 @@ def evaluate_results_from_files(submission_path, gt_path, species_map_path):
     print("MRR-Score:", mrr_score * 100,"%")
 
 if __name__ == "__main__":
-    evaluate_xgb()
+    evaluate_xgb_regression_groups()
