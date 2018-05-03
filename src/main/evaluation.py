@@ -32,7 +32,7 @@ def evaluate_xgb_regression():
 def evaluate_xgb_regression_groups():
     print("Evaluate submission...")
     print("Create submission...")
-    x_text = pd.read_csv(data_paths.train_with_groups)
+    x_text = pd.read_csv(data_paths.train)
     y = x_text["species_glc_id"]
     _, _, _, y_valid = train_test_split(x_text, y, test_size=settings.train_val_split, random_state=settings.seed)
 
@@ -50,7 +50,9 @@ def evaluate_xgb_regression_groups():
         species_occ_dict[row["species"]] = row["percents"]
 
     subm = submission_maker._make_submission_groups(settings.TOP_N_SUBMISSION_RANKS, groups, predictions, glc, named_groups, species_occ_dict)
-    print(subm)
+    df = submission_maker._get_df(subm)
+    df.to_csv(data_paths.regression_val_submission)
+    #print(subm)
     ranks = get_ranks.get_ranks(subm, y_valid, settings.TOP_N_SUBMISSION_RANKS)
     mrr_score = mrr.mrr_score(ranks)
     print("MRR-Score:", mrr_score * 100,"%")

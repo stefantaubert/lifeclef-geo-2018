@@ -30,6 +30,7 @@ xgb_feature_importances = xgb_dir + "feature_importances.pdf"
 regression_dir = root + "regression/"
 regression_species = regression_dir + "species.npy"
 regression_prediction = regression_dir + "validation_prediction.npy"
+regression_val_submission = regression_dir + "val_submission.csv"
 regression_test_prediction = regression_dir + "test_prediction.npy"
 regression_test_submission = regression_dir + "test_submission.csv"
 
