@@ -63,7 +63,7 @@ class GroupExtractor():
        
         G = self.dict_to_graph(similar_species_dict)
         groups = self.get_groups_of_graph(G)
-        print(groups)
+        #print(groups)
         print("Save groups to file...")
         group_file = open(data_paths.groups, 'w')
         for item in groups:
