@@ -1,3 +1,4 @@
+import module_support_pre
 import pandas as pd
 import numpy as np
 import data_paths_pre as data_paths
@@ -53,7 +54,8 @@ class SimilarSpeciesExtractor():
         print("Get similar species...")
         species_diff_matrix = SpeciesDiffExtractor.load()
         similar_species_dict = self.get_similar_species_dict(species_diff_matrix)
+        print(similar_species_dict)
         pickle.dump(similar_species_dict, open(data_paths.similar_species, 'wb'))
 
 if __name__ == "__main__":
-    extract()
+    SimilarSpeciesExtractor()._create()

@@ -1,3 +1,4 @@
+import module_support_pre
 import pandas as pd
 import numpy as np
 import data_paths_pre as data_paths
@@ -33,7 +34,7 @@ class MostCommonValueExtractor():
             #'day', 'month', 'year',
             'latitude', 'longitude']
 
-    def _get_most_common_value_matrix_df(self):
+    def _get_most_common_value_matrix_df(self, use_mean):
         result_cols = self.cols_to_consider + ['occurence', 'species_glc_id']
         resulting_rows = []
 
@@ -42,13 +43,18 @@ class MostCommonValueExtractor():
             row = []
 
             for col in self.cols_to_consider:
-                c = Counter(specie_csv[col])
-                most_common_value, _ = c.most_common(1)[0]
-                row.append(most_common_value)
+                if use_mean:
+                    val = np.mean(specie_csv[col])
+                else:
+                    c = Counter(specie_csv[col])
+                    val, _ = c.most_common(1)[0]
+                row.append(val)
 
             row.append(len(specie_csv.index))
             row.append(specie)
             resulting_rows.append(row)
+            print(np.amin(row))
+            print(np.amax(row))
 
         results_array = np.asarray(resulting_rows) #list to array to add to the dataframe as a new column
         result_ser = pd.DataFrame(results_array, columns=result_cols)   
@@ -57,8 +63,8 @@ class MostCommonValueExtractor():
 
     def _create(self):
         print("Getting most common values...")
-        most_common_value_matrix = self._get_most_common_value_matrix_df()
+        most_common_value_matrix = self._get_most_common_value_matrix_df(use_mean=True)
         most_common_value_matrix.to_csv(data_paths.most_common_values, index=False)
 
 if __name__ == "__main__":
-    extract()
+    MostCommonValueExtractor()._create()
