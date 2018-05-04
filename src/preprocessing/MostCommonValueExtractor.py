@@ -53,8 +53,8 @@ class MostCommonValueExtractor():
             row.append(len(specie_csv.index))
             row.append(specie)
             resulting_rows.append(row)
-            print(np.amin(row))
-            print(np.amax(row))
+            # print(np.amin(row))
+            # print(np.amax(row))
 
         results_array = np.asarray(resulting_rows) #list to array to add to the dataframe as a new column
         result_ser = pd.DataFrame(results_array, columns=result_cols)   
