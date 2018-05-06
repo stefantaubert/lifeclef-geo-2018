@@ -94,7 +94,7 @@ class Model():
 
         if use_multithread:
             num_cores = multiprocessing.cpu_count()
-            predictions = Parallel(n_jobs=num_cores)(delayed(self.predict_row)(row) for row in tqdm(range(len(self.to_predict_matrix))))
+            predictions = Parallel(n_jobs=-1)(delayed(self.predict_row)(row) for row in tqdm(range(len(self.to_predict_matrix))))
             #result = Parallel(n_jobs=num_cores)(delayed(self.calc_class)(class_name) for class_name in tqdm(self.class_names))
         else:
             predictions = []
