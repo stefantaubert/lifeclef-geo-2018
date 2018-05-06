@@ -6,7 +6,7 @@ pixel_count = 32
 
 ### Contains the threshold for the distances between each species for them to be in a group.
 ### Remarks: after changing this value, you have to run SimilarSpeciesExtractor and GroupExtractor again.
-threshold = 7
+threshold = 0
 
 ### Contains the minimal occurence for a species that a species is left in the trainset.
 ### Remarks: after changing this value, you have to run MostCommonValueExtractor, SpeciesDiffExtractor, SimilarSpeciesExtractor and GroupExtractor again.

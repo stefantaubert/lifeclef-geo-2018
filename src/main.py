@@ -6,9 +6,24 @@ import XGBoostModelGroups
 import submission
 import evaluation
 import LogisticRegressionModel
+import VectorModel
 import Log
 import data_paths_global as data_paths
 import settings_main as settings
+
+def startVectorModel():
+    start_time = time.time()
+    start_datetime = datetime.datetime.now()
+    print("Start:", start_datetime)
+    main_preprocessing.create_datasets()
+    m = VectorModel.Model()
+    m.predict_test()
+    submission.make_vector_test_submission()
+    end_date_time = datetime.datetime.now()
+    print("End:", end_date_time)
+    seconds = time.time() - start_time
+    duration_min = round(seconds / 60, 2)
+    print("Total duration:", duration_min, "min")
 
 def startXGBRegression():
     start_time = time.time()
@@ -100,7 +115,8 @@ def startXGBoostGroups():
     print("Total duration:", round(seconds / 60, 2), "min")
 
 if __name__ == "__main__":
-    startXGBRegressionGroups()
+    startVectorModel()
+    #startXGBRegressionGroups()
     #startXGBoostNative()
     #predictTestDataXGBNative(0)
     #startXGBoost(False)

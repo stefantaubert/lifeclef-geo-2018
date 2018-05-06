@@ -1,3 +1,2 @@
-d = {"ae": 24}
-
-print(d["ae"])
+i = [x for x in range(2)]
+print(i)
