@@ -24,6 +24,17 @@ def startVectorModel():
     seconds = time.time() - start_time
     duration_min = round(seconds / 60, 2)
     print("Total duration:", duration_min, "min")
+    log_text = str("{}\n--------------------\nStarted: {}\nFinished: {}\nDuration: {}min\nSuffix: {}\n".format
+    (
+        "Vector Model",
+        str(start_datetime), 
+        str(end_date_time),
+        str(duration_min),
+        data_paths.get_suffix_pro(),
+    ))
+    log_text += "============================="
+    Log.write(log_text)
+    print(log_text)
 
 def startXGBRegression():
     start_time = time.time()

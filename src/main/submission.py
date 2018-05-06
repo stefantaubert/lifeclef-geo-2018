@@ -44,7 +44,7 @@ def make_vector_test_submission():
     print("Create test submission...")
     classes = np.load(data_paths.vector_species)
     predictions = np.load(data_paths.vector_test_prediction)
-    x_test = pd.read_csv(data_paths.test)#, nrows=10)
+    x_test = pd.read_csv(data_paths.test)#, nrows=7)
     glc_ids = x_test["patch_id"]
     df = submission_maker.make_submission_df(settings.TOP_N_SUBMISSION_RANKS, classes, predictions, glc_ids)
     print("Save test submission...")
