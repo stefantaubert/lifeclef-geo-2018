@@ -126,8 +126,8 @@ def startXGBoostGroups():
     print("Total duration:", round(seconds / 60, 2), "min")
 
 if __name__ == "__main__":
-    startVectorModel()
-    #startXGBRegressionGroups()
+    #startVectorModel()
+    startXGBRegressionGroups()
     #startXGBoostNative()
     #predictTestDataXGBNative(0)
     #startXGBoost(False)
