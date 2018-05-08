@@ -41,6 +41,11 @@ vector_val_submission = vector_dir + "val_submission.csv"
 vector_test_prediction = vector_dir + "test_prediction.npy"
 vector_test_submission = vector_dir + "test_submission.csv"
 
+random_dir = root + "random/"
+random_species = random_dir + "species.npy"
+random_test_prediction = random_dir + "test_prediction.npy"
+random_test_submission = random_dir + "test_submission.csv"
+
 #keras single model training paths
 keras_training_dir = root + "keras_training_results/"
 keras_training_gt = keras_training_dir + "gt.npy"
@@ -75,6 +80,9 @@ keras_multi_model_test_dir = root + "keras_multi_model_predictions/"
 keras_multi_model_test_results = keras_multi_model_test_dir + "results.npy"
 keras_multi_model_test_glc_ids = keras_multi_model_test_dir + "glc_ids.npy"
 keras_multi_model_test_submission = keras_multi_model_test_dir + "submission.csv"
+
+if not os.path.exists(random_dir):
+    os.makedirs(random_dir)
 
 if not os.path.exists(vector_dir):
     os.makedirs(vector_dir)
