@@ -153,9 +153,9 @@ def startXGBoostGroups():
 
 if __name__ == "__main__":
     #startRandomModel()
-    #startVectorModel()
+    startVectorModel()
     #startXGBRegressionGroups()
     #startXGBoostNative()
-    predictTestDataXGBNative(36)
+    #predictTestDataXGBNative(36)
     #startXGBoost(False)
     #startXGBoostGroups()

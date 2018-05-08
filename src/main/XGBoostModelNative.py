@@ -138,7 +138,7 @@ class XGBModelNative():
         
         testset = testset[self.train_columns]
         testset_dmatrix = xgb.DMatrix(testset)
-        self.plt_features(bst, testset_dmatrix, iteration_nr)
+        #self.plt_features(bst, testset_dmatrix, iteration_nr)
 
         print("Predict test data...")    
         pred_test = bst.predict(testset_dmatrix)        
