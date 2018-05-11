@@ -125,7 +125,7 @@ class Model():
 
             pool = mp.Pool(processes=4)
             for row in tqdm(range(count_of_rows)):
-                pool.apply_async(target=self.predict_row, args = (row,self.to_predict_matrix, self.x_train_matrix, self.get_vector_length, self.y, self.fake_propabilities, ), callback=result_list.append)
+                pool.apply_async(self.predict_row, args = (row,self.to_predict_matrix, self.x_train_matrix, self.get_vector_length, self.y, self.fake_propabilities, ), callback=result_list.append)
             pool.close()
             pool.join()
             print(result_list)
