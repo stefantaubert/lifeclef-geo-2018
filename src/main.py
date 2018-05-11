@@ -43,7 +43,7 @@ def startVectorModel():
     print("Start:", start_datetime)
     main_preprocessing.create_datasets()
     m = VectorModel.Model()
-    m.predict_test(False)
+    m.predict_test(use_multithread=True)
     submission.make_vector_test_submission()
     end_date_time = datetime.datetime.now()
     print("End:", end_date_time)
