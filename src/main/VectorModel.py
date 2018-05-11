@@ -94,8 +94,8 @@ class Model():
         self.fake_propabilities = [(self.species_count - i) / self.species_count for i in range(self.species_count)]
 
         if use_multithread:
-            #num_cores = multiprocessing.cpu_count()
-            num_cores = 8
+            num_cores = multiprocessing.cpu_count()
+            print("Cpu count:", str(num_cores))
             predictions = Parallel(n_jobs=num_cores)(delayed(self.predict_row)(row) for row in tqdm(range(len(self.to_predict_matrix))))
             #result = Parallel(n_jobs=num_cores)(delayed(self.calc_class)(class_name) for class_name in tqdm(self.class_names))
         else:
