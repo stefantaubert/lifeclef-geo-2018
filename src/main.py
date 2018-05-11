@@ -151,7 +151,7 @@ def startXGBoostGroups():
     seconds = time.time() - start_time
     print("Total duration:", round(seconds / 60, 2), "min")
 
-if __name__ == "__main__":
+if True: #__name__ == "__main__":
     #startRandomModel()
     startVectorModel()
     #startXGBRegressionGroups()
