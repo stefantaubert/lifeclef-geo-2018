@@ -22,6 +22,7 @@ import xgboost as xgb
 import matplotlib.pyplot as plt
 import math
 import mrr
+import multiprocessing as mp
 
 class Model():
 
@@ -96,8 +97,17 @@ class Model():
         if use_multithread:
             num_cores = multiprocessing.cpu_count()
             print("Cpu count:", str(num_cores))
-            predictions = Parallel(n_jobs=num_cores)(delayed(self.predict_row)(row) for row in tqdm(range(len(self.to_predict_matrix))))
+            #predictions = Parallel(n_jobs=num_cores)(delayed(self.predict_row)(row) for row in tqdm(range(len(self.to_predict_matrix))))
             #result = Parallel(n_jobs=num_cores)(delayed(self.calc_class)(class_name) for class_name in tqdm(self.class_names))
+
+            #pool = mp.Pool(processes=4)
+            #predictions = pool.map(self.predict_row, range(len(self.to_predict_matrix)))
+            count_of_rows = len(self.to_predict_matrix)
+            #count_of_rows = 8
+            with mp.Pool(processes=num_cores) as p:
+                predictions = list(tqdm(p.imap(self.predict_row, range(count_of_rows)), total=count_of_rows))
+            #predictions = [pool.apply(self.predict_row, args=(row,)) for row in range(len(self.to_predict_matrix))]
+            print(predictions)
         else:
             predictions = []
             for row in tqdm(range(len(self.to_predict_matrix))):
@@ -130,7 +140,7 @@ class Model():
         species_sorted = list(dict.fromkeys(species_sorted))
         fake_props = list(self.fake_propabilities)
         # print("NEW ITERATION------------------------------------")
-        print(species_sorted[:100])
+        #print(species_sorted[:100])
         # print(fake_props[:100])
 
         species_map, fake_propabilities_sorted = zip(*sorted(zip(species_sorted, fake_props)))
