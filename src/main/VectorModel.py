@@ -129,12 +129,12 @@ class Model():
         species_sorted = list(dict.fromkeys(species_sorted))
         fake_props = list(self.fake_propabilities)
         # print("NEW ITERATION------------------------------------")
-        # print(species_sorted[:100])
+        print(species_sorted[:100])
         # print(fake_props[:100])
 
         species_map, fake_propabilities_sorted = zip(*sorted(zip(species_sorted, fake_props)))
 
-        print(species_map[:100])
+        #print(species_map[:100])
         # print(fake_propabilities_sorted[:100])
 
         return (row_nr, fake_propabilities_sorted)
