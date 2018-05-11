@@ -22,6 +22,7 @@ import xgboost as xgb
 import matplotlib.pyplot as plt
 import math
 import mrr
+
 class Model():
 
     def __init__(self):
@@ -114,8 +115,8 @@ class Model():
         assert len(predictions) == len(self.x_test.index)
 
     def predict_row(self, row_nr):
-        if row_nr >= 6000:
-            return
+        # if row_nr >= 6000:
+        #     return
         row = np.array(self.to_predict_matrix[row_nr])
         distances = []
         for j in range(len(self.x_train_matrix)):                
@@ -133,7 +134,7 @@ class Model():
 
         species_map, fake_propabilities_sorted = zip(*sorted(zip(species_sorted, fake_props)))
 
-        # print(species_map[:100])
+        print(species_map[:100])
         # print(fake_propabilities_sorted[:100])
 
         return (row_nr, fake_propabilities_sorted)
