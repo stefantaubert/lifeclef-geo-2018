@@ -123,7 +123,7 @@ class Model():
             # results = [output.get() for p in processes]
             predictions = []
 
-            pool = mp.Pool(processes=4)
+            pool = mp.Pool(processes=num_cores)
             for row in tqdm(range(count_of_rows)):
                 pool.apply_async(self.predict_row, args = (row,self.to_predict_matrix, self.x_train_matrix, self.get_vector_length, self.y, self.fake_propabilities, ), callback=predictions.append)
             pool.close()
