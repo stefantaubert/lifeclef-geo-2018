@@ -11,9 +11,11 @@ if __name__ == '__main__':
     for i in range(10):
         t = multiprocessing.Process(target=hello, args=(i,))
         processes.append(t)
+        print("start...")
         t.start()
 
     for one_process in processes:
+        print("join...")
         one_process.join()
 
     print("Done!")
