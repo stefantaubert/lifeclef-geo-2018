@@ -35,10 +35,6 @@ regression_test_prediction = regression_dir + "test_prediction.npy"
 regression_test_submission = regression_dir + "test_submission.csv"
 
 vector_dir = root + "vector/"
-vector_species = vector_dir + "species.npy"
-vector_prediction = vector_dir + "validation_prediction.npy"
-vector_val_submission = vector_dir + "val_submission.csv"
-vector_test_prediction = vector_dir + "test_prediction.npy"
 vector_test_submission = vector_dir + "test_submission.csv"
 
 random_dir = root + "random/"

@@ -1,46 +1,43 @@
 import module_support_main
 import pandas as pd
 import numpy as np
-from tqdm import tqdm
-from sklearn.model_selection import train_test_split
 import data_paths_main as data_paths
 import settings_main as settings
-from sklearn.metrics import log_loss
-from joblib import Parallel, delayed
-import multiprocessing
 import submission_maker
 import submission
+from tqdm import tqdm
 import get_ranks
 import mrr
 import time
 import main_preprocessing
 import Log
 import datetime
-import xgboost as xgb
-import matplotlib.pyplot as plt
 import math
 import mrr
 import multiprocessing as mp
 
 class Model():
     def __init__(self):
-        x_text = pd.read_csv(data_paths.train)
+        main_preprocessing.create_datasets()
+        x_train = pd.read_csv(data_paths.train)
         x_test = pd.read_csv(data_paths.test)#, nrows = 7)
-
-        self.y = x_text["species_glc_id"]
-        self.train_columns = [ 
-        #'bs_top', 'alti', 'chbio_12', 'chbio_15', 'chbio_17', 'chbio_3', 'chbio_6', 'clc', 'crusting', 'dimp'
-        'chbio_1', 'chbio_2', 'chbio_3', 'chbio_4', 'chbio_5', 'chbio_6',
-        'chbio_7', 'chbio_8', 'chbio_9', 'chbio_10', 'chbio_11', 'chbio_12',
-        'chbio_13', 'chbio_14', 'chbio_15', 'chbio_16', 'chbio_17', 'chbio_18','chbio_19', 
-        'etp', 'alti', 'awc_top', 'bs_top', 'cec_top', 'crusting', 'dgh', 'dimp', 'erodi', 'oc_top', 'pd_top', 'text',
-        'proxi_eau_fast', 'clc', 'latitude', 'longitude'
-        ]
-
-        self.x_train = x_text[self.train_columns]
-        self.x_test = x_test[self.train_columns]
-        self.species_count = len(np.unique(self.y))
+      
+        self.y = x_train["species_glc_id"]
+        self.species = sorted(np.unique(self.y))
+        self.species_count = len(self.species)
         print("Count of species", self.species_count)        
+
+        self.train_columns = [ 
+            'chbio_1', 'chbio_2', 'chbio_3', 'chbio_4', 'chbio_5', 'chbio_6',
+            'chbio_7', 'chbio_8', 'chbio_9', 'chbio_10', 'chbio_11', 'chbio_12',
+            'chbio_13', 'chbio_14', 'chbio_15', 'chbio_16', 'chbio_17', 'chbio_18','chbio_19', 
+            'etp', 'alti', 'awc_top', 'bs_top', 'cec_top', 'crusting', 'dgh', 'dimp', 'erodi', 'oc_top', 'pd_top', 'text',
+            'proxi_eau_fast', 'clc', 'latitude', 'longitude'
+        ]
+        
+        self.test_glc_ids = x_test["patch_id"]
+        self.x_train = x_train[self.train_columns]
+        self.x_test = x_test[self.train_columns]
 
     def get_vector_length(self, v):
         summ = 0
@@ -81,15 +78,11 @@ class Model():
             print("Mrr:", mrr.mrr_score(ranks))
 
     def predict_test(self, use_multithread = True):
-        print("Run model...")
-
         self.x_train_matrix = self.x_train.as_matrix()
         self.to_predict_matrix = self.x_test.as_matrix()
-        species = sorted(np.unique(self.y))
-        # print(species)
-        np.save(data_paths.vector_species, species)
+        
         self.fake_propabilities = [(self.species_count - i) / self.species_count for i in range(self.species_count)]
-        num_cores = multiprocessing.cpu_count()
+        num_cores = mp.cpu_count()
         count_of_rows = len(self.to_predict_matrix)
         print("Cpu count:", str(num_cores))
 
@@ -114,9 +107,9 @@ class Model():
         #print(props)
         #print(np.array(props))
         print("Saving test predictions...")
-        np.save(data_paths.vector_test_prediction, np.array(props))
-        print("Finished.", data_paths.vector_test_prediction)
+        result = np.array(props)
         assert len(predictions) == len(self.x_test.index)
+        return result
 
     def predict_row(self, row_nr):
         row = np.array(self.to_predict_matrix[row_nr])
@@ -144,20 +137,28 @@ class Model():
         return (row_nr, fake_propabilities_sorted)
         #print(probabilities)
 
+    def make_test_submission(self):
+        print("Run model for testdata...")
+        predictions = self.predict_test(use_multithread=True)
+        print("Finished.")
+        print("Create test submission...")
+        df = submission_maker.make_submission_df(settings.TOP_N_SUBMISSION_RANKS, self.species, predictions, self.test_glc_ids)
+        print("Save test submission...")
+        df.to_csv(data_paths.vector_test_submission, index=False, sep=";", header=None)
+        print("Finished.", data_paths.vector_test_submission)
+
 def run():
     start_time = time.time()
     start_datetime = datetime.datetime.now()
     print("Start:", start_datetime)
-    main_preprocessing.create_datasets()
     m = Model()
-    m.predict_test(use_multithread=True)
-    submission.make_vector_test_submission()
+    m.make_test_submission()
     end_date_time = datetime.datetime.now()
     print("End:", end_date_time)
     seconds = time.time() - start_time
     duration_min = round(seconds / 60, 2)
     print("Total duration:", duration_min, "min")
-    log_text = str("{}\n--------------------\nStarted: {}\nFinished: {}\nDuration: {}min\nSuffix: {}\n".format
+    log_text = str("{}\n--------------------\nStarted: {}\nFinished: {}\nDuration: {} min\nSuffix: {}\n".format
     (
         "Vector Model",
         str(start_datetime), 
@@ -167,6 +168,7 @@ def run():
     ))
     log_text += "============================="
     Log.write(log_text)
+    print("#### LOG ####")
     print(log_text)
 
 if __name__ == '__main__':
