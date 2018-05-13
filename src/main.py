@@ -37,31 +37,6 @@ def startRandomModel():
     Log.write(log_text)
     print(log_text)
 
-def startVectorModel():
-    start_time = time.time()
-    start_datetime = datetime.datetime.now()
-    print("Start:", start_datetime)
-    main_preprocessing.create_datasets()
-    m = VectorModel.Model()
-    m.predict_test(use_multithread=True)
-    submission.make_vector_test_submission()
-    end_date_time = datetime.datetime.now()
-    print("End:", end_date_time)
-    seconds = time.time() - start_time
-    duration_min = round(seconds / 60, 2)
-    print("Total duration:", duration_min, "min")
-    log_text = str("{}\n--------------------\nStarted: {}\nFinished: {}\nDuration: {}min\nSuffix: {}\n".format
-    (
-        "Vector Model",
-        str(start_datetime), 
-        str(end_date_time),
-        str(duration_min),
-        data_paths.get_suffix_pro(),
-    ))
-    log_text += "============================="
-    Log.write(log_text)
-    print(log_text)
-
 def startXGBRegression():
     start_time = time.time()
     start_datetime = datetime.datetime.now()
@@ -153,7 +128,6 @@ def startXGBoostGroups():
 
 if __name__ == "__main__":
     #startRandomModel()
-    startVectorModel() 
     #startXGBRegression()
     #startXGBRegressionGroups()
     #startXGBoostNative()

@@ -5,13 +5,11 @@ from tqdm import tqdm
 from sklearn.model_selection import train_test_split
 import data_paths_main as data_paths
 import settings_main as settings
-# from sklearn.model_selection import cross_val_score
-# from sklearn.metrics import accuracy_score
-# from sklearn.metrics import roc_auc_score
 from sklearn.metrics import log_loss
 from joblib import Parallel, delayed
 import multiprocessing
 import submission_maker
+import submission
 import get_ranks
 import mrr
 import time
@@ -25,7 +23,6 @@ import mrr
 import multiprocessing as mp
 
 class Model():
-
     def __init__(self):
         x_text = pd.read_csv(data_paths.train)
         x_test = pd.read_csv(data_paths.test)#, nrows = 7)
@@ -83,7 +80,6 @@ class Model():
             print("Average-Rank:", np.mean(ranks))
             print("Mrr:", mrr.mrr_score(ranks))
 
-
     def predict_test(self, use_multithread = True):
         print("Run model...")
 
@@ -93,47 +89,22 @@ class Model():
         # print(species)
         np.save(data_paths.vector_species, species)
         self.fake_propabilities = [(self.species_count - i) / self.species_count for i in range(self.species_count)]
+        num_cores = multiprocessing.cpu_count()
+        count_of_rows = len(self.to_predict_matrix)
+        print("Cpu count:", str(num_cores))
 
         if use_multithread:
-            num_cores = multiprocessing.cpu_count()
-            count_of_rows = len(self.to_predict_matrix)
-            print("Cpu count:", str(num_cores))
-            #predictions = Parallel(n_jobs=num_cores)(delayed(self.predict_row)(row, self.to_predict_matrix, self.x_train_matrix, self.get_vector_length, self.y, self.fake_propabilities), total=count_of_rows) for row in tqdm(range(len(self.to_predict_matrix))))
-            #result = Parallel(n_jobs=num_cores)(delayed(self.calc_class)(class_name) for class_name in tqdm(self.class_names))
-
-            #pool = mp.Pool(processes=4)
-            #predictions = pool.map(self.predict_row, range(len(self.to_predict_matrix)))
-            #count_of_rows = 8
-            # with mp.Pool(processes=num_cores) as p:
-            #     predictions = list(tqdm(p.imap(self.predict_row, range(count_of_rows), ))
-            #predictions = [pool.apply(self.predict_row, args=(row,self.to_predict_matrix, self.x_train_matrix, self.get_vector_length, self.y, self.fake_propabilities)) for row in range(len(self.to_predict_matrix))]
-            
-            #processes = [mp.Process(target=self.predict_row, args=(row,self.to_predict_matrix, self.x_train_matrix, self.get_vector_length, self.y, self.fake_propabilities)) for row in range(len(self.to_predict_matrix))]
-
-
-            # # Run processes
-            # for p in processes:
-            #     p.start()
-
-            # # Exit the completed processes
-            # for p in processes:
-            #     p.join()
-
-            # # Get process results from the output queue
-            # results = [output.get() for p in processes]
             predictions = []
-
             pool = mp.Pool(processes=num_cores)
-            for row in tqdm(range(count_of_rows)):
-                pool.apply_async(self.predict_row, args = (row,self.to_predict_matrix, self.x_train_matrix, self.get_vector_length, self.y, self.fake_propabilities, ), callback=predictions.append)
+            for row in range(count_of_rows):
+                pool.apply_async(self.predict_row, args=(row,), callback=predictions.append)
             pool.close()
             pool.join()
             print(predictions)
-            #print(predictions)
         else:
             predictions = []
-            # for row in tqdm(range(len(self.to_predict_matrix))):
-            #     predictions.append(self.predict_row(row))
+            for row in tqdm(range(len(self.to_predict_matrix))):
+                predictions.append(self.predict_row(row))
         
         #sort after rows
         #print(predictions)
@@ -147,35 +118,56 @@ class Model():
         print("Finished.", data_paths.vector_test_prediction)
         assert len(predictions) == len(self.x_test.index)
 
-    def predict_row(self, row_nr, to_predict_matrix, x_train_matrix, get_vector_length, y, fake_propabilities):
-        # if row_nr >= 6000:
-        #     return
-        print("Predicting row:", str(row_nr))
-        row = np.array(to_predict_matrix[row_nr])
+    def predict_row(self, row_nr):
+        row = np.array(self.to_predict_matrix[row_nr])
         distances = []
-        for j in range(len(x_train_matrix)):                
-            train_row = x_train_matrix[j]
-            distance = get_vector_length(train_row - row)
+
+        for j in range(len(self.x_train_matrix)):          
+            train_row = self.x_train_matrix[j]
+            distance = self.get_vector_length(train_row - row)
             distances.append(distance)
             
-        _, species_sorted = zip(*sorted(zip(distances, list(y))))
+        _, species_sorted = zip(*sorted(zip(distances, list(self.y))))
 
         species_sorted = list(dict.fromkeys(species_sorted))
-        fake_props = list(fake_propabilities)
+        fake_props = list(self.fake_propabilities)
         # print("NEW ITERATION------------------------------------")
         #print(species_sorted[:100])
         # print(fake_props[:100])
 
-        species_map, fake_propabilities_sorted = zip(*sorted(zip(species_sorted, fake_props)))
+        _, fake_propabilities_sorted = zip(*sorted(zip(species_sorted, fake_props)))
 
         #print(species_map[:100])
         # print(fake_propabilities_sorted[:100])
 
+        print("Finished row:", str(row_nr))
         return (row_nr, fake_propabilities_sorted)
         #print(probabilities)
 
-if __name__ == '__main__':
+def run():
+    start_time = time.time()
+    start_datetime = datetime.datetime.now()
+    print("Start:", start_datetime)
     main_preprocessing.create_datasets()
     m = Model()
-    #m.predict_train()
-    m.predict_test()
+    m.predict_test(use_multithread=True)
+    submission.make_vector_test_submission()
+    end_date_time = datetime.datetime.now()
+    print("End:", end_date_time)
+    seconds = time.time() - start_time
+    duration_min = round(seconds / 60, 2)
+    print("Total duration:", duration_min, "min")
+    log_text = str("{}\n--------------------\nStarted: {}\nFinished: {}\nDuration: {}min\nSuffix: {}\n".format
+    (
+        "Vector Model",
+        str(start_datetime), 
+        str(end_date_time),
+        str(duration_min),
+        data_paths.get_suffix_pro(),
+    ))
+    log_text += "============================="
+    Log.write(log_text)
+    print(log_text)
+
+if __name__ == '__main__':
+    run()
