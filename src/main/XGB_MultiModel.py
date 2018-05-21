@@ -22,19 +22,37 @@ import Log
 import datetime
 import xgboost as xgb
 import matplotlib.pyplot as plt
+import data_paths_analysis
+import SpeciesOccurences
 
 class Model():
+    '''
+    - extract all pixel information from the images to a csv file
+    - use average pixel value of each channel and round to 12 decimals
+    - used columns "latitude" and "longitude" from occurrences and merge all information to one csv
+    - split trainset at 0.1 for validation set
+    - run XGBoost with all feature columns (35)
+    - predict each species with one model separately (3336 different models)
+    - training with logloss and early stopping rounds
+    '''
     def __init__(self, use_groups):
         main_preprocessing.create_datasets()
         
         if use_groups:
-            x_text = pd.read_csv(data_paths.train_with_groups)
+            main_preprocessing.extract_groups()
+            x_text = pd.read_csv(data_paths.train_with_groups)#, nrows=1000)
+            SpeciesOccurences.create()
+            species_occ = pd.read_csv(data_paths_analysis.species_occurences)
+            self.named_groups = np.load(data_paths.named_groups)
+            self.species_occ_dict = {}
+            for _, row in species_occ.iterrows():
+                self.species_occ_dict[row["species"]] = row["percents"]
         else:
             x_text = pd.read_csv(data_paths.train)#, nrows=1000)
             
-        x_test = pd.read_csv(data_paths.test)#, nrows=1000)
-        
+        x_test = pd.read_csv(data_paths.test)#, nrows=1000)        
         y = x_text["species_glc_id"]
+
         self.train_columns = [ 
         'chbio_1', 'chbio_2', 'chbio_3', 'chbio_4', 'chbio_5', 'chbio_6',
         'chbio_7', 'chbio_8', 'chbio_9', 'chbio_10', 'chbio_11', 'chbio_12',
@@ -42,16 +60,12 @@ class Model():
         'etp', 'alti', 'awc_top', 'bs_top', 'cec_top', 'crusting', 'dgh', 'dimp', 'erodi', 'oc_top', 'pd_top', 'text',
         'proxi_eau_fast', 'clc', 'latitude', 'longitude'
         ]
-        # species_count = np.load(data_paths.y_array).shape[1]
+
         self.class_names = np.unique(y)
-        #np.save(data_paths.xgb_species_map, classes_)
 
         self.x_train, self.x_valid, self.y_train, self.y_valid = train_test_split(x_text, y, test_size=settings.train_val_split, random_state=settings.seed)
-
-        # np.save(data_paths.xgb_species_map, self.class_names)
-        # np.save(data_paths.xgb_glc_ids, self.x_valid["patch_id"])
-        
         self.test_glc_ids = x_test["patch_id"]
+        self.valid_glc_ids = self.x_valid["patch_id"]
         self.x_train = self.x_train[self.train_columns]
         self.x_valid = self.x_valid[self.train_columns]
         self.x_test = x_test[self.train_columns]
@@ -74,31 +88,24 @@ class Model():
             num_cores = mp.cpu_count()
             print("Cpu count:", str(num_cores))
             result = Parallel(n_jobs=num_cores)(delayed(self.predict_species)(class_name) for class_name in tqdm(self.class_names))
-            #result = Parallel(n_jobs=num_cores)(delayed(self.calc_class)(class_name) for class_name in tqdm(self.class_names))
         else:
             result = []
             for class_name in tqdm(self.class_names):
                 result.append(self.predict_species(class_name))
 
         species = np.array([x for x, _, _ in result])
-        predictions = np.array([y for _, y, _ in result]).T #T weil jede species eine Spalte ist
+        #transpose because each species is a column
+        predictions = np.array([y for _, y, _ in result]).T 
         test_predictions = np.array([z for _, _, z in result]).T
-        print("Finished.")
 
-        # print("Saving results...")
-        # np.save(data_paths.regression_species, species)
-        # np.save(data_paths.regression_prediction, predictions)
-        # np.save(data_paths.regression_test_prediction, test_predictions)
-        # print("Saving completed", data_paths.regression_species, data_paths.regression_prediction, data_paths.regression_test_prediction)
         self.species_map = species
         self.species_count = len(self.species_map)
-        self.train_predictions = predictions
+        self.valid_predictions = predictions
         self.test_predictions = test_predictions
 
-        assert len(self.train_predictions) == len(self.y_valid.index)
+        assert len(self.valid_predictions) == len(self.y_valid.index)
         assert len(self.test_predictions) == len(self.x_test.index)
-
-        assert len(self.train_predictions[0]) == self.species_count
+        assert len(self.valid_predictions[0]) == self.species_count
         assert len(self.test_predictions[0]) == self.species_count
     
     def predict_species(self, species):
@@ -123,7 +130,7 @@ class Model():
         xgb.plot_importance(bst, color='red', ax=ax)
         plt.show()
 
-def run():
+def run_without_groups():
     start_time = time.time()
     start_datetime = datetime.datetime.now()
     print("Start:", start_datetime)
@@ -134,13 +141,12 @@ def run():
     print("Create test submission...")
     df = submission_maker.make_submission_df(settings.TOP_N_SUBMISSION_RANKS, m.species_map, m.test_predictions, m.test_glc_ids)
     print("Save test submission...")
-    df.to_csv(data_paths.xgb_multimodel_test_submission, index=False, sep=";", header=None)
-    print("Finished.", data_paths.xgb_multimodel_test_submission)
+    df.to_csv(data_paths.xgb_multimodel_submission, index=False, sep=";", header=None)
+    print("Finished.", data_paths.xgb_multimodel_submission)
 
     print("Evaluate submission...")
-    train_glc = [x for x in range(len(m.train_predictions))]
-    print("Create train submission...")
-    subm = submission_maker._make_submission(m.species_count, m.species_map, m.train_predictions, train_glc)
+    print("Create valid submission...")
+    subm = submission_maker._make_submission(m.species_count, m.species_map, m.valid_predictions, m.valid_glc_ids)
     print("Calculate score...")
     ranks = get_ranks.get_ranks(subm, m.y_valid, m.species_count)
     mrr_score = mrr.mrr_score(ranks)
@@ -152,6 +158,33 @@ def run():
     duration_min = round(seconds / 60, 2)
     print("Total duration:", duration_min, "min")
     writeLog("XGBoost Multi Model", start_datetime, end_date_time, duration_min, m, mrr_score)
+
+def run_with_groups():
+    start_time = time.time()
+    start_datetime = datetime.datetime.now()
+    print("Start:", start_datetime)
+    m = Model(use_groups=True)
+    print("Predict testset...")
+    m.predict(use_multithread=True)
+    print("Finished.")
+    print("Create test submission for groups...")
+    # m.species_map are the groups in this case
+    df = submission_maker.make_submission_groups_df(settings.TOP_N_SUBMISSION_RANKS, m.species_map, m.test_predictions, m.test_glc_ids, m.named_groups, m.species_occ_dict)
+    print("Save test submission for groups...")
+    df.to_csv(data_paths.xgb_multimodel_groups_submission, index=False, sep=";", header=None)
+    print("Finished.", data_paths.xgb_multimodel_groups_submission)
+    print("Evaluate submission...")
+    print("Create valid submission...")
+    subm = submission_maker._make_submission_groups(settings.TOP_N_SUBMISSION_RANKS, m.species_map, m.valid_predictions, m.valid_glc_ids, m.named_groups, m.species_occ_dict)
+    ranks = get_ranks.get_ranks(subm, m.y_valid, settings.TOP_N_SUBMISSION_RANKS)
+    mrr_score = mrr.mrr_score(ranks)
+    print("MRR-Score:", mrr_score * 100,"%")
+    end_date_time = datetime.datetime.now()
+    print("End:", end_date_time)
+    seconds = time.time() - start_time
+    duration_min = round(seconds / 60, 2)
+    print("Total duration:", duration_min, "min")
+    writeLog("XGBoost Multi Model with groups", start_datetime, end_date_time, duration_min, m, mrr_score)
 
 def writeLog(title, start, end, duration, model, mrr):
     log_text = str("{}\n--------------------\nMRR-Score: {}\nStarted: {}\nFinished: {}\nDuration: {}min\nSuffix: {}\nTraincolumns: {}\nSeed: {}\nSplit: {}\n".format
@@ -172,24 +205,11 @@ def writeLog(title, start, end, duration, model, mrr):
     Log.write(log_text)
     print(log_text)
 
+def run(use_groups):
+    if use_groups:
+        run_with_groups()
+    else:
+        run_without_groups()
+
 if __name__ == '__main__':
-    run()
-
-
-    # def calc_class(self, class_name):
-    #     train_target = list(map(lambda x: 1 if x == class_name else 0, self.y_train))
-    #     #val_target = list(map(lambda x: 1 if x == class_name else 0, self.y_valid))
-    #     #print(train_target)
-    #     classifier = LogisticRegression(C=10, solver='sag', n_jobs=-1, random_state=settings.seed, max_iter=100)
-    #     #cv_score = np.mean(cross_val_score(classifier, x_train, train_target, cv=3, scoring='roc_auc'))
-    #     #scores.append(cv_score)
-    #     #print('CV score for class {} is {}'.format(class_name, cv_score))
-    #     classifier.fit(self.x_train, train_target)
-    #     pred = classifier.predict_proba(self.x_valid)
-    #     #print(pred)
-    #     pred_real = pred[:, 1] # second is for class is 1
-    #     #print("acc", accuracy_score(val_target, pred_real.round()))
-    #     #score = log_loss(val_target, pred_real)
-    #     #print('Score for class {} is {}'.format(class_name, score.round()))
-    #     #self.scores.append(score)
-    #     return (class_name, pred_real)
+    run(use_groups=False)

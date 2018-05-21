@@ -151,8 +151,8 @@ class Model():
         print("Create test submission...")
         df = submission_maker.make_submission_df(settings.TOP_N_SUBMISSION_RANKS, self.species, predictions, self.test_glc_ids)
         print("Save test submission...")
-        df.to_csv(data_paths.vector_test_submission, index=False, sep=";", header=None)
-        print("Finished.", data_paths.vector_test_submission)
+        df.to_csv(data_paths.vector_submission, index=False, sep=";", header=None)
+        print("Finished.", data_paths.vector_submission)
 
 def run():
     start_time = time.time()

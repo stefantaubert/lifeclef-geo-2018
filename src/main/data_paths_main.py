@@ -2,8 +2,6 @@ from data_paths_global import *
 import settings_main
 import os 
 
-
-
 test_submission = root + "submissions/submission_val.csv"
 
 img_list_dir = root + "image_lists/"
@@ -27,27 +25,16 @@ xgb_model_dump = xgb_dir + "model_dump"
 xgb_feature_importances = xgb_dir + "feature_importances.pdf"
 # xgb_species_occurences = root + "analysis/species_occurences.csv"
 
-regression_dir = root + "regression/"
-regression_species = regression_dir + "species.npy"
-regression_prediction = regression_dir + "validation_prediction.npy"
-regression_val_submission = regression_dir + "val_submission.csv"
-regression_test_prediction = regression_dir + "test_prediction.npy"
-regression_test_submission = regression_dir + "test_submission.csv"
+submissions_dir = root + "submissions/"
 
-vector_dir = root + "vector/"
-vector_test_submission = vector_dir + "test_submission.csv"
+if not os.path.exists(submissions_dir):
+    os.makedirs(submissions_dir)
 
-xgb_multimodel_dir = root + "xgb_multimodel/"
-xgb_multimodel_test_submission = xgb_multimodel_dir + "test_submission.csv"
-
-if not os.path.exists(xgb_multimodel_dir):
-    os.makedirs(xgb_multimodel_dir)
-
-
-random_dir = root + "random/"
-random_species = random_dir + "species.npy"
-random_test_prediction = random_dir + "test_prediction.npy"
-random_test_submission = random_dir + "test_submission.csv"
+vector_submission = submissions_dir + "vector_submission.csv"
+xgb_multimodel_submission = submissions_dir + "xgb_multimodel_submission.csv"
+xgb_multimodel_groups_submission = submissions_dir + "xgb_multimodel_groups_submission.csv"
+random_submission = submissions_dir + "random_submission.csv"
+probability_submission = submissions_dir + "probability_submission.csv"
 
 #keras single model training paths
 keras_training_dir = root + "keras_training_results/"
@@ -84,17 +71,8 @@ keras_multi_model_test_results = keras_multi_model_test_dir + "results.npy"
 keras_multi_model_test_glc_ids = keras_multi_model_test_dir + "glc_ids.npy"
 keras_multi_model_test_submission = keras_multi_model_test_dir + "submission.csv"
 
-if not os.path.exists(random_dir):
-    os.makedirs(random_dir)
-
-if not os.path.exists(vector_dir):
-    os.makedirs(vector_dir)
-
 if not os.path.exists(xgb_dir):
     os.makedirs(xgb_dir)
-
-if not os.path.exists(regression_dir):
-    os.makedirs(regression_dir)
 
 if not os.path.exists(img_list_dir):
     os.makedirs(img_list_dir)

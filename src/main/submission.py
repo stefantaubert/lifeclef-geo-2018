@@ -29,51 +29,6 @@ def make_xgb_test_submission():
     print("Save test submission...")
     df.to_csv(data_paths.xgb_test_submission, index=False, sep=";", header=None)
 
-def make_logistic_test_submission():
-    print("Create test submission...")
-    classes = np.load(data_paths.regression_species)
-    predictions = np.load(data_paths.regression_test_prediction)
-    x_test = pd.read_csv(data_paths.test)
-    glc_ids = x_test["patch_id"]
-    df = submission_maker.make_submission_df(settings.TOP_N_SUBMISSION_RANKS, classes, predictions, glc_ids)
-    print("Save test submission...")
-    df.to_csv(data_paths.regression_test_submission, index=False, sep=";", header=None)
-    print("Finished.", data_paths.regression_test_submission)
-
-def make_random_test_submission():
-    print("Create test submission...")
-    classes = np.load(data_paths.random_species)
-    predictions = np.load(data_paths.random_test_prediction)
-    x_test = pd.read_csv(data_paths.test)#, nrows=7)
-    glc_ids = x_test["patch_id"]
-    df = submission_maker.make_submission_df(settings.TOP_N_SUBMISSION_RANKS, classes, predictions, glc_ids)
-    print("Save test submission...")
-    df.to_csv(data_paths.random_test_submission, index=False, sep=";", header=None)
-    print("Finished.", data_paths.random_test_submission)
-
-def make_logistic_submission_groups():
-    print("Create test submission for groups...")
-    groups = np.load(data_paths.regression_species)
-    predictions = np.load(data_paths.regression_test_prediction)
-    x_test = pd.read_csv(data_paths.test)
-    glc_ids = x_test["patch_id"]
-
-    SpeciesOccurences.create()
-    species_occ = pd.read_csv(data_paths_analysis.species_occurences)
-    named_groups = np.load(data_paths.named_groups)
-
-    species_occ_dict = {}
-    for _, row in species_occ.iterrows():
-        species_occ_dict[row["species"]] = row["percents"]
-
-    df = submission_maker.make_submission_groups_df(settings.TOP_N_SUBMISSION_RANKS, groups, predictions, glc_ids, named_groups, species_occ_dict)
-    
-    print("Finished.")
-
-    print("Save test submission...")
-    df.to_csv(data_paths.regression_test_submission, index=False, sep=";", header=None)
-    print("Finished.", data_paths.regression_test_submission)
-
 def make_xgb_groups_submission():
     print("Make validation submission...")
 
