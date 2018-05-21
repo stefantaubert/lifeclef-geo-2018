@@ -157,13 +157,14 @@ def run():
     seconds = time.time() - start_time
     duration_min = round(seconds / 60, 2)
     print("Total duration:", duration_min, "min")
-    log_text = str("{}\n--------------------\nStarted: {}\nFinished: {}\nDuration: {} min\nSuffix: {}\n".format
+    log_text = str("{}\n--------------------\nStarted: {}\nFinished: {}\nDuration: {} min\nSuffix: {}\nTraincolumns: {}\n".format
     (
         "Vector Model",
         str(start_datetime), 
         str(end_date_time),
         str(duration_min),
         data_paths.get_suffix_pro(),
+        ", ".join(m.train_columns),
     ))
     log_text += "============================="
     Log.write(log_text)
