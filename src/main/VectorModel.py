@@ -80,23 +80,22 @@ class Model():
     def predict_test(self, use_multithread = True):
         self.x_train_matrix = self.x_train.as_matrix()
         self.to_predict_matrix = self.x_test.as_matrix()
-        
         self.fake_propabilities = [(self.species_count - i) / self.species_count for i in range(self.species_count)]
-        num_cores = mp.cpu_count()
         count_of_rows = len(self.to_predict_matrix)
-        print("Cpu count:", str(num_cores))
 
         if use_multithread:
+            num_cores = mp.cpu_count()
+            print("Cpu count:", str(num_cores))
             predictions = []
             pool = mp.Pool(processes=num_cores)
             for row in range(count_of_rows):
                 pool.apply_async(self.predict_row, args=(row,), callback=predictions.append)
             pool.close()
             pool.join()
-            print(predictions)
+            #print(predictions)
         else:
             predictions = []
-            for row in tqdm(range(len(self.to_predict_matrix))):
+            for row in tqdm(range(count_of_rows)):
                 predictions.append(self.predict_row(row))
         
         #sort after rows
@@ -106,7 +105,7 @@ class Model():
         #print(rows)
         #print(props)
         #print(np.array(props))
-        print("Saving test predictions...")
+        #print("Saving test predictions...")
         result = np.array(props)
         assert len(predictions) == len(self.x_test.index)
         return result
@@ -120,8 +119,8 @@ class Model():
             distance = self.get_vector_length(train_row - row)
             distances.append(distance)
             
-        _, species_sorted = zip(*sorted(zip(distances, list(self.y))))
-
+        distances_sorted, species_sorted = zip(*sorted(zip(distances, list(self.y))))
+        #print(distances_sorted[:7])
         species_sorted = list(dict.fromkeys(species_sorted))
         fake_props = list(self.fake_propabilities)
         # print("NEW ITERATION------------------------------------")
@@ -133,7 +132,7 @@ class Model():
         #print(species_map[:100])
         # print(fake_propabilities_sorted[:100])
 
-        print("Finished row:", str(row_nr))
+        print("Finished row", str(row_nr + 1))
         return (row_nr, fake_propabilities_sorted)
         #print(probabilities)
 
