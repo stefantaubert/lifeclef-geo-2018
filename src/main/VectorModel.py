@@ -17,6 +17,14 @@ import mrr
 import multiprocessing as mp
 
 class Model():
+    '''
+    I have created a vector of the channels for each test/trainingsrow. 
+    Then I calculate the difference between the current testrow vector with every trainrow vector. 
+    Then I use the length of the resulting vectors to see which row of the trainset is the most similar to the testrow. 
+    The class with the highest probability is then the species of this trainrow. 
+    The other classes were obtained from other trainrows which were less similar to the testrow (descending with regard to their similarity).
+    '''
+
     def __init__(self):
         main_preprocessing.create_datasets()
         x_train = pd.read_csv(data_paths.train)

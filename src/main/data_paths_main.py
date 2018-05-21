@@ -37,6 +37,13 @@ regression_test_submission = regression_dir + "test_submission.csv"
 vector_dir = root + "vector/"
 vector_test_submission = vector_dir + "test_submission.csv"
 
+xgb_multimodel_dir = root + "xgb_multimodel/"
+xgb_multimodel_test_submission = xgb_multimodel_dir + "test_submission.csv"
+
+if not os.path.exists(xgb_multimodel_dir):
+    os.makedirs(xgb_multimodel_dir)
+
+
 random_dir = root + "random/"
 random_species = random_dir + "species.npy"
 random_test_prediction = random_dir + "test_prediction.npy"

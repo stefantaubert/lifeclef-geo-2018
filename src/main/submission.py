@@ -51,17 +51,6 @@ def make_random_test_submission():
     df.to_csv(data_paths.random_test_submission, index=False, sep=";", header=None)
     print("Finished.", data_paths.random_test_submission)
 
-def make_vector_test_submission():
-    print("Create test submission...")
-    classes = np.load(data_paths.vector_species)
-    predictions = np.load(data_paths.vector_test_prediction)
-    x_test = pd.read_csv(data_paths.test)#, nrows=7)
-    glc_ids = x_test["patch_id"]
-    df = submission_maker.make_submission_df(settings.TOP_N_SUBMISSION_RANKS, classes, predictions, glc_ids)
-    print("Save test submission...")
-    df.to_csv(data_paths.vector_test_submission, index=False, sep=";", header=None)
-    print("Finished.", data_paths.vector_test_submission)
-
 def make_logistic_submission_groups():
     print("Create test submission for groups...")
     groups = np.load(data_paths.regression_species)

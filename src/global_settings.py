@@ -2,7 +2,7 @@
 
 ### Gibt die Anzahl an Pixeln^2 pro Quadrant eines Bildes an.
 ### Minimum: 1 -> entspricht 4 mittlersten Pixel, Maximum: 32 entspricht allen Pixel
-pixel_count = 2
+pixel_count = 32
 
 ### Contains the threshold for the distances between each species for them to be in a group.
 ### Remarks: after changing this value, you have to run SimilarSpeciesExtractor and GroupExtractor again.
