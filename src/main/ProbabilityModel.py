@@ -41,7 +41,7 @@ class Model():
     def predict_test(self):
         self.test_predictions = []
         for _ in tqdm(range(len(self.x_test.index))):
-            self.test_predictions.append(list(self.probabilities_sorted))
+            self.test_predictions.append(self.probabilities_sorted)
         print("Finished.")
     
 
