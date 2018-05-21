@@ -18,8 +18,9 @@ import Log
 class Model():
     '''
     Predict the same species for each row in testdata.
-    Those species are ordered descending after occurence in trainset. 
-    That means the most frequent species is always at rank one, the second at rank two and so on for each testrow.
+    Those species are ordered descending after their occurences in trainset.
+    That means the most frequent species is always at rank one, the second at rank two and so on for all testrows.
+    Test-mrr: 0.0134454691619079
     '''
     def __init__(self):
         main_preprocessing.create_datasets()
@@ -64,7 +65,7 @@ def run():
     log_text = str("{}\n--------------------\nStarted: {}\nFinished: {}\nDuration: {}min\n".format
     (
         "Probability Model",
-        str(start_datetime), 
+        str(start_datetime),
         str(end_date_time),
         str(duration_min),
     ))
@@ -72,47 +73,6 @@ def run():
     Log.write(log_text)
     print(log_text)
 
-# def run_Model():
-#     print("Run model...")
-#     #x_text = np.load(data_paths.x_text)
-#     print("Load data...")
-
-#     x_text = pd.read_csv(data_paths.occurrences_train_gen)
-#     species_ids = x_text["species_glc_id"].values
-#     y = np.load(data_paths.y_ids)
-
-#     print("Process data...")
-#     counter = Counter(species_ids)
-#     countRows = len(x_text.index)
-#     species_map = []
-#     array = []
-#     for item, count in tqdm(sorted(counter.items())):
-#         array.append(count / countRows * 100 )
-#         species_map.append(int(item))
-
-#     np.save(data_paths.species_map_training, np.asarray(species_map))
-    
-#     assert len(array) == len(set(species_ids))
-
-#     x_train, x_valid, y_train, y_valid = train_test_split(x_text, y, test_size=settings.train_val_split, random_state=settings.seed)
-#     print("Create prediction...")
-#     valid_row_count = len(x_valid)
-
-#     prediction = []
-#     for i in tqdm(range(valid_row_count)):
-#         prediction.append(array)
-
-#     print("Save prediction...")
-#     np.save(data_paths.prediction, prediction)
-
 
 if __name__ == '__main__':
     run()
-    #start_time = time.time()
-
-    # # DataReader.read_and_write_data()
-    # run_Model()
-    # submission_maker.make_submission()
-    # evaluation.evaluate_with_mrr()
-
-    # print("Total duration:", time.time() - start_time, "s")

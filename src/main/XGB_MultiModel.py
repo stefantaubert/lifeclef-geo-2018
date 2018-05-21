@@ -34,6 +34,7 @@ class Model():
     - run XGBoost with all feature columns (35)
     - predict each species with one model separately (3336 different models)
     - training with logloss and early stopping rounds
+    Test-mrr without groups: 0.0338103315273545
     '''
     def __init__(self, use_groups):
         main_preprocessing.create_datasets()
@@ -212,4 +213,4 @@ def run(use_groups):
         run_without_groups()
 
 if __name__ == '__main__':
-    run(use_groups=False)
+    run(use_groups=True)

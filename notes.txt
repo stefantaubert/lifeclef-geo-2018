@@ -29,7 +29,7 @@ XGB Multi Model
 XGB Single Model mit Gruppen (kaputt)
 XGB Multi Model mit Gruppen (kaputt)
 Random Model
-Probability Model (kaputt)
+Probability Model
 CNN Multi Model
 CNN Single Model mit Augmentations
 
