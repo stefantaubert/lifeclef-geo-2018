@@ -92,7 +92,7 @@ class Model():
         self.params['learning_rate'] = 0.1
         self.params['seed'] = 4242
         #params['colsample_bytree'] = 0.8 #um die 
-        self.params['silent'] = 1
+        self.params['silent'] = 0
         self.params['eval_metric'] = 'merror'
         self.params['num_class'] = len(self.species_map) #=3336
         self.params['num_boost_round'] = 200
