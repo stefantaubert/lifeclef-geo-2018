@@ -34,6 +34,15 @@ import metrics
 #         mrr_score = mrr.mrr_score(ranks)
 #         return ("mrr", mrr_score)
 
+class top_k_accuracy():
+    def __init__(self):
+        pass
+    
+    def evaluate(self, y_predicted, y_true):
+        print(y_predicted)
+        print(y_true)
+
+
 class Model():
     def save_after_it(self, env):
         print("Saving model of iteration", str(env.iteration))
@@ -121,11 +130,11 @@ class Model():
         ]
         
         #top3_acc = metrics.get_top3_accuracy()
-        top10_acc = metrics.get_top10_accuracy()
+        #top10_acc = metrics.get_top10_accuracy()
         #top50_acc = metrics.get_top50_accuracy()
 
         #xgb.callback.print_evaluation() 
-        bst = xgb.train(self.params, d_train, num_boost_round=self.params["num_boost_round"], verbose_eval=None, feval=top10_acc, evals=watchlist, early_stopping_rounds=self.params["early_stopping_rounds"])
+        bst = xgb.train(self.params, d_train, num_boost_round=self.params["num_boost_round"], verbose_eval=None, feval=self.top_k_accuracy, evals=watchlist, early_stopping_rounds=self.params["early_stopping_rounds"])
         #bst = xgb.train(params, d_train, 1, verbose_eval=2, evals=watchlist, evaluator.evalute, callbacks=[self.save_after_it])
 
         print("Save model...")
