@@ -134,7 +134,8 @@ class Model():
         #top50_acc = metrics.get_top50_accuracy()
 
         #xgb.callback.print_evaluation() 
-        bst = xgb.train(self.params, d_train, num_boost_round=self.params["num_boost_round"], verbose_eval=None, feval=self.top_k_accuracy, evals=watchlist, early_stopping_rounds=self.params["early_stopping_rounds"])
+        evaluator = top_k_accuracy()
+        bst = xgb.train(self.params, d_train, num_boost_round=self.params["num_boost_round"], verbose_eval=None, feval=evaluator.evaluate, evals=watchlist, early_stopping_rounds=self.params["early_stopping_rounds"])
         #bst = xgb.train(params, d_train, 1, verbose_eval=2, evals=watchlist, evaluator.evalute, callbacks=[self.save_after_it])
 
         print("Save model...")
