@@ -1,6 +1,9 @@
 import global_settings as settings
 import os,sys,inspect
 
+def get_suffix_o():
+    return "_o" + str(settings.min_occurence)
+
 def get_suffix_p():
     return "_p" + str(settings.pixel_count)
 
