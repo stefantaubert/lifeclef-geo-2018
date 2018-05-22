@@ -27,6 +27,7 @@ import SpeciesOccurences
 
 class Model():
     '''
+    No Group Model
     - extract all pixel information from the images to a csv file
     - use average pixel value of each channel and round to 12 decimals
     - used columns "latitude" and "longitude" from occurrences and merge all information to one csv
@@ -35,6 +36,19 @@ class Model():
     - predict each species with one model separately (3336 different models)
     - training with logloss and early stopping rounds
     Test-mrr without groups: 0.0338103315273545
+
+    Group Model
+    - extract all pixel information from the images to a csv file
+    - use average pixel value of each channel and round to 2 decimals (save as csv)
+    - used columns "latitude" and "longitude" from occurrences and merge all information to one csv
+    - calculate species groups with similar species:
+        - remove species which occur < 10
+        - look at the most common values for each species
+        - calculate difference
+        - take threshold '3' for building groups -> 2090 groups (366 species in groups with size greater than 1)
+    - predict each group with one model separately (2090 different models)
+    - each group contained several species which were ordered with regard of their probability in the trainset. After predicting a group on the testset we counted this prediction as predicting all classes of the group with descending probabilities.
+    Test-mrr with groups: 0.022000386535744
     '''
     def __init__(self, use_groups):
         main_preprocessing.create_datasets()
@@ -65,8 +79,8 @@ class Model():
         self.class_names = np.unique(y)
 
         self.x_train, self.x_valid, self.y_train, self.y_valid = train_test_split(x_text, y, test_size=settings.train_val_split, random_state=settings.seed)
-        self.test_glc_ids = x_test["patch_id"]
-        self.valid_glc_ids = self.x_valid["patch_id"]
+        self.test_glc_ids = list(x_test["patch_id"])
+        self.valid_glc_ids = list(self.x_valid["patch_id"])
         self.x_train = self.x_train[self.train_columns]
         self.x_valid = self.x_valid[self.train_columns]
         self.x_test = x_test[self.train_columns]

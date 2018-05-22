@@ -19,7 +19,7 @@ import matplotlib.pyplot as plt
 import datetime
 import Log
 from sklearn.preprocessing import LabelEncoder
-
+import metrics
 # class XGBMrrEval():
 #     def __init__(self, classes, y_valid):
 #         self.classes = classes
@@ -64,8 +64,8 @@ class Model():
         
         #np.save(data_paths.xgb_glc_ids, x_valid["patch_id"])
 
-        self.test_glc_ids = self.x_test['patch_id']
-        self.valid_glc_ids = self.x_valid['patch_id']
+        self.test_glc_ids = list(self.x_test['patch_id'])
+        self.valid_glc_ids = list(self.x_valid['patch_id'])
         self.x_test = self.x_test[self.train_columns]
         self.x_train = self.x_train[self.train_columns]
         self.x_valid = self.x_valid[self.train_columns]
@@ -119,9 +119,14 @@ class Model():
             (d_train, 'train'), 
             (d_valid, 'validation'),
         ]
+        
+        #top3_acc = metrics.get_top3_accuracy()
+        top10_acc = metrics.get_top10_accuracy()
+        #top50_acc = metrics.get_top50_accuracy()
+
         #xgb.callback.print_evaluation() 
-        bst = xgb.train(self.params, d_train, num_boost_round=self.params["num_boost_round"], verbose_eval=None, evals=watchlist, early_stopping_rounds=self.params["early_stopping_rounds"])
-        #bst = xgb.train(params, d_train, 1, verbose_eval=2, evals=watchlist, feval=evaluator.evalute, callbacks=[self.save_after_it])
+        bst = xgb.train(self.params, d_train, num_boost_round=self.params["num_boost_round"], verbose_eval=None, feval=top10_acc, evals=watchlist, early_stopping_rounds=self.params["early_stopping_rounds"])
+        #bst = xgb.train(params, d_train, 1, verbose_eval=2, evals=watchlist, evaluator.evalute, callbacks=[self.save_after_it])
 
         print("Save model...")
         bst.save_model(data_paths.xgb_model)
