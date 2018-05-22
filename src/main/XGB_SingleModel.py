@@ -95,7 +95,7 @@ class Model():
         self.params['silent'] = 1
         self.params['eval_metric'] = 'merror'
         self.params['num_class'] = len(self.species_map) #=3336
-        self.params['num_boost_round'] = 1
+        self.params['num_boost_round'] = 200
         self.params['early_stopping_rounds'] = 5
         # params['colsample_bylevel'] = 1
         # params['colsample_bytree'] = 1
@@ -179,12 +179,6 @@ class Model():
         print("Plot feature importances...")
         # Ausschlagskraft aller Features plotten
         _, ax = plt.subplots(figsize=(12,18))
-        # print("Features names:")
-        # print(d_matrix.feature_names)
-        # print("Fscore Items:")
-        # print(bst.get_fscore().items())
-        # mapper = {'f{0}'.format(i): v for i, v in enumerate(d_matrix.feature_names)}
-        # mapped = {mapper[k]: v for k, v in bst.get_fscore().items()}
         xgb.plot_importance(bst.get_fscore(), color='red', ax=ax)
         #plt.show()
         plt.draw()
