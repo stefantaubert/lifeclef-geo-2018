@@ -19,7 +19,7 @@ import matplotlib.pyplot as plt
 import datetime
 import Log
 from sklearn.preprocessing import LabelEncoder
-import metrics
+
 # class XGBMrrEval():
 #     def __init__(self, classes, y_valid):
 #         self.classes = classes
@@ -35,12 +35,15 @@ import metrics
 #         return ("mrr", mrr_score)
 
 class top_k_accuracy():
-    def __init__(self):
-        pass
+    def __init__(self, species_map, y_valid):
+        self.species_map = species_map
+        self.y_valid = y_valid
+        self.species_count = len(self.species_map)
     
     def evaluate(self, y_predicted, y_true):
         print(y_predicted)
         print(y_true)
+
 
 
 class Model():
@@ -134,7 +137,7 @@ class Model():
         #top50_acc = metrics.get_top50_accuracy()
 
         #xgb.callback.print_evaluation() 
-        evaluator = top_k_accuracy()
+        #evaluator = top_k_accuracy()
         bst = xgb.train(self.params, d_train, num_boost_round=self.params["num_boost_round"], verbose_eval=None, evals=watchlist, early_stopping_rounds=self.params["early_stopping_rounds"])
         #bst = xgb.train(params, d_train, 1, verbose_eval=2, evals=watchlist,feval=evaluator.evaluate,  evaluator.evalute, callbacks=[self.save_after_it])
 
@@ -176,13 +179,13 @@ class Model():
         print("Plot feature importances...")
         # Ausschlagskraft aller Features plotten
         _, ax = plt.subplots(figsize=(12,18))
-        print("Features names:")
-        print(d_matrix.feature_names)
-        print("Fscore Items:")
-        print(bst.get_fscore().items())
-        mapper = {'f{0}'.format(i): v for i, v in enumerate(d_matrix.feature_names)}
-        mapped = {mapper[k]: v for k, v in bst.get_fscore().items()}
-        xgb.plot_importance(mapped, color='red', ax=ax)
+        # print("Features names:")
+        # print(d_matrix.feature_names)
+        # print("Fscore Items:")
+        # print(bst.get_fscore().items())
+        # mapper = {'f{0}'.format(i): v for i, v in enumerate(d_matrix.feature_names)}
+        # mapped = {mapper[k]: v for k, v in bst.get_fscore().items()}
+        xgb.plot_importance(bst.get_fscore().items(), color='red', ax=ax)
         #plt.show()
         plt.draw()
         plt.savefig(data_paths.xgb_feature_importances, bbox_inches='tight')
