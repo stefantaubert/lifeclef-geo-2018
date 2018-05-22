@@ -185,7 +185,7 @@ class Model():
         # print(bst.get_fscore().items())
         # mapper = {'f{0}'.format(i): v for i, v in enumerate(d_matrix.feature_names)}
         # mapped = {mapper[k]: v for k, v in bst.get_fscore().items()}
-        xgb.plot_importance(bst.get_fscore().items(), color='red', ax=ax)
+        xgb.plot_importance(bst.get_fscore(), color='red', ax=ax)
         #plt.show()
         plt.draw()
         plt.savefig(data_paths.xgb_feature_importances, bbox_inches='tight')
