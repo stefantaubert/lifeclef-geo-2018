@@ -32,7 +32,7 @@ if not os.path.exists(submissions_dir):
 vector_submission = submissions_dir + "vector_submission.csv"
 xgb_multimodel_submission = submissions_dir + "xgb_multimodel_submission.csv"
 xgb_multimodel_groups_submission = submissions_dir + "xgb_multimodel_groups_submission.csv"
-xgb_singlemodel_submission = xgb_dir + "xgb_singlemodel_submission.csv"
+xgb_singlemodel_submission = submissions_dir + "xgb_singlemodel_submission.csv"
 random_submission = submissions_dir + "random_submission.csv"
 probability_submission = submissions_dir + "probability_submission.csv"
 
