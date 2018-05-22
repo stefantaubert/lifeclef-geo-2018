@@ -176,10 +176,10 @@ class Model():
         print("Plot feature importances...")
         # Ausschlagskraft aller Features plotten
         _, ax = plt.subplots(figsize=(12,18))
-        # print("Features names:")
-        # print(d_matrix.feature_names)
-        # print("Fscore Items:")
-        # print(bst.get_fscore().items())
+        print("Features names:")
+        print(d_matrix.feature_names)
+        print("Fscore Items:")
+        print(bst.get_fscore().items())
         mapper = {'f{0}'.format(i): v for i, v in enumerate(d_matrix.feature_names)}
         mapped = {mapper[k]: v for k, v in bst.get_fscore().items()}
         xgb.plot_importance(mapped, color='red', ax=ax)
