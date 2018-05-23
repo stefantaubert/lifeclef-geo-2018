@@ -44,7 +44,7 @@ class top_k_acc_eval():
         self.k = k
 
     def evaluate(self, y_predicted, _):
-        return top_k_acc(y_predicted, self.y_valid, self.species_map, self.k)
+        return ("top_" + str(self.k) + "_acc", top_k_acc(y_predicted, self.y_valid, self.species_map, self.k))
 
 
 class Model():
@@ -89,7 +89,7 @@ class Model():
         self.params['silent'] = 0
         self.params['eval_metric'] = 'merror'
         self.params['num_class'] = len(self.species_map) #=3336
-        self.params['num_boost_round'] = 200
+        self.params['num_boost_round'] = 400
         self.params['early_stopping_rounds'] = 10
         self.params['predictor'] = 'gpu_predictor'
         self.params['tree_method'] = 'gpu_hist'
