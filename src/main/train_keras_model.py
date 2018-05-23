@@ -12,11 +12,12 @@ import numpy as np
 import keras
 import metrics
 import tensorflow as tf
-from keras_models import vgg_like_model
+from keras_models import vgg_like_model, global_average_model
 from keras.callbacks import ModelCheckpoint
 import os
 import settings_main as stg
 from data_reading.imageList_generator import generate_train_image_list
+
 
 def train_keras_model():
     if not os.path.exists(data_paths.train_samples):
@@ -44,15 +45,16 @@ def train_keras_model():
     top50_acc = metrics.get_top50_accuracy()
 
     model = vgg_like_model.get_model(len(species_map.keys()), 33)
+    #model = global_average_model.get_model(len(species_map.keys()), 33)
 
     model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy', top3_acc, top10_acc, top50_acc])
 
-    checkpoint = ModelCheckpoint(data_paths.keras_training_model, monitor='val_top3_acc', verbose=1, save_best_only=True, mode='max')
+    checkpoint = ModelCheckpoint(data_paths.keras_training_model, monitor='val_loss', verbose=1, save_best_only=True, mode='min', save_weights_only=True)
 
     print("start Training...")
 
     model.fit_generator(bg.nextBatch(samples, species_map), epochs=stg.EPOCHS, steps_per_epoch=len(samples)/stg.BATCH_SIZE,
-                        verbose=1, validation_data=bg.nextBatch(val_samples, species_map), validation_steps=len(val_samples)/stg.BATCH_SIZE,
+                        verbose=1, validation_data=bg.nextBatch(val_samples, species_map, augment=False), validation_steps=len(val_samples)/stg.BATCH_SIZE,
                         callbacks=[checkpoint])
 
     print("Finished!")

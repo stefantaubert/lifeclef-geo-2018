@@ -50,10 +50,10 @@ def train_keras_multi_model():
 
     model.compile(optimizer='adam', loss='categorical_crossentropy', metrics= metrics_list)
 
-    checkpoint = ModelCheckpoint(data_paths.keras_multi_model_training_model1, monitor='val_top3_acc', verbose=1, save_best_only=True, mode='max')
+    checkpoint = ModelCheckpoint(data_paths.keras_multi_model_training_model1, monitor='val_loss', verbose=1, save_best_only=True, mode='min')
 
     model.fit_generator(scbg.nextBatch(samples, species_map, stg.model1_channel), epochs=stg.EPOCHS, steps_per_epoch=len(samples)/stg.BATCH_SIZE,
-                        verbose=1, validation_data=scbg.nextBatch(val_samples, species_map, stg.model1_channel), validation_steps=len(val_samples)/stg.BATCH_SIZE,
+                        verbose=1, validation_data=scbg.nextBatch(val_samples, species_map, stg.model1_channel, augment=False), validation_steps=len(val_samples)/stg.BATCH_SIZE,
                         callbacks=[checkpoint])
 
     #train model 2
@@ -61,10 +61,10 @@ def train_keras_multi_model():
 
     model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=metrics_list)
 
-    checkpoint = ModelCheckpoint(data_paths.keras_multi_model_training_model2, monitor='val_top3_acc', verbose=1, save_best_only=True, mode='max')
+    checkpoint = ModelCheckpoint(data_paths.keras_multi_model_training_model2, monitor='val_loss', verbose=1, save_best_only=True, mode='min')
 
     model.fit_generator(scbg.nextBatch(samples, species_map, stg.model2_channel), epochs=stg.EPOCHS, steps_per_epoch=len(samples)/stg.BATCH_SIZE,
-                        verbose=1, validation_data=scbg.nextBatch(val_samples, species_map, stg.model2_channel), validation_steps=len(val_samples)/stg.BATCH_SIZE,
+                        verbose=1, validation_data=scbg.nextBatch(val_samples, species_map, stg.model2_channel, augment=False), validation_steps=len(val_samples)/stg.BATCH_SIZE,
                         callbacks=[checkpoint])
 
     #train model 3
@@ -72,10 +72,10 @@ def train_keras_multi_model():
 
     model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=metrics_list)
 
-    checkpoint = ModelCheckpoint(data_paths.keras_multi_model_training_model3, monitor='val_top3_acc', verbose=1, save_best_only=True, mode='max')
+    checkpoint = ModelCheckpoint(data_paths.keras_multi_model_training_model3, monitor='val_loss', verbose=1, save_best_only=True, mode='min')
 
     model.fit_generator(scbg.nextBatch(samples, species_map, stg.model3_channel), epochs=stg.EPOCHS, steps_per_epoch=len(samples)/stg.BATCH_SIZE,
-                        verbose=1, validation_data=scbg.nextBatch(val_samples, species_map, stg.model3_channel), validation_steps=len(val_samples)/stg.BATCH_SIZE,
+                        verbose=1, validation_data=scbg.nextBatch(val_samples, species_map, stg.model3_channel, augment=False), validation_steps=len(val_samples)/stg.BATCH_SIZE,
                         callbacks=[checkpoint])
 
     #train model 4
@@ -83,10 +83,10 @@ def train_keras_multi_model():
 
     model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=metrics_list)
 
-    checkpoint = ModelCheckpoint(data_paths.keras_multi_model_training_model4, monitor='val_top3_acc', verbose=1, save_best_only=True, mode='max')
+    checkpoint = ModelCheckpoint(data_paths.keras_multi_model_training_model4, monitor='val_loss', verbose=1, save_best_only=True, mode='min')
 
     model.fit_generator(scbg.nextBatch(samples, species_map, stg.model4_channel), epochs=stg.EPOCHS, steps_per_epoch=len(samples)/stg.BATCH_SIZE,
-                        verbose=1, validation_data=scbg.nextBatch(val_samples, species_map, stg.model4_channel), validation_steps=len(val_samples)/stg.BATCH_SIZE,
+                        verbose=1, validation_data=scbg.nextBatch(val_samples, species_map, stg.model4_channel, augment=False), validation_steps=len(val_samples)/stg.BATCH_SIZE,
                         callbacks=[checkpoint])
 
     #train model 5
@@ -94,10 +94,10 @@ def train_keras_multi_model():
 
     model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=metrics_list)
 
-    checkpoint = ModelCheckpoint(data_paths.keras_multi_model_training_model5, monitor='val_top3_acc', verbose=1, save_best_only=True, mode='max')
+    checkpoint = ModelCheckpoint(data_paths.keras_multi_model_training_model5, monitor='val_loss', verbose=1, save_best_only=True, mode='min')
 
     model.fit_generator(scbg.nextBatch(samples, species_map, stg.model5_channel), epochs=stg.EPOCHS, steps_per_epoch=len(samples)/stg.BATCH_SIZE,
-                        verbose=1, validation_data=scbg.nextBatch(val_samples, species_map, stg.model5_channel), validation_steps=len(val_samples)/stg.BATCH_SIZE,
+                        verbose=1, validation_data=scbg.nextBatch(val_samples, species_map, stg.model5_channel, augment=False), validation_steps=len(val_samples)/stg.BATCH_SIZE,
                         callbacks=[checkpoint])
 
     #train model 6
@@ -105,10 +105,10 @@ def train_keras_multi_model():
 
     model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=metrics_list)
 
-    checkpoint = ModelCheckpoint(data_paths.keras_multi_model_training_model6, monitor='val_top3_acc', verbose=1, save_best_only=True, mode='max')
+    checkpoint = ModelCheckpoint(data_paths.keras_multi_model_training_model6, monitor='val_loss', verbose=1, save_best_only=True, mode='min')
 
     model.fit_generator(scbg.nextBatch(samples, species_map, stg.model6_channel), epochs=stg.EPOCHS, steps_per_epoch=len(samples)/stg.BATCH_SIZE,
-                        verbose=1, validation_data=scbg.nextBatch(val_samples, species_map, stg.model6_channel), validation_steps=len(val_samples)/stg.BATCH_SIZE,
+                        verbose=1, validation_data=scbg.nextBatch(val_samples, species_map, stg.model6_channel, augment=False), validation_steps=len(val_samples)/stg.BATCH_SIZE,
                         callbacks=[checkpoint])
 
 if __name__ == '__main__':

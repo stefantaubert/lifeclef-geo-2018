@@ -4,6 +4,7 @@ import data_paths_main as data_paths
 import tifffile
 import settings_main as stg
 import itertools as it
+import cv2
 
 def loadImage(sample):
     patch_dir_name = sample[0]
@@ -12,11 +13,20 @@ def loadImage(sample):
 
     return img
 
+def flipImage(image):
+    return cv2.flip(image, 1)
+
+def rotateImage(image, angle):
+    h, w = image.shape[:2]
+    M = cv2.getRotationMatrix2D((w / 2, h / 2), np.random.uniform(-angle, angle), 1.0)
+
+    return cv2.warpAffine(image, M,(w, h))
+
 def getDatasetChunk(samples):
     for i in range(0, len(samples), stg.BATCH_SIZE):
         yield samples[i:i+stg.BATCH_SIZE]
 
-def getNextImageBatch(samples, species_map):
+def getNextImageBatch(samples, species_map, augment=False):
     for chunk in getDatasetChunk(samples):
         x_batch = np.zeros((stg.BATCH_SIZE, 33, 64, 64), dtype=np.uint8)
         y_batch = np.zeros((stg.BATCH_SIZE, len(species_map.keys())))
@@ -26,6 +36,11 @@ def getNextImageBatch(samples, species_map):
 
         for sample in chunk:
             x = loadImage(sample)
+            if(augment):
+                if np.random.random_sample() > 0.5:
+                    x = flipImage(x)
+                if np.random.random_sample() > 0.5:
+                    x = rotateImage(x, 90)
             y = np.zeros(len(species_map.keys()))
             y[species_map[sample[2]]] = 1 
 
@@ -42,13 +57,17 @@ def getNextImageBatch(samples, species_map):
 
         yield x_batch, y_batch, species_ids_batch, glc_ids_batch
 
-def nextBatch(samples, species_map):
-    for x, y, species_ids, glc_ids in it.cycle(getNextImageBatch(samples, species_map)):
+def nextBatch(samples, species_map, augment=True):
+    for x, y, species_ids, glc_ids in it.cycle(getNextImageBatch(samples, species_map, augment=augment)):
         yield (x, y)
 
 def nextValidationBatch(samples, species_map):
     for x, y, species_ids, glc_ids in getNextImageBatch(samples, species_map):
         yield (x, y, species_ids, glc_ids)
+
+def nextTrainingValidationBatch(samples, species_map):
+    for x, y, species_ids, glc_ids in it.repeat(getNextImageBatch(samples, species_map)):
+        yield (x, y)
 
 def nextTestBatch(samples, species_map):
     for x, _, _, glc_ids in getNextImageBatch(samples, species_map):

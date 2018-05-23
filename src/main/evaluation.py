@@ -24,7 +24,7 @@ def evaluate_xgb():
 def evaluate_results_from_files(submission_path, gt_path, species_map_path):
     print("Evaluate submission...")
     print("Load data...")
-    df = pd.read_csv(submission_path)
+    df = pd.read_csv(submission_path, sep=';')
     y = np.load(gt_path)
     
     print("Calculate MRR-Score...")

@@ -9,7 +9,7 @@ import data_paths_main as data_paths
 import pickle
 import numpy as np
 import settings_main as stg
-from keras_models import vgg_like_model
+from keras_models import vgg_like_model, global_average_model
 from submission import make_submission_from_files
 from evaluation import evaluate_results_from_files
 
@@ -21,11 +21,13 @@ def evaluate_keras_model():
     with open(data_paths.keras_training_species_map, 'rb') as f:
         species_map = pickle.load(f)
 
+    
     model = vgg_like_model.get_model(len(species_map.keys()), 33)
+    #model = global_average_model.get_model(len(species_map.keys()), 33)
 
     model.load_weights(data_paths.keras_training_model)
 
-    model.compile(optimizer='adam', loss='categorical_crossentropy')
+    #model.compile(optimizer='adam', loss='categorical_crossentropy')
 
     ground_truth = []
     predictions = []
