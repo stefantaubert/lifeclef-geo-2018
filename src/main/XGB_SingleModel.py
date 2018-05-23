@@ -39,7 +39,7 @@ from top_k_acc import top_k_acc
 class top_k_acc_eval():
     def __init__(self, species_map, y_valid, k):
         self.species_map = species_map
-        self.y_valid = y_valid
+        self.y_valid = list(y_valid)
         self.species_count = len(self.species_map)
         self.k = k
 
