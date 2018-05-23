@@ -20,6 +20,7 @@ import datetime
 import Log
 from tqdm import tqdm
 from sklearn.preprocessing import LabelEncoder
+from top_k_acc import top_k_acc
 
 # class XGBMrrEval():
 #     def __init__(self, classes, y_valid):
@@ -35,7 +36,7 @@ from sklearn.preprocessing import LabelEncoder
 #         mrr_score = mrr.mrr_score(ranks)
 #         return ("mrr", mrr_score)
 
-class top_k_accuracy():
+class top_k_acc_eval():
     def __init__(self, species_map, y_valid, k):
         self.species_map = species_map
         self.y_valid = y_valid
@@ -43,15 +44,7 @@ class top_k_accuracy():
         self.k = k
 
     def evaluate(self, y_predicted, _):
-        count_matching_species = 0
-        for i in tqdm(range(len(y_predicted))):
-            pred = y_predicted[i]
-            sorted_pred, sorted_species = zip(*reversed(sorted(zip(pred, list(self.species_map)))))
-            print(sorted_pred)
-            if self.y_valid[i] in sorted_species[:self.k]:
-                count_matching_species += 1
-
-        return count_matching_species / len(y_predicted)
+        return top_k_acc(y_predicted, self.y_valid, self.species_map, self.k)
 
 
 class Model():
@@ -126,7 +119,7 @@ class Model():
         print("Training model...")
         
         watchlist = [
-            (d_train, 'train'), 
+            #(d_train, 'train'), 
             (d_valid, 'validation'),
         ]
         
@@ -136,9 +129,9 @@ class Model():
 
         xgb.callback.print_evaluation() 
         #evaluator = XGBMrrEval(classes_, y_valid)
-        #evaluator = top_k_accuracy()
+        evaluator = top_k_acc_eval(self.species_map, self.y_valid, k=20)
         # bst = xgb.Booster(model_file=path)
-        bst = xgb.train(self.params, d_train, num_boost_round=self.params["num_boost_round"], verbose_eval=1, evals=watchlist, early_stopping_rounds=self.params["early_stopping_rounds"])
+        bst = xgb.train(self.params, d_train, num_boost_round=self.params["num_boost_round"], verbose_eval=1, feval=evaluator.evaluate, evals=watchlist, early_stopping_rounds=self.params["early_stopping_rounds"])
         #bst = xgb.train(params, d_train, 1, verbose_eval=2, evals=watchlist,feval=evaluator.evaluate,  evaluator.evalute, callbacks=[self.save_after_it])
 
         print("Save model...")
