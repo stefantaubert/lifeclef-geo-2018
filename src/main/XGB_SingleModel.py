@@ -36,7 +36,7 @@ from top_k_acc import top_k_acc
 #         mrr_score = mrr.mrr_score(ranks)
 #         return ("mrr", mrr_score)
 
-class top_k_acc_eval():
+class top_k_error_eval():
     def __init__(self, species_map, y_valid, k):
         self.species_map = species_map
         self.y_valid = list(y_valid)
@@ -44,7 +44,7 @@ class top_k_acc_eval():
         self.k = k
 
     def evaluate(self, y_predicted, _):
-        return ("top_" + str(self.k) + "_acc", top_k_acc(y_predicted, self.y_valid, self.species_map, self.k))
+        return ("top_" + str(self.k) + "_acc", 1 - top_k_acc(y_predicted, self.y_valid, self.species_map, self.k))
 
 
 class Model():
@@ -89,7 +89,7 @@ class Model():
         self.params['silent'] = 0
         self.params['eval_metric'] = 'merror'
         self.params['num_class'] = len(self.species_map) #=3336
-        self.params['num_boost_round'] = 400
+        self.params['num_boost_round'] = 1000
         self.params['early_stopping_rounds'] = 10
         self.params['predictor'] = 'gpu_predictor'
         self.params['tree_method'] = 'gpu_hist'
@@ -129,7 +129,7 @@ class Model():
 
         xgb.callback.print_evaluation() 
         #evaluator = XGBMrrEval(classes_, y_valid)
-        evaluator = top_k_acc_eval(self.species_map, self.y_valid, k=20)
+        evaluator = top_k_error_eval(self.species_map, self.y_valid, k=20)
         # bst = xgb.Booster(model_file=path)
         bst = xgb.train(self.params, d_train, num_boost_round=self.params["num_boost_round"], verbose_eval=1, feval=evaluator.evaluate, evals=watchlist, early_stopping_rounds=self.params["early_stopping_rounds"])
         #bst = xgb.train(params, d_train, 1, verbose_eval=2, evals=watchlist,feval=evaluator.evaluate,  evaluator.evalute, callbacks=[self.save_after_it])
