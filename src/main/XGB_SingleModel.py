@@ -88,25 +88,12 @@ class Model():
         self.params['seed'] = 4242
         self.params['silent'] = 0
         self.params['eval_metric'] = 'merror'
-        self.params['num_class'] = len(self.species_map) #=3336
+        self.params['num_class'] = len(self.species_map)
         self.params['num_boost_round'] = 1000
-        self.params['early_stopping_rounds'] = 4
-        self.params['verbose_eval'] = 3
+        self.params['early_stopping_rounds'] = 10
+        self.params['verbose_eval'] = 1
         self.params['predictor'] = 'gpu_predictor'
         self.params['tree_method'] = 'gpu_hist'
-        # params['colsample_bytree'] = 0.8
-        # params['colsample_bylevel'] = 1
-        # params['colsample_bytree'] = 1
-        # params['gamma'] = 0
-        # params['min_child_weight'] = 1
-        # params['max_delta_step'] = 0
-        # params['missing'] = None
-        # params['reg_alpha'] = 0
-        # params['reg_lambda'] = 1
-        # params['scale_pos_weight'] = 1
-        # params['subsample'] = 1
-        # params['grow_policy'] = 'depthwise' #'lossguide'
-        # params['max_leaves'] = 255
 
     def predict(self):       
         le = LabelEncoder().fit(self.y_train)
@@ -124,12 +111,7 @@ class Model():
             (d_valid, 'validation'),
         ]
         
-        #top3_acc = metrics.get_top3_accuracy()
-        #top10_acc = metrics.get_top10_accuracy()
-        #top50_acc = metrics.get_top50_accuracy()
-
-        xgb.callback.print_evaluation() 
-        #evaluator = XGBMrrEval(classes_, y_valid)
+        xgb.callback.print_evaluation()
         evaluator = top_k_error_eval(self.species_map, self.y_valid, k=20)
         # bst = xgb.Booster(model_file=path)
         bst = xgb.train(self.params, d_train, num_boost_round=self.params["num_boost_round"], verbose_eval=self.params["verbose_eval"], feval=evaluator.evaluate, evals=watchlist, early_stopping_rounds=self.params["early_stopping_rounds"])
@@ -137,7 +119,7 @@ class Model():
 
         print("Save model...")
         bst.save_model(data_paths.xgb_model)
-        bst.dump_model(data_paths.xgb_model_dump)
+        bst.dump_model(data_paths.xgb_model_dump, data_paths.xgb_feature_importances + ".txt")
 
         self.plt_features(bst, d_train)
         
