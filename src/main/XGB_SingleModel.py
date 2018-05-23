@@ -72,7 +72,7 @@ class Model():
         self.species_count = len(self.species_map)
         #np.save(data_paths.xgb_species_map, classes_)
 
-        self.x_train, self.x_valid, self.y_train, self.y_valid = train_test_split(x_text, y, test_size=settings.train_val_split, random_state=settings.seed)
+        #self.x_train, self.x_valid, self.y_train, self.y_valid = train_test_split(x_text, y, test_size=settings.train_val_split, random_state=settings.seed)
         
         #np.save(data_paths.xgb_glc_ids, x_valid["patch_id"])
 
@@ -96,7 +96,7 @@ class Model():
         self.params['eval_metric'] = 'merror'
         self.params['num_class'] = len(self.species_map) #=3336
         self.params['num_boost_round'] = 200
-        self.params['early_stopping_rounds'] = 5
+        self.params['early_stopping_rounds'] = 10
         # params['colsample_bylevel'] = 1
         # params['colsample_bytree'] = 1
         # params['gamma'] = 0
