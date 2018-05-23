@@ -88,7 +88,7 @@ class Model():
         self.params['base_score'] = 0.5
         self.params['booster'] = 'gbtree'
         self.params['objective'] = 'multi:softprob'
-        self.params['max_depth'] = 3
+        self.params['max_depth'] = 2
         self.params['learning_rate'] = 0.1
         self.params['seed'] = 4242
         #params['colsample_bytree'] = 0.8 #um die 
