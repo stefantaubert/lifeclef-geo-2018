@@ -64,17 +64,11 @@ class Model():
 
         x_text = pd.read_csv(data_paths.train)
         self.x_test = pd.read_csv(data_paths.test)
-        
         y = x_text["species_glc_id"]
-
-        # species_count = np.load(data_paths.y_array).shape[1]
         self.species_map = np.unique(y)
         self.species_count = len(self.species_map)
-        #np.save(data_paths.xgb_species_map, classes_)
 
-        #self.x_train, self.x_valid, self.y_train, self.y_valid = train_test_split(x_text, y, test_size=settings.train_val_split, random_state=settings.seed)
-        
-        #np.save(data_paths.xgb_glc_ids, x_valid["patch_id"])
+        self.x_train, self.x_valid, self.y_train, self.y_valid = train_test_split(x_text, y, test_size=settings.train_val_split, random_state=settings.seed)
 
         self.test_glc_ids = list(self.x_test['patch_id'])
         self.valid_glc_ids = list(self.x_valid['patch_id'])
@@ -91,12 +85,14 @@ class Model():
         self.params['max_depth'] = 2
         self.params['learning_rate'] = 0.1
         self.params['seed'] = 4242
-        #params['colsample_bytree'] = 0.8 #um die 
         self.params['silent'] = 0
         self.params['eval_metric'] = 'merror'
         self.params['num_class'] = len(self.species_map) #=3336
         self.params['num_boost_round'] = 200
         self.params['early_stopping_rounds'] = 10
+        self.params['predictor'] = 'gpu_predictor'
+        self.params['tree_method'] = 'gpu_hist'
+        # params['colsample_bytree'] = 0.8
         # params['colsample_bylevel'] = 1
         # params['colsample_bytree'] = 1
         # params['gamma'] = 0
@@ -107,11 +103,8 @@ class Model():
         # params['reg_lambda'] = 1
         # params['scale_pos_weight'] = 1
         # params['subsample'] = 1
-        self.params['predictor'] = 'gpu_predictor'
-        self.params['tree_method'] = 'gpu_hist'
-        #params['grow_policy'] = 'depthwise' #'lossguide'
-        #params['max_leaves'] = 255
-
+        # params['grow_policy'] = 'depthwise' #'lossguide'
+        # params['max_leaves'] = 255
 
     def predict(self):       
         le = LabelEncoder().fit(self.y_train)
