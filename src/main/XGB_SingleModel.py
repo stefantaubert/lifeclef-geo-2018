@@ -143,7 +143,7 @@ class Model():
         
         print("Predict validation set...")
         self.valid_predictions = bst.predict(d_valid, ntree_limit=bst.best_ntree_limit)
-        print(evaluator.evaluate(self.valid_predictions, None))
+        print(evaluator.evaluate(self.valid_predictions, self.y_valid))
 
         print("Predict test set...")    
         d_test = xgb.DMatrix(self.x_test)
