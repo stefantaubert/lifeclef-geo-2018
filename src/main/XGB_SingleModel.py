@@ -18,6 +18,7 @@ import mrr
 import matplotlib.pyplot as plt
 import datetime
 import Log
+from tqdm import tqdm
 from sklearn.preprocessing import LabelEncoder
 
 # class XGBMrrEval():
@@ -35,15 +36,22 @@ from sklearn.preprocessing import LabelEncoder
 #         return ("mrr", mrr_score)
 
 class top_k_accuracy():
-    def __init__(self, species_map, y_valid):
+    def __init__(self, species_map, y_valid, k):
         self.species_map = species_map
         self.y_valid = y_valid
         self.species_count = len(self.species_map)
-    
-    def evaluate(self, y_predicted, y_true):
-        print(y_predicted)
-        print(y_true)
+        self.k = k
 
+    def evaluate(self, y_predicted, _):
+        count_matching_species = 0
+        for i in tqdm(range(len(y_predicted))):
+            pred = y_predicted[i]
+            sorted_pred, sorted_species = zip(*reversed(sorted(zip(pred, list(self.species_map)))))
+            print(sorted_pred)
+            if self.y_valid[i] in sorted_species[:self.k]:
+                count_matching_species += 1
+
+        return count_matching_species / len(y_predicted)
 
 
 class Model():
@@ -82,7 +90,7 @@ class Model():
         self.params['base_score'] = 0.5
         self.params['booster'] = 'gbtree'
         self.params['objective'] = 'multi:softprob'
-        self.params['max_depth'] = 2
+        self.params['max_depth'] = 1
         self.params['learning_rate'] = 0.1
         self.params['seed'] = 4242
         self.params['silent'] = 0
@@ -112,14 +120,11 @@ class Model():
         validation_labels = le.transform(self.y_valid)
 
         # Datenmatrix für die Eingabedaten erstellen.
-        #x_train.to_csv(data_paths.xgb_trainchached, index=False)
-        #d_train = xgb.DMatrix(data_paths.xgb_trainchached + "#d_train.cache", label=training_labels)
         d_train = xgb.DMatrix(self.x_train, label=training_labels)
         d_valid = xgb.DMatrix(self.x_valid, label=validation_labels)
 
         print("Training model...")
         
-        #evaluator = XGBMrrEval(classes_, y_valid)
         watchlist = [
             (d_train, 'train'), 
             (d_valid, 'validation'),
@@ -129,8 +134,10 @@ class Model():
         #top10_acc = metrics.get_top10_accuracy()
         #top50_acc = metrics.get_top50_accuracy()
 
-        #xgb.callback.print_evaluation() 
+        xgb.callback.print_evaluation() 
+        #evaluator = XGBMrrEval(classes_, y_valid)
         #evaluator = top_k_accuracy()
+        # bst = xgb.Booster(model_file=path)
         bst = xgb.train(self.params, d_train, num_boost_round=self.params["num_boost_round"], verbose_eval=1, evals=watchlist, early_stopping_rounds=self.params["early_stopping_rounds"])
         #bst = xgb.train(params, d_train, 1, verbose_eval=2, evals=watchlist,feval=evaluator.evaluate,  evaluator.evalute, callbacks=[self.save_after_it])
 
@@ -146,27 +153,6 @@ class Model():
         print("Predict test data...")    
         d_test = xgb.DMatrix(self.x_test)
         self.test_predictions = bst.predict(d_test)        
-
-    # def predict_test_set_from_saved_model(self, iteration_nr):
-    #     print("Load model...")
-    #     path = data_paths.xgb_model + str(iteration_nr)
-    #     assert os.path.exists(path)
-
-    #     bst = xgb.Booster(model_file=path)
-    #     #bst.dump_model(data_paths.xgb_model_dump + str(iteration_nr))
-
-    #     #testset = pd.read_csv(data_paths.test)
-    #     #np.save(data_paths.xgb_test_glc_ids, testset["patch_id"])
-        
-    #     testset = testset[self.train_columns]
-    #     testset_dmatrix = xgb.DMatrix(testset)
-    #     #self.plt_features(bst, testset_dmatrix, iteration_nr)
-
-    #     print("Predict test data...")    
-    #     pred_test = bst.predict(testset_dmatrix)        
-
-    #     print("Save test predictions...")
-    #     np.save(data_paths.xgb_test_prediction, pred_test)
 
     def plt_features(self, bst, d_matrix):
         print("Plot feature importances...")
