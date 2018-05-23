@@ -2,17 +2,40 @@ import module_support
 import main_preprocessing
 import time, datetime
 import XGBoostModelNative
-import XGBoostModel
 import XGBoostModelGroups
 import submission
 import evaluation
+import LogisticRegressionModel
+import VectorModel
+import RandomModel
+import Log
+import data_paths_global as data_paths
+import settings_main as settings
+
+def writeLog(title, start, end, duration, model, mrr):
+    log_text = str("{}\n--------------------\nMRR-Score: {}\nStarted: {}\nFinished: {}\nDuration: {}min\nSuffix: {}\nTraincolumns: {}\nSeed: {}\nSplit: {}\n".format
+    (
+        title,
+        str(mrr), 
+        str(start), 
+        str(end),
+        str(duration),
+        data_paths.get_suffix_prot(),
+        ", ".join(model.train_columns),
+        settings.seed,
+        settings.train_val_split,
+    ))
+    log_text += "Modelparams:\n"
+    params = ["- {}: {}\n".format(x, y) for x, y in model.params.items()]
+    log_text += "".join(params) + "============================="
+    Log.write(log_text)
+    print(log_text)
 
 def startXGBoostNative():
     start_time = time.time()
     print("Start:", datetime.datetime.now().time())
     main_preprocessing.create_datasets()
     XGBoostModelNative.XGBModelNative().run()
-    submission.make_xgb_test_submission()
     
     # submission.make_xgb_submission()
     # evaluation.evaluate_xgb()
@@ -31,19 +54,6 @@ def predictTestDataXGBNative(iteration):
     seconds = time.time() - start_time
     print("Total duration:", round(seconds / 60, 2), "min")
 
-def startXGBoost(with_test):
-    start_time = time.time()
-
-    main_preprocessing.create_datasets()
-    XGBoostModel.XGBModel().run(with_test)
-    submission.make_xgb_submission()
-    evaluation.evaluate_xgb()
-    if with_test:
-        submission.make_xgb_test_submission()
-
-    seconds = time.time() - start_time
-    print("Total duration:", round(seconds / 60, 2), "min")
-
 def startXGBoostGroups():
     ## preprocessing is already done
     start_time = time.time()
@@ -59,7 +69,10 @@ def startXGBoostGroups():
     print("Total duration:", round(seconds / 60, 2), "min")
 
 if __name__ == "__main__":
-    predictTestDataXGBNative(36)
+    #startRandomModel()
+    #startXGBRegression()
+    #startXGBRegressionGroups()
     #startXGBoostNative()
+    #predictTestDataXGBNative(36)
     #startXGBoost(False)
     #startXGBoostGroups()

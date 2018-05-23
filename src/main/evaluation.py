@@ -6,6 +6,9 @@ import numpy as np
 import settings_main as settings
 from sklearn.model_selection import train_test_split
 import get_ranks
+import submission_maker
+import SpeciesOccurences
+import data_paths_analysis
 
 def evaluate_xgb():
     print("Evaluate submission...")
@@ -33,4 +36,4 @@ def evaluate_results_from_files(submission_path, gt_path, species_map_path):
     print("MRR-Score:", mrr_score * 100,"%")
 
 if __name__ == "__main__":
-    evaluate_xgb()
+    evaluate_xgb_regression_groups()

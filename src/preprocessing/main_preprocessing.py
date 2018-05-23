@@ -20,10 +20,13 @@ def create_trainset():
     ImageToCSVConverter.extract_occurences_train()
     TextPreprocessing.extract_train()
 
-def create_datasets():
-    create_trainset()
+def create_testset():
     ImageToCSVConverter.extract_occurences_test()
     TextPreprocessing.extract_test()
+
+def create_datasets():
+    create_trainset()
+    create_testset()
 
 if __name__ == "__main__":
     #create_datasets()

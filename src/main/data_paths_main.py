@@ -2,8 +2,6 @@ from data_paths_global import *
 import settings_main
 import os 
 
-
-
 test_submission = root + "submissions/submission_val.csv"
 
 img_list_dir = root + "image_lists/"
@@ -13,18 +11,30 @@ test_samples = img_list_dir + "test/samples.npy"
 
 #xgb normal training paths
 xgb_dir = root + "xgb/"
-xgb_group_map = xgb_dir + "group_map.npy"
-xgb_species_map = xgb_dir + "species_map.npy"
-xgb_prediction = xgb_dir + "prediction.npy"
-xgb_glc_ids = xgb_dir + "glc_ids.npy"
+# xgb_group_map = xgb_dir + "group_map.npy"
+# xgb_species_map = xgb_dir + "species_map.npy"
+# xgb_prediction = xgb_dir + "prediction.npy"
+# xgb_glc_ids = xgb_dir + "glc_ids.npy"
 #xgb_trainchached = xgb_dir + "train.txt" muss libsvm format sein (phraug2 -> pivottable von csv)
-xgb_submission = xgb_dir + "submission.csv"
-xgb_test_prediction = xgb_dir + "test_prediction.npy"
-xgb_test_glc_ids = xgb_dir + "test_glc_ids.npy"
-xgb_test_submission = xgb_dir + "test_submission.csv"
+# xgb_submission = xgb_dir + "submission.csv"
+# xgb_test_prediction = xgb_dir + "test_prediction.npy"
+# xgb_test_glc_ids = xgb_dir + "test_glc_ids.npy"
 xgb_model = xgb_dir + "model"
 xgb_model_dump = xgb_dir + "model_dump"
+xgb_feature_importances = xgb_dir + "feature_importances.pdf"
 # xgb_species_occurences = root + "analysis/species_occurences.csv"
+
+submissions_dir = root + "submissions/"
+
+if not os.path.exists(submissions_dir):
+    os.makedirs(submissions_dir)
+
+vector_submission = submissions_dir + "vector_submission.csv"
+xgb_multimodel_submission = submissions_dir + "xgb_multimodel_submission.csv"
+xgb_multimodel_groups_submission = submissions_dir + "xgb_multimodel_groups_submission.csv"
+xgb_singlemodel_submission = submissions_dir + "xgb_singlemodel_submission.csv"
+random_submission = submissions_dir + "random_submission.csv"
+probability_submission = submissions_dir + "probability_submission.csv"
 
 #keras single model training paths
 keras_training_dir = root + "keras_training_results/"

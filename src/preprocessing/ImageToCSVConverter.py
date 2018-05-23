@@ -95,5 +95,5 @@ class ImageToCSVConverter:
         df.to_csv(data_paths.occurrences_train_gen, index=False)
    
     def _create_test(self):
-        df = self.get_dataset_df(data_paths.occurrences_test, data_paths.patch_train)
+        df = self.get_dataset_df(data_paths.occurrences_test, data_paths.patch_test)
         df.to_csv(data_paths.occurrences_test_gen, index=False)

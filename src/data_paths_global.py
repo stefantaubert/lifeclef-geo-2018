@@ -1,6 +1,9 @@
 import global_settings as settings
 import os,sys,inspect
 
+def get_suffix_o():
+    return "_o" + str(settings.min_occurence)
+
 def get_suffix_p():
     return "_p" + str(settings.pixel_count)
 
@@ -21,6 +24,8 @@ config_path = parentdir + "/config/data_root"
 root_lines = open(config_path).read().split('\n')
 root = root_lines[0]
 
+log = root + "log.txt"
+
 patch_train = root + "patchTrain"
 patch_test = root + "patchTest"
 
@@ -37,8 +42,12 @@ test = preprocessing_dir + "test" + get_suffix_pr() + ".csv"
 train_with_groups = preprocessing_dir + "train_with_groups" + get_suffix_prot() + ".csv"
 most_common_values = preprocessing_dir + "most_common_values" + get_suffix_pro() + ".csv"
 named_groups = preprocessing_dir + "named_groups" + get_suffix_prot() + ".npy"
-similar_species = preprocessing_dir + "similar_species" + get_suffix_pro() + ".npy"
+similar_species = preprocessing_dir + "similar_species" + get_suffix_prot() + ".npy"
 channel_map_diff = preprocessing_dir + "channel_map_diff" + get_suffix_pro() + ".csv"
 
 if not os.path.exists(preprocessing_dir):
     os.makedirs(preprocessing_dir)
+
+if not os.path.exists(log):
+    file = open(log, 'w+')
+    file.close()
