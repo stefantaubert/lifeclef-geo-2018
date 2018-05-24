@@ -110,17 +110,14 @@ class Model():
             #(d_train, 'train'), 
             (d_valid, 'validation'),
         ]
-        
-        xgb.callback.print_evaluation()
+                
         evaluator = top_k_error_eval(self.species_map, self.y_valid, k=20)
         # bst = xgb.Booster(model_file=path)
         bst = xgb.train(
                 self.params,
                 d_train, 
                 num_boost_round=self.params["num_boost_round"], 
-                verbose_eval=self.params["verbose_eval"],
-                #feval=evaluator.evaluate, evals=watchlist, 
-                early_stopping_rounds=self.params["early_stopping_rounds"]
+                #verbose_eval=self.params["verbose_eval"],feval=evaluator.evaluate, evals=watchlist, early_stopping_rounds=self.params["early_stopping_rounds"]
                 #callbacks=[self.save_after_it]
             )
 
