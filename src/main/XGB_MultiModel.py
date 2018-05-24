@@ -91,7 +91,7 @@ class Model():
 
         self.params = {}
         self.params['objective'] = 'binary:logistic'
-        self.params['max_depth'] = 2
+        self.params['max_depth'] = 1
         self.params['learning_rate'] = 0.1
         self.params['seed'] = 4242
         self.params['silent'] = 1
