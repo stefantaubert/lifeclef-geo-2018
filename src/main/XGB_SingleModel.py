@@ -117,7 +117,10 @@ class Model():
                 self.params,
                 d_train, 
                 num_boost_round=self.params["num_boost_round"], 
-                #verbose_eval=self.params["verbose_eval"],feval=evaluator.evaluate, evals=watchlist, early_stopping_rounds=self.params["early_stopping_rounds"]
+                verbose_eval=self.params["verbose_eval"],
+                #feval=evaluator.evaluate, 
+                evals=watchlist, 
+                #early_stopping_rounds=self.params["early_stopping_rounds"]
                 #callbacks=[self.save_after_it]
             )
 
