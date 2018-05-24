@@ -44,7 +44,7 @@ class GroupExtractor():
 
         for node in G.nodes():
             if node not in processed_nodes:
-                connected_nodes = nx.node_connected_component(G, node )
+                connected_nodes = nx.node_connected_component(G, node)
                 groups.append(connected_nodes)
                 processed_nodes.extend(connected_nodes)
             

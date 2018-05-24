@@ -5,7 +5,7 @@ import threading
 
 def top_k_acc(y_predicted, y_true, class_map, k):
     count_matching_species = 0
-    for i in tqdm(range(len(y_predicted))):
+    for i in range(len(y_predicted)):
         pred = y_predicted[i]
         _, sorted_species = zip(*reversed(sorted(zip(pred, list(class_map)))))
         if y_true[i] in sorted_species[:k]:

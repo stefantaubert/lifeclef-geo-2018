@@ -25,6 +25,10 @@ import matplotlib.pyplot as plt
 import data_paths_analysis
 import SpeciesOccurences
 
+#http://xgboost.readthedocs.io/en/latest/parameter.html
+#http://xgboost.readthedocs.io/en/latest/python/python_api.html
+#http://xgboost.readthedocs.io/en/latest/gpu/index.html
+
 class Model():
     '''
     No Group Model
@@ -87,16 +91,16 @@ class Model():
 
         self.params = {}
         self.params['objective'] = 'binary:logistic'
-        self.params['max_depth'] = 3
+        self.params['max_depth'] = 2
         self.params['learning_rate'] = 0.1
         self.params['seed'] = 4242
         self.params['silent'] = 1
-        self.params['eval_metric'] = 'logloss'
+        self.params['eval_metric'] = 'logloss' # because we want to evaluate floats
         self.params['updater'] = 'grow_gpu'
         self.params['predictor'] = 'gpu_predictor'
         self.params['tree_method'] = 'gpu_hist'
-        self.params['num_boost_round'] = 300
-        self.params['early_stopping_rounds'] = 5
+        self.params['num_boost_round'] = 500
+        self.params['early_stopping_rounds'] = 10
 
     def predict(self, use_multithread):
         if use_multithread:
@@ -131,11 +135,18 @@ class Model():
         d_test = xgb.DMatrix(self.x_test)
         watchlist = [(d_train, 'train'), (d_valid, 'valid')]
         
-        bst = xgb.train(self.params, d_train, num_boost_round=self.params["num_boost_round"], verbose_eval=None, evals=watchlist, early_stopping_rounds=self.params["early_stopping_rounds"])
+        bst = xgb.train(
+            self.params, 
+            d_train, 
+            num_boost_round=self.params["num_boost_round"], 
+            verbose_eval=None,
+            evals=watchlist, 
+            early_stopping_rounds=self.params["early_stopping_rounds"]
+        )
         #self.plt_features(bst, d_train)
-        pred = bst.predict(d_valid)
+        pred = bst.predict(d_valid, ntree_limit=bst.best_ntree_limit)
         #print("validation-logloss for", str(species) + ":", log_loss(val_target, pred))
-        pred_test = bst.predict(d_test)
+        pred_test = bst.predict(d_test, ntree_limit=bst.best_ntree_limit)
 
         return (species, pred, pred_test)
 
@@ -227,4 +238,4 @@ def run(use_groups):
         run_without_groups()
 
 if __name__ == '__main__':
-    run(use_groups=True)
+    run(use_groups=False)
