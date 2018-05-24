@@ -36,6 +36,14 @@ class TestGetRanksMethod(unittest.TestCase):
         self.assertEqual(0.75, t.get_score(y_pred, y_true, class_map, 3))
         self.assertEqual(1, t.get_score(y_pred, y_true, class_map, 4))
 
+    def test_extrem(self):
+        l = 1000000
+        y_pred = [[0.1, 0.2, 0.3, 0.4]  for _ in range(l)]
+
+        class_map = [x for x in range(1,4)]
+        y_true = [4 for x in range(l)]
+        top_k_acc.top_k_acc(y_pred, y_true, class_map, 1)
+        
     def test_extrem_multicore(self):
         l = 1000000
         y_pred = [[0.1, 0.2, 0.3, 0.4]  for _ in range(l)]

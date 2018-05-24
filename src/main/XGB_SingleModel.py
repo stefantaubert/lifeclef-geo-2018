@@ -89,7 +89,7 @@ class Model():
         self.params['silent'] = 0
         self.params['eval_metric'] = 'merror'
         self.params['num_class'] = len(self.species_map)
-        self.params['num_boost_round'] = 1000
+        self.params['num_boost_round'] = 2
         self.params['early_stopping_rounds'] = 10
         self.params['verbose_eval'] = 1
         self.params['predictor'] = 'gpu_predictor'
@@ -114,12 +114,19 @@ class Model():
         xgb.callback.print_evaluation()
         evaluator = top_k_error_eval(self.species_map, self.y_valid, k=20)
         # bst = xgb.Booster(model_file=path)
-        bst = xgb.train(self.params, d_train, num_boost_round=self.params["num_boost_round"], verbose_eval=self.params["verbose_eval"], feval=evaluator.evaluate, evals=watchlist, early_stopping_rounds=self.params["early_stopping_rounds"])
-        #bst = xgb.train(params, d_train, 1, verbose_eval=2, evals=watchlist,feval=evaluator.evaluate,  evaluator.evalute, callbacks=[self.save_after_it])
+        bst = xgb.train(
+                self.params,
+                d_train, 
+                num_boost_round=self.params["num_boost_round"], 
+                verbose_eval=self.params["verbose_eval"],
+                #feval=evaluator.evaluate, evals=watchlist, 
+                early_stopping_rounds=self.params["early_stopping_rounds"]
+                #callbacks=[self.save_after_it]
+            )
 
         print("Save model...")
         bst.save_model(data_paths.xgb_model)
-        bst.dump_model(data_paths.xgb_model_dump, data_paths.xgb_feature_importances + ".txt")
+        bst.dump_model(data_paths.xgb_model_dump)
 
         self.plt_features(bst, d_train)
         

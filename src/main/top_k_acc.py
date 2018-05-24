@@ -1,7 +1,7 @@
 from tqdm import tqdm
 from joblib import Parallel, delayed
 import multiprocessing as mp
-
+import threading
 
 def top_k_acc(y_predicted, y_true, class_map, k):
     count_matching_species = 0
@@ -43,8 +43,10 @@ class top_k_accuracy():
 
         for i in tqdm(range(len(self.y_predicted))):
             count_matching_species = 0
-            process = mp.Process(target=self.get_result, args=(i, count_matching_species))
-            jobs.append(process)
+            #process = mp.Process(target=self.get_result, args=(i, count_matching_species))
+            #jobs.append(process)
+            thread = threading.Thread(target=self.get_result, args=(i, count_matching_species))
+            jobs.append(thread)
 
         # Start the processes (i.e. calculate the random number lists)
         for j in tqdm(jobs):
