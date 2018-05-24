@@ -89,7 +89,7 @@ class Model():
         self.params['silent'] = 0
         self.params['eval_metric'] = 'merror'
         self.params['num_class'] = len(self.species_map)
-        self.params['num_boost_round'] = 2
+        self.params['num_boost_round'] = 180
         self.params['early_stopping_rounds'] = 10
         self.params['verbose_eval'] = 1
         self.params['predictor'] = 'gpu_predictor'
