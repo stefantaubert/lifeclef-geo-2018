@@ -20,6 +20,3 @@ min_occurence = 10
 
 ### Sets the count of digits for rounding the test and trainset in the analysis. Range: [0, 12]
 round_data_ndigits = 2
-
-# not used?
-#read_data_count = -1 # seed: 39609
