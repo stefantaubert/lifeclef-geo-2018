@@ -13,7 +13,9 @@ import networkx as nx
 import matplotlib.pyplot as plt
 import main_preprocessing
 import TextPreprocessing
-            
+import GroupExtractor
+from get_groups import filter_similar_species
+
 def run():
     main_preprocessing.extract_groups()
     GroupAnalysis()._create()
@@ -105,16 +107,15 @@ class GroupAnalysis():
     def _create(self):
         print("Create groups...")
         similar_species_dict = SimilarSpeciesExtractor.load()
-       
+        similar_species_dict = filter_similar_species(similar_species_dict, settings.min_edge_count)
         G = self.dict_to_graph(similar_species_dict)
         groups = self.get_groups_of_graph(G)
-
         group_counts = self.get_group_lengths(groups)
 
         species_propabilities = self.get_species_propabilities()
         #print(species_propabilities)
 
-        group_probs = self.get_group_propabilities(groups, species_propabilities)
+        #group_probs = self.get_group_propabilities(groups, species_propabilities)
         groups_for_lengths = self.get_groups_for_lengts(groups)
 
         group_length_probs = self.get_group_length_propabilities(groups_for_lengths, species_propabilities)
@@ -143,7 +144,7 @@ class GroupAnalysis():
         fig = plt.figure(figsize=(20, 20))   
         plt.title("Groupnetwork (" + str(len(groups)) + " groups for " + str(self.species_count) + " species) @threshold=" + str(settings.threshold))
         #nx.draw_networkx_labels(G,pos=nx.spring_layout(G))
-        nx.draw(G, node_size=3)
+        nx.draw(G, node_size=1)
         plt.savefig(data_paths.group_network, bbox_inches='tight')
         #plt.show()
         plt.close()

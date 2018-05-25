@@ -16,6 +16,9 @@ def get_suffix_pro():
 def get_suffix_prot():
     return get_suffix_pro() + "_t" + str(settings.threshold)
 
+def get_suffix_prote():
+    return get_suffix_prot() + "_e" + str(settings.min_edge_count)
+
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
 config_path = parentdir + "/config/data_root"
@@ -39,9 +42,9 @@ occurrences_test = root + "occurrences_test.csv"
 preprocessing_dir = root + "preprocessing/"
 train = preprocessing_dir + "train" + get_suffix_pro() + ".csv"
 test = preprocessing_dir + "test" + get_suffix_pr() + ".csv"
-train_with_groups = preprocessing_dir + "train_with_groups" + get_suffix_prot() + ".csv"
+train_with_groups = preprocessing_dir + "train_with_groups" + get_suffix_prote() + ".csv"
 most_common_values = preprocessing_dir + "most_common_values" + get_suffix_pro() + ".csv"
-named_groups = preprocessing_dir + "named_groups" + get_suffix_prot() + ".npy"
+named_groups = preprocessing_dir + "named_groups" + get_suffix_prote() + ".npy"
 similar_species = preprocessing_dir + "similar_species" + get_suffix_prot() + ".npy"
 channel_map_diff = preprocessing_dir + "channel_map_diff" + get_suffix_pro() + ".csv"
 

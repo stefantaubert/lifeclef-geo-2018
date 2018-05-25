@@ -5,12 +5,13 @@ import data_paths_pre as data_paths
 from tqdm import tqdm
 from collections import Counter
 import os
-import settings_preprocessing
+import settings_preprocessing as settings
 import math
 import pickle
 import SimilarSpeciesExtractor
 import networkx as nx
 import matplotlib.pyplot as plt
+from get_groups import filter_similar_species
 
 def load():
     assert os.path.exists(data_paths.named_groups)
@@ -60,10 +61,10 @@ class GroupExtractor():
     def _create(self):
         print("Create groups...")
         similar_species_dict = SimilarSpeciesExtractor.load()
-       
+        similar_species_dict = filter_similar_species(similar_species_dict, settings.min_edge_count)
         G = self.dict_to_graph(similar_species_dict)
         groups = self.get_groups_of_graph(G)
-        #print(groups)
+        
         print("Save groups to file...")
         group_file = open(data_paths.groups, 'w')
         for item in groups:
@@ -71,7 +72,7 @@ class GroupExtractor():
 
         named_groups_dict = self.get_named_groups_dict(groups)
         pickle.dump(named_groups_dict, open(data_paths.named_groups, 'wb'))
-        print("Completed.")
+        print("Completed.", data_paths.named_groups)
 
 
 if __name__ == "__main__":
