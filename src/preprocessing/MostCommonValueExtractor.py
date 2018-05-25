@@ -64,7 +64,8 @@ class MostCommonValueExtractor():
 
     def _create(self):
         print("Getting most common values...")
-        most_common_value_matrix = self._get_most_common_value_matrix_df(use_mean=True if settings.use_mean==1 else False)
+        use_mean = True if settings.use_mean==1 else False
+        most_common_value_matrix = self._get_most_common_value_matrix_df(use_mean)
         most_common_value_matrix.to_csv(data_paths.most_common_values, index=False)
 
 if __name__ == "__main__":

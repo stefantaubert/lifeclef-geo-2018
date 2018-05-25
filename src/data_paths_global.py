@@ -13,6 +13,9 @@ def get_suffix_pr():
 def get_suffix_pro():
     return get_suffix_pr() + "_o" + str(settings.min_occurence)
 
+# def get_suffix_prom():
+#     return get_suffix_pro() + "_m" + str(settings.use_mean)
+
 def get_suffix_prot():
     return get_suffix_pro() + "_t" + str(settings.threshold)
 
