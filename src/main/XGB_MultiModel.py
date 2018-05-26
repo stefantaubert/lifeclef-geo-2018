@@ -238,4 +238,4 @@ def run(use_groups):
         run_without_groups()
 
 if __name__ == '__main__':
-    run(use_groups=False)
+    run(use_groups=True)
