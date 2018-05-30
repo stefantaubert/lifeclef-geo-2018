@@ -36,26 +36,15 @@ class Model():
         self.test_glc_ids = x_test["patch_id"]
         self.x_test = x_test
 
-    def predict_test(self, use_multithread):
+    def predict_test(self):
         print("Run model...")
         self.species_count = len(self.species_map)
         self.fake_propabilities = [(self.species_count - i) / self.species_count for i in range(self.species_count)]
         test_predictions = []
-
-        if use_multithread:
-            # is worser
-            num_cores = mp.cpu_count()
-            print("Cpu count:", str(num_cores))
-            test_predictions = Parallel(n_jobs=num_cores)(delayed(self.get_random_prediction)() for _ in tqdm(range(len(self.x_test.index))))
-        else:
-            for _ in tqdm(range(len(self.x_test.index))):
-                test_predictions.append(self.get_random_prediction())
+        for _ in tqdm(range(len(self.x_test.index))):
+            test_predictions.append(self.get_random_prediction())
 
         print("Finished.")
-        # print("Saving results...")
-        # np.save(data_paths.random_test_prediction, np.array(test_predictions))
-        # np.save(data_paths.random_species, np.array(self.class_names))
-        # print("Saving completed", data_paths.random_species, data_paths.random_test_prediction)
         self.test_predictions = test_predictions
 
     def get_random_prediction(self):
@@ -69,7 +58,7 @@ def run():
     start_datetime = datetime.datetime.now()
     print("Start:", start_datetime)
     m = Model()
-    m.predict_test(use_multithread=False)
+    m.predict_test()
     print("Create test submission...")
     df = submission_maker.make_submission_df(settings.TOP_N_SUBMISSION_RANKS, m.species_map, m.test_predictions, m.test_glc_ids)
     print("Save test submission...")

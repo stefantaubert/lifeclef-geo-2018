@@ -57,8 +57,8 @@ class ValuesOccurencesDiagram():
 if __name__ == '__main__':
     main_preprocessing.create_datasets()
     
-    # train = pd.read_csv(data_paths.train)
-    # ValuesOccurencesDiagram(5, 7, train).plot_data(data_paths.values_occurences_train)
+    train = pd.read_csv(data_paths.train)
+    ValuesOccurencesDiagram(5, 7, train).plot_data(data_paths.values_occurences_train)
 
     test = pd.read_csv(data_paths.test)
     ValuesOccurencesDiagram(5, 7, test).plot_data(data_paths.values_occurences_test)

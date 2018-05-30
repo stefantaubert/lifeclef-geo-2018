@@ -23,7 +23,7 @@ class Model():
     Then I use the length of the resulting vectors to see which row of the trainset is the most similar to the testrow. 
     The class with the highest probability is then the species of this trainrow. 
     The other classes were obtained from other trainrows which were less similar to the testrow (descending with regard to their similarity).
-    Test-mrr without groups: 0.0271210174024472
+    Test-mrr: 0.0271210174024472
     '''
 
     def __init__(self):

@@ -9,7 +9,7 @@ pixel_count = 32
 threshold = 9
 
 ### Contains the minimum count of neighbors of similar species to be in a group.
-min_edge_count = 3
+min_edge_count = 1
 
 ### Contains a value which says if mean is used for similar species calculation or only the most common values.
 use_mean = 1
@@ -19,4 +19,4 @@ use_mean = 1
 min_occurence = 0
 
 ### Sets the count of digits for rounding the test and trainset in the analysis. Range: [0, 12]
-round_data_ndigits = 2
+round_data_ndigits = 0
