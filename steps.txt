@@ -1,0 +1,23 @@
+1. Bildinformationen extrahieren (DataFrame) (auch für Testset)
+2. Speciesmap erstellen
+- Häufigkeiten jeder Species plotten + DataFrame
+- Anzahl an Zeilen/Spalten
+- Spaltennamen plotten
+- Wieviel Klassen sind in der Top XX%
+3. Wichtige Spalten heraussuchen (auch für Testset)
+- Speciesanzahl pro Wert pro Spalte plotten
+- Werthäufigkeiten pro Spalte plotten
+- Kombination aus beidem plotten
+4. Pro Species den häufigsten Wert heraussuchen (DataFrame)
+- Species Fingerprint erstellen
+- Werthäufigkeiten pro Spalte plotten
+5. Fingerprint Abstände berechnen (DataFrame)
+- Abstände einer Species zu allen anderen plotten
+6. Threshold festlegen ab der Species als ähnlich gelten
+7. Graph erstellen, der die Ähnlichkeiten aller Species plottet
+- Graph plotten
+8. Gruppen erstellen (Liste)
+- Anzahl an Species pro Gruppe plotten + Gruppenanzahl
+9. Species im Trainingsset durch Gruppen ersetzen
+10. Training und Gruppen predicten
+11. Pro Gruppe die Species absteigend zu ordnen

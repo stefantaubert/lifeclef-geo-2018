@@ -30,6 +30,7 @@ class SpeciesOccurences():
         results_array = np.asarray(resulting_rows) #list to array to add to the dataframe as a new column
         result_ser = pd.DataFrame(results_array, columns=["species", "occurences", "percents"])   
         result_ser.to_csv(data_paths.species_occurences, index=False)
+        print(data_paths.species_occurences)
         #519 species have >= 100 occurences
         #986 species have < 10 occurences
 

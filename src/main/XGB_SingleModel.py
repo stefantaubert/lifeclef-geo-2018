@@ -18,7 +18,9 @@ import mrr
 import matplotlib.pyplot as plt
 import datetime
 import Log
+from tqdm import tqdm
 from sklearn.preprocessing import LabelEncoder
+from top_k_acc import top_k_acc
 
 # class XGBMrrEval():
 #     def __init__(self, classes, y_valid):
@@ -34,16 +36,15 @@ from sklearn.preprocessing import LabelEncoder
 #         mrr_score = mrr.mrr_score(ranks)
 #         return ("mrr", mrr_score)
 
-class top_k_accuracy():
-    def __init__(self, species_map, y_valid):
+class top_k_error_eval():
+    def __init__(self, species_map, y_valid, k):
         self.species_map = species_map
-        self.y_valid = y_valid
+        self.y_valid = list(y_valid)
         self.species_count = len(self.species_map)
-    
-    def evaluate(self, y_predicted, y_true):
-        print(y_predicted)
-        print(y_true)
+        self.k = k
 
+    def evaluate(self, y_predicted, _):
+        return ("top_" + str(self.k) + "_acc", 1 - top_k_acc(y_predicted, self.y_valid, self.species_map, self.k))
 
 
 class Model():
@@ -64,17 +65,11 @@ class Model():
 
         x_text = pd.read_csv(data_paths.train)
         self.x_test = pd.read_csv(data_paths.test)
-        
         y = x_text["species_glc_id"]
-
-        # species_count = np.load(data_paths.y_array).shape[1]
         self.species_map = np.unique(y)
         self.species_count = len(self.species_map)
-        #np.save(data_paths.xgb_species_map, classes_)
 
         self.x_train, self.x_valid, self.y_train, self.y_valid = train_test_split(x_text, y, test_size=settings.train_val_split, random_state=settings.seed)
-        
-        #np.save(data_paths.xgb_glc_ids, x_valid["patch_id"])
 
         self.test_glc_ids = list(self.x_test['patch_id'])
         self.valid_glc_ids = list(self.x_valid['patch_id'])
@@ -88,30 +83,17 @@ class Model():
         self.params['base_score'] = 0.5
         self.params['booster'] = 'gbtree'
         self.params['objective'] = 'multi:softprob'
-        self.params['max_depth'] = 3
+        self.params['max_depth'] = 2
         self.params['learning_rate'] = 0.1
         self.params['seed'] = 4242
-        #params['colsample_bytree'] = 0.8 #um die 
         self.params['silent'] = 0
         self.params['eval_metric'] = 'merror'
-        self.params['num_class'] = len(self.species_map) #=3336
-        self.params['num_boost_round'] = 200
-        self.params['early_stopping_rounds'] = 5
-        # params['colsample_bylevel'] = 1
-        # params['colsample_bytree'] = 1
-        # params['gamma'] = 0
-        # params['min_child_weight'] = 1
-        # params['max_delta_step'] = 0
-        # params['missing'] = None
-        # params['reg_alpha'] = 0
-        # params['reg_lambda'] = 1
-        # params['scale_pos_weight'] = 1
-        # params['subsample'] = 1
+        self.params['num_class'] = len(self.species_map)
+        self.params['num_boost_round'] = 180
+        self.params['early_stopping_rounds'] = 10
+        self.params['verbose_eval'] = 1
         self.params['predictor'] = 'gpu_predictor'
         self.params['tree_method'] = 'gpu_hist'
-        #params['grow_policy'] = 'depthwise' #'lossguide'
-        #params['max_leaves'] = 255
-
 
     def predict(self):       
         le = LabelEncoder().fit(self.y_train)
@@ -119,27 +101,28 @@ class Model():
         validation_labels = le.transform(self.y_valid)
 
         # Datenmatrix für die Eingabedaten erstellen.
-        #x_train.to_csv(data_paths.xgb_trainchached, index=False)
-        #d_train = xgb.DMatrix(data_paths.xgb_trainchached + "#d_train.cache", label=training_labels)
         d_train = xgb.DMatrix(self.x_train, label=training_labels)
         d_valid = xgb.DMatrix(self.x_valid, label=validation_labels)
 
         print("Training model...")
         
-        #evaluator = XGBMrrEval(classes_, y_valid)
         watchlist = [
-            (d_train, 'train'), 
+            #(d_train, 'train'), 
             (d_valid, 'validation'),
         ]
-        
-        #top3_acc = metrics.get_top3_accuracy()
-        #top10_acc = metrics.get_top10_accuracy()
-        #top50_acc = metrics.get_top50_accuracy()
-
-        #xgb.callback.print_evaluation() 
-        #evaluator = top_k_accuracy()
-        bst = xgb.train(self.params, d_train, num_boost_round=self.params["num_boost_round"], verbose_eval=1, evals=watchlist, early_stopping_rounds=self.params["early_stopping_rounds"])
-        #bst = xgb.train(params, d_train, 1, verbose_eval=2, evals=watchlist,feval=evaluator.evaluate,  evaluator.evalute, callbacks=[self.save_after_it])
+                
+        evaluator = top_k_error_eval(self.species_map, self.y_valid, k=20)
+        # bst = xgb.Booster(model_file=path)
+        bst = xgb.train(
+            self.params,
+            d_train, 
+            num_boost_round=self.params["num_boost_round"], 
+            verbose_eval=self.params["verbose_eval"],
+            #feval=evaluator.evaluate, 
+            evals=watchlist, 
+            #early_stopping_rounds=self.params["early_stopping_rounds"]
+            #callbacks=[self.save_after_it]
+        )
 
         print("Save model...")
         bst.save_model(data_paths.xgb_model)
@@ -147,33 +130,13 @@ class Model():
 
         self.plt_features(bst, d_train)
         
-        print("Predict validation data...")
-        self.valid_predictions = bst.predict(d_valid)        
+        print("Predict validation set...")
+        self.valid_predictions = bst.predict(d_valid, ntree_limit=bst.best_ntree_limit)
+        print(evaluator.evaluate(self.valid_predictions, self.y_valid))
 
-        print("Predict test data...")    
+        print("Predict test set...")    
         d_test = xgb.DMatrix(self.x_test)
-        self.test_predictions = bst.predict(d_test)        
-
-    # def predict_test_set_from_saved_model(self, iteration_nr):
-    #     print("Load model...")
-    #     path = data_paths.xgb_model + str(iteration_nr)
-    #     assert os.path.exists(path)
-
-    #     bst = xgb.Booster(model_file=path)
-    #     #bst.dump_model(data_paths.xgb_model_dump + str(iteration_nr))
-
-    #     #testset = pd.read_csv(data_paths.test)
-    #     #np.save(data_paths.xgb_test_glc_ids, testset["patch_id"])
-        
-    #     testset = testset[self.train_columns]
-    #     testset_dmatrix = xgb.DMatrix(testset)
-    #     #self.plt_features(bst, testset_dmatrix, iteration_nr)
-
-    #     print("Predict test data...")    
-    #     pred_test = bst.predict(testset_dmatrix)        
-
-    #     print("Save test predictions...")
-    #     np.save(data_paths.xgb_test_prediction, pred_test)
+        self.test_predictions = bst.predict(d_test, ntree_limit=bst.best_ntree_limit)        
 
     def plt_features(self, bst, d_matrix):
         print("Plot feature importances...")
