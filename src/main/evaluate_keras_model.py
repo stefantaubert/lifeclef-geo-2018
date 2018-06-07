@@ -9,7 +9,7 @@ import data_paths_main as data_paths
 import pickle
 import numpy as np
 import settings_main as stg
-from keras_models import vgg_like_model, global_average_model
+from keras_models import vgg_like_model, global_average_model, denseNet
 from submission import make_submission_from_files
 from evaluation import evaluate_results_from_files
 
@@ -22,8 +22,10 @@ def evaluate_keras_model():
         species_map = pickle.load(f)
 
     
-    model = vgg_like_model.get_model(len(species_map.keys()), 33)
+    #model = vgg_like_model.get_model(len(species_map.keys()), 33)
     #model = global_average_model.get_model(len(species_map.keys()), 33)
+
+    model = denseNet.DenseNet(classes=len(species_map.keys()), nb_dense_block=3, nb_filter=32)
 
     model.load_weights(data_paths.keras_training_model)
 
@@ -34,6 +36,7 @@ def evaluate_keras_model():
     glc_ids = []
 
     for x, y, batch_species_ids, batch_glc_ids in bg.nextValidationBatch(val_samples, species_map):
+        print(model.predict_on_batch(x))
         ground_truth.extend(batch_species_ids)
         predictions.extend(model.predict_on_batch(x))
         glc_ids.extend(batch_glc_ids)

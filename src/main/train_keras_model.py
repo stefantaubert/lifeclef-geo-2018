@@ -12,7 +12,7 @@ import numpy as np
 import keras
 import metrics
 import tensorflow as tf
-from keras_models import vgg_like_model, global_average_model
+from keras_models import vgg_like_model, global_average_model, denseNet
 from keras.callbacks import ModelCheckpoint
 import os
 import settings_main as stg
@@ -44,8 +44,10 @@ def train_keras_model():
     top10_acc = metrics.get_top10_accuracy()
     top50_acc = metrics.get_top50_accuracy()
 
-    model = vgg_like_model.get_model(len(species_map.keys()), 33)
+    #model = vgg_like_model.get_model(len(species_map.keys()), 33)
     #model = global_average_model.get_model(len(species_map.keys()), 33)
+
+    model = denseNet.DenseNet(classes=len(species_map.keys()), nb_dense_block=3, nb_filter=32)
 
     model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy', top3_acc, top10_acc, top50_acc])
 
@@ -53,7 +55,7 @@ def train_keras_model():
 
     print("start Training...")
 
-    model.fit_generator(bg.nextBatch(samples, species_map), epochs=stg.EPOCHS, steps_per_epoch=len(samples)/stg.BATCH_SIZE,
+    model.fit_generator(bg.nextBatch(samples, species_map, augment=False), epochs=stg.EPOCHS, steps_per_epoch=len(samples)/stg.BATCH_SIZE,
                         verbose=1, validation_data=bg.nextBatch(val_samples, species_map, augment=False), validation_steps=len(val_samples)/stg.BATCH_SIZE,
                         callbacks=[checkpoint])
 

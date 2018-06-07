@@ -44,21 +44,25 @@ def analyse_tiffs(species_id, df):
 
     
     print(species_count)
-
+    print(heatmaps)
     heatmaps = heatmaps/species_count
+    print(heatmaps)
 
     for i in range(len(heatmaps)):
         results_dir = data_paths.heatmaps + 'species{0}/'.format(species_id)
         if not os.path.isdir(results_dir):
+            print("created")
             os.makedirs(results_dir)
 
-        seaborn.heatmap(data=heatmaps[i], vmin=0)
+        seaborn.heatmap(data=heatmaps[i], vmin=0, vmax=1, yticklabels=False, xticklabels=False)
         #print(heatmaps[i])
         #seaborn.plt.show()
         plt.savefig(data_paths.heatmaps + 'species{0}/heatmap_channel{1}'.format(species_id,i))
+        print(data_paths.heatmaps + 'species{0}/heatmap_channel{1}'.format(species_id,i))
         plt.clf()
 
 if __name__ == '__main__':
     df = pd.read_csv(data_paths.occurrences_train, sep=';', low_memory=False)
-    for i in range(1, 3337):
-        analyse_tiffs(i, df)
+    analyse_tiffs(890, df)
+    analyse_tiffs(775, df)
+    analyse_tiffs(912, df)

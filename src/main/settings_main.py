@@ -1,6 +1,6 @@
 # Hinweis: Einstellungen können nur hier zur Design-Zeit gesetzt werden! Laufzeitänderungen werden ignoriert.
 
-BATCH_SIZE = 256
+BATCH_SIZE = 128
 
 EPOCHS = 10
 
@@ -24,3 +24,7 @@ model3_channel = 13
 model4_channel = 4
 model5_channel = 20
 model6_channel = 21
+
+resize = False
+resize_h = 224
+resize_w = 224

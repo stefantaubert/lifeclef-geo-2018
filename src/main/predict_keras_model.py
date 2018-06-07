@@ -3,7 +3,7 @@ import data_paths_main as data_paths
 import pickle
 import numpy as np
 import settings_main as stg
-from keras_models import vgg_like_model
+from keras_models import vgg_like_model, denseNet
 import tensorflow as tf
 from data_reading.imageList_generator import generate_test_image_list
 from submission import make_submission_from_files
@@ -26,7 +26,9 @@ def predict_keras_model():
     with open(data_paths.keras_training_species_map, 'rb') as f:
         species_map = pickle.load(f)
 
-    model = vgg_like_model.get_model(len(species_map.keys()), 33)
+    #model = vgg_like_model.get_model(len(species_map.keys()), 33)
+
+    model = denseNet.DenseNet(classes=len(species_map.keys()), nb_dense_block=3, nb_filter=32)
 
     model.load_weights(data_paths.keras_training_model)
 
@@ -48,7 +50,8 @@ def predict_keras_model():
     make_submission_from_files(data_paths.keras_training_species_map,
                                data_paths.keras_test_results,
                                data_paths.keras_test_glc_ids,
-                               data_paths.keras_test_submission)
+                               data_paths.keras_test_submission,
+                               header=False)
 
 if __name__ == '__main__':
     predict_keras_model()

@@ -22,6 +22,19 @@ def rotateImage(image, angle):
 
     return cv2.warpAffine(image, M,(w, h))
 
+def cropImage(image, top=0.1, left=0.1, bottom=0.1, right=0.1):
+
+    h, w = image.shape[:2]
+
+    t_crop = max(1, int(h * np.random.uniform(0, top)))
+    l_crop = max(1, int(w * np.random.uniform(0, left)))
+    b_crop = max(1, int(h * np.random.uniform(0, bottom)))
+    r_crop = max(1, int(w * np.random.uniform(0, right)))
+
+    image = image[t_crop:-b_crop, l_crop:-r_crop]    
+
+    return cv2.resize(image, (64, 64), interpolation=cv2.INTER_LINEAR)
+
 def getDatasetChunk(samples):
     for i in range(0, len(samples), stg.BATCH_SIZE):
         yield samples[i:i+stg.BATCH_SIZE]
@@ -37,15 +50,18 @@ def getNextSingleChannelImageBatch(samples, species_map, channel_index, augment=
         
         for sample in chunk:
             x = loadImage(sample)
+            x = x[channel_index]
             if(augment):
                 if np.random.random_sample() > 0.5:
                     x = flipImage(x)
                 if np.random.random_sample() > 0.5:
                     x = rotateImage(x, 90)
+                if np.random.random_sample() > 0.5:
+                    x = cropImage(x)
             y = np.zeros(len(species_map.keys()))
             y[species_map[sample[2]]] = 1 
 
-            x_batch[current_batch_slot] = x[channel_index]
+            x_batch[current_batch_slot] = x
             y_batch[current_batch_slot] = y
             species_ids_batch[current_batch_slot] = sample[2]
             glc_ids_batch[current_batch_slot] = sample[1]

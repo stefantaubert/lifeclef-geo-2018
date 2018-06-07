@@ -22,13 +22,41 @@ def rotateImage(image, angle):
 
     return cv2.warpAffine(image, M,(w, h))
 
+def cropImage(image, top=0.1, left=0.1, bottom=0.1, right=0.1):
+
+    h, w = image.shape[:2]
+
+    t_crop = max(1, int(h * np.random.uniform(0, top)))
+    l_crop = max(1, int(w * np.random.uniform(0, left)))
+    b_crop = max(1, int(h * np.random.uniform(0, bottom)))
+    r_crop = max(1, int(w * np.random.uniform(0, right)))
+
+    image = image[:, t_crop:-b_crop, l_crop:-r_crop]    
+    
+    cropped_image = np.zeros(shape=(33, 64, 64))
+
+    for i in range(image.shape[0]):
+        cropped_image[i] = cv2.resize(image[i], (64, 64), interpolation=cv2.INTER_LINEAR)
+
+    return cropped_image
+
+def resizeImage(image, h, w):
+    resized_image = np.zeros(shape=(33, h, w))
+    for i in range(image.shape[0]):
+        resized_image[i] = cv2.resize(image[i], (h, w), interpolation=cv2.INTER_LINEAR)
+
+    return resized_image
+
 def getDatasetChunk(samples):
     for i in range(0, len(samples), stg.BATCH_SIZE):
         yield samples[i:i+stg.BATCH_SIZE]
 
 def getNextImageBatch(samples, species_map, augment=False):
     for chunk in getDatasetChunk(samples):
-        x_batch = np.zeros((stg.BATCH_SIZE, 33, 64, 64), dtype=np.uint8)
+        if(stg.resize):
+            x_batch = np.zeros((stg.BATCH_SIZE, 33, stg.resize_h, stg.resize_w), dtype=np.uint8)
+        else:
+            x_batch = np.zeros((stg.BATCH_SIZE, 33, 64, 64), dtype=np.uint8)
         y_batch = np.zeros((stg.BATCH_SIZE, len(species_map.keys())))
         species_ids_batch = np.zeros(stg.BATCH_SIZE)
         glc_ids_batch = np.zeros(stg.BATCH_SIZE)
@@ -41,6 +69,10 @@ def getNextImageBatch(samples, species_map, augment=False):
                     x = flipImage(x)
                 if np.random.random_sample() > 0.5:
                     x = rotateImage(x, 90)
+                if np.random.random_sample() > 0.5:
+                    x = cropImage(x)
+            if(stg.resize):
+                x = resizeImage(x, stg.resize_h, stg.resize_w)
             y = np.zeros(len(species_map.keys()))
             y[species_map[sample[2]]] = 1 
 

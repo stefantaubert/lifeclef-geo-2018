@@ -104,7 +104,8 @@ def predict_keras_multi_model():
     make_submission_from_files(species_map_path=data_paths.keras_multi_model_training_species_map,
                                predictions_path=data_paths.keras_multi_model_test_results,
                                glc_ids_path=data_paths.keras_multi_model_test_glc_ids,
-                               submission_path=data_paths.keras_multi_model_test_submission)
+                               submission_path=data_paths.keras_multi_model_test_submission,
+                               header=False)
 
 if __name__ == '__main__':
     predict_keras_multi_model()
