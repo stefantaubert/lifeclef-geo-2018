@@ -5,35 +5,8 @@ import tifffile
 import settings_main as stg
 import itertools as it
 import cv2
-
-def loadImage(sample):
-    patch_dir_name = sample[0]
-    patch_id = sample[1]
-    img = tifffile.imread(data_paths.patch_train+'/{}/patch_{}.tif'.format(patch_dir_name, patch_id))
-
-    return img
-
-def flipImage(image):
-    return cv2.flip(image, 1)
-
-def rotateImage(image, angle):
-    h, w = image.shape[:2]
-    M = cv2.getRotationMatrix2D((w / 2, h / 2), np.random.uniform(-angle, angle), 1.0)
-
-    return cv2.warpAffine(image, M,(w, h))
-
-def cropImage(image, top=0.1, left=0.1, bottom=0.1, right=0.1):
-
-    h, w = image.shape[:2]
-
-    t_crop = max(1, int(h * np.random.uniform(0, top)))
-    l_crop = max(1, int(w * np.random.uniform(0, left)))
-    b_crop = max(1, int(h * np.random.uniform(0, bottom)))
-    r_crop = max(1, int(w * np.random.uniform(0, right)))
-
-    image = image[t_crop:-b_crop, l_crop:-r_crop]    
-
-    return cv2.resize(image, (64, 64), interpolation=cv2.INTER_LINEAR)
+from augmentations import flipImage, rotateImage, cropMultiChannelImage, cropSingleChannelImage
+from utils import loadImage
 
 def getDatasetChunk(samples):
     for i in range(0, len(samples), stg.BATCH_SIZE):
@@ -57,7 +30,7 @@ def getNextSingleChannelImageBatch(samples, species_map, channel_index, augment=
                 if np.random.random_sample() > 0.5:
                     x = rotateImage(x, 90)
                 if np.random.random_sample() > 0.5:
-                    x = cropImage(x)
+                    x = cropSingleChannelImage(x)
             y = np.zeros(len(species_map.keys()))
             y[species_map[sample[2]]] = 1 
 

@@ -28,3 +28,9 @@ model6_channel = 21
 resize = False
 resize_h = 224
 resize_w = 224
+
+
+#model settings
+
+L2_RATE = 0.1
+ACTIVATION = 'relu'
