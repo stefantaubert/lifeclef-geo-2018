@@ -1,3 +1,4 @@
+#DEPRECATED
 #evaluates the model saved by the current training
 #loads the previously saved model and validation samples
 #iterates over all validation samples and saves predictions

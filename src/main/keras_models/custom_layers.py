@@ -1,3 +1,4 @@
+#TODO QUELLE
 from keras.engine import Layer, InputSpec
 try:
     from keras import initializations

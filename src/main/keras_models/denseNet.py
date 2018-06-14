@@ -1,4 +1,4 @@
-
+#TODO QUELLE
 from keras.models import Model
 from keras.layers import Input, merge, ZeroPadding2D
 from keras.layers.core import Dense, Dropout, Activation
@@ -6,7 +6,7 @@ from keras.layers.convolutional import Convolution2D
 from keras.layers.pooling import AveragePooling2D, GlobalAveragePooling2D, MaxPooling2D
 from keras.layers.normalization import BatchNormalization
 import keras.backend as K
-
+import settings_main as stg
 from keras_models.custom_layers import Scale
 
 def DenseNet(nb_dense_block=4, growth_rate=32, nb_filter=64, reduction=0.0, dropout_rate=0.0, weight_decay=1e-4, classes=1000, weights_path=None):
@@ -31,7 +31,7 @@ def DenseNet(nb_dense_block=4, growth_rate=32, nb_filter=64, reduction=0.0, drop
     # Handle Dimension Ordering for different backends
     global concat_axis
     concat_axis = 3
-    img_input = Input(shape=(33, 64, 64), name='data')
+    img_input = Input(shape=(stg.CHANNEL_COUNT, 64, 64), name='data')
 
     # From architecture for ImageNet (Table 1 in the paper)
     nb_filter = 64

@@ -18,6 +18,3 @@ def make_submission_from_files(species_map_path, predictions_path, glc_ids_path,
     else:  
         df.to_csv(submission_path, index=False, sep=";", header=None)
 
-if __name__ == "__main__":
-    make_xgb_submission()
-    df.to_csv(submission_path, index=False, sep=";")

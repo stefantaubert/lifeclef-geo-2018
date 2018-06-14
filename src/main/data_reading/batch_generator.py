@@ -5,8 +5,8 @@ import tifffile
 import settings_main as stg
 import itertools as it
 import cv2
-from augmentations import flipImage, rotateImage, cropMultiChannelImage, cropSingleChannelImage
-from utils import loadImage
+from data_reading.augmentations import flipImage, rotateImage, cropMultiChannelImage, cropSingleChannelImage
+from data_reading.utils import loadImage
 
 def resizeImage(image, h, w):
     resized_image = np.zeros(shape=(33, h, w))

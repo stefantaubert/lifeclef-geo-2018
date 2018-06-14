@@ -1,3 +1,4 @@
+#DEPRECATED
 #Trains the Keras model
 #loads the train samples and splits them into train and validation samples
 #loads the species map
