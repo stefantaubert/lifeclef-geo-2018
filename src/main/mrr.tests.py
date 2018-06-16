@@ -3,7 +3,10 @@ import pandas as pd
 import evaluation
 import mrr
 
+
 class TestMrrEvaluationMethod(unittest.TestCase):
+    '''Tests the calculation of the mrr'''
+
     def test_mrr_zeros(self):
         score = mrr.mrr_score([1, 2, 3, 0, 8, 0, 0, 7])
         self.assertEqual(1/8 * (1/1 + 1/2 + 1/3 + 1/8 + 1/7), score)

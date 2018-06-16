@@ -37,6 +37,7 @@ from top_k_acc import top_k_acc
 #         return ("mrr", mrr_score)
 
 class top_k_error_eval():
+    '''Calculates the top_k-accuracy for xgboost.'''
     def __init__(self, species_map, y_valid, k):
         self.species_map = species_map
         self.y_valid = list(y_valid)

@@ -18,17 +18,13 @@ def binary_search(a, x, lo=0, hi=None):  # can't use a to specify default for hi
 
 def load_train():
     assert os.path.exists(data_paths.train)
-
     csv = pd.read_csv(data_paths.train)
-    
     species = sorted(csv.species_glc_id.unique())
     species_count = len(species)
-
     return (csv, species, species_count)
 
 def load_test():
     assert os.path.exists(data_paths.test)
-    
     csv = pd.read_csv(data_paths.test)
     return csv
 

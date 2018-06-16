@@ -4,6 +4,8 @@ import multiprocessing as mp
 import threading
 
 def top_k_acc(y_predicted, y_true, class_map, k):
+    '''Calculates the top_k-accuracy for the prediction of xgboost.'''
+
     count_matching_species = 0
     for i in range(len(y_predicted)):
         pred = y_predicted[i]
@@ -13,26 +15,8 @@ def top_k_acc(y_predicted, y_true, class_map, k):
 
     return count_matching_species / len(y_predicted)
 
-# class top_k_accuracy():
-#     def get_score(self, y_predicted, y_true, class_map, k):
-#         self.y_true = y_true
-#         self.class_map = class_map
-#         self.k = k
-#         self.y_predicted = y_predicted
-
-#         num_cores = mp.cpu_count()
-#         count_matching_species = Parallel(n_jobs=num_cores)(delayed(self.get_result)(i) for i in tqdm(range(len(self.y_predicted))))
-#         return count_matching_species.count(1) / len(self.y_predicted)
-
-#     def get_result(self, i):
-#         pred = self.y_predicted[i]
-#         _, sorted_species = zip(*reversed(sorted(zip(pred, list(self.class_map)))))
-#         if self.y_true[i] in sorted_species[:self.k]:
-#             return 1
-#         else:
-#             return 0
-
 class top_k_accuracy():
+    '''Class was a try to speed up calculation with multicore but takes more time in the end.'''
     def get_score(self, y_predicted, y_true, class_map, k):
         self.y_true = y_true
         self.class_map = class_map

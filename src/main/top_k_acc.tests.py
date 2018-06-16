@@ -2,6 +2,7 @@ import top_k_acc
 import unittest
 
 class TestGetRanksMethod(unittest.TestCase):
+    '''Class for tests of the method top_k_accuracy() of the module top_k_acc.'''
     def test_basic(self):
         y_pred = [
             [0.1, 0.2, 0.3, 0.4],
