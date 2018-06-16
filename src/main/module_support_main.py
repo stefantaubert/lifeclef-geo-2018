@@ -1,3 +1,4 @@
+'''Creates module support for the main-folder to access all files in preprocessing and analysis.'''
 import os,sys,inspect
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)

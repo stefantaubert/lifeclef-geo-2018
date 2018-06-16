@@ -3,6 +3,7 @@ import pandas as pd
 import get_ranks
 
 class TestGetRanksMethod(unittest.TestCase):
+    '''Testcases for the get_ranks()- and get_ranks_df()-method.'''
     def test_basic(self):
         submissions = [
             [1, 5, 0.9, 1],

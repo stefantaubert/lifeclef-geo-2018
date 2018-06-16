@@ -4,7 +4,7 @@ import submission_maker
 import numpy as np
 
 class TestMakeSubmissionMethods(unittest.TestCase):
-
+    '''Contains tests for the methods: _make_submission_groups(), _make_submission() and make_submission_df() of the module submission_maker.'''
     def test_group_submission_top_3(self):
         top_n = 3
         groups = {11: [4,5], 22:[6]}

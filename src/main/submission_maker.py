@@ -4,10 +4,19 @@ import pandas as pd
 
 def _make_submission_groups(top_n, groups_map, predictions, glc_ids, groups, props):
     '''
-    Erstellt eine Submission mit den Einträgen in folgendem Schema: glc_id, species_glc_id, probability, rank.
-    Ausgabe zb: [[1, "9", 0.5, 1], [1, "3", 0.6, 2], [2, "9", 0.7, 1], [2, "3", 0.6, 2]]
-    Dabei werden die Gruppen in die einzelnen Species aufgelöst und die Species mit der höchsten Auftrittswahrscheinlichkeit erhält den kleinsten Rang.
+    Creates a submission with the entries in the following schema: glc_id, species_glc_id, probability, rank.
+    For example: [[1, 9, 0.5, 1], [1, 3, 0.6, 2], [2, 9, 0.7, 1], [2, 3, 0.6, 2]]
+    In this case the groups will be resolved to the single species whereas the most common species get the lowest rank.
+    
+    Keyword arguments:
+    top_n -- considers only the top_n-predictions
+    groups_map -- contains a simple list of all possible groups
+    predictions -- contains the predicted probabilities for each glc_id
+    glc_ids -- contains all glc_ids of the dataset which was predicted
+    groups -- contains a dictionary in form of: {group1: [species of group1], group2: [species of group2], ...} where the keys represent the groups_map. (created with main_preprocessing.extract_groups())
+    props -- contains a dictionary which holds the probabilities for each species (created with SpeciesOccurences.create())
     '''
+
     assert len(glc_ids) == len(predictions)
 
     count_predictions = len(predictions)
@@ -55,16 +64,23 @@ def _make_submission_groups(top_n, groups_map, predictions, glc_ids, groups, pro
 
 def _make_submission(top_n, classes, predictions, glc_ids):
     '''
-    Erstellt eine Submission mit den Einträgen in folgendem Schema: glc_id, species_glc_id, probability, rank.
-    Ausgabe zb: [[1, "9", 0.5, 1], [1, "3", 0.6, 2], [2, "9", 0.7, 1], [2, "3", 0.6, 2]]
+    Creates a submission with the entries in the following schema: glc_id, species_glc_id, probability, rank.
+    For example: [[1, 9, 0.5, 1], [1, 3, 0.6, 2], [2, 9, 0.7, 1], [2, 3, 0.6, 2]]
+
+    Keyword arguments:
+    top_n -- considers only the top_n-predictions
+    classes -- contains a list of all possible classes
+    predictions -- contains the predicted probabilities for each glc_id
+    glc_ids -- contains all glc_ids of the dataset which was predicted
     '''
+
     assert len(glc_ids) == len(predictions)
 
     count_predictions = len(predictions)
     count_species = len(classes)
     assert top_n <= count_species
     submission = []
-    # Convert float to int
+    # convert float to int
     glc_ids = [int(g) for g in glc_ids]
     classes = [int(c) for c in classes]
 
@@ -72,10 +88,11 @@ def _make_submission(top_n, classes, predictions, glc_ids):
         species = list(classes)
         current_glc_id = glc_ids[i]
         current_predictions = predictions[i]
+        # each prediction should contains probabilities for all species
         assert len(current_predictions) == count_species
 
         current_ranks = rankdata(current_predictions, method="ordinal")
-        # rang 100,99,98 zu rang 1,2,3 machen
+        # convert rank 100,99,98 to rank 1,2,3
         current_ranks = count_species - current_ranks + 1
         current_glc_id_array = count_species * [current_glc_id]
 
@@ -84,19 +101,23 @@ def _make_submission(top_n, classes, predictions, glc_ids):
 
         submissions = [list(a) for a in zip(current_glc_id_array, species, current_predictions, current_ranks)]
 
+        # select only top_n ranks
         submissions = submissions[:top_n]
         submission.extend(submissions)
     
     return submission
 
 def _get_df(submission):
+    '''Returns a DataFrame for the created submission.'''
     submission_df = pd.DataFrame(submission, columns = ['patch_id', 'species_glc_id', 'probability', 'rank'])
     return submission_df
 
 def make_submission_df(top_n, classes, predictions, glc_ids):
+    '''Creates the submission DataFrame for the given parameters.'''
     submission = _make_submission(top_n, classes, predictions, glc_ids)
     return _get_df(submission)
 
 def make_submission_groups_df(top_n, groups, predictions, glc_ids, groups_dict, props):
+    '''Creates the submission DataFrame for the given group parameters.'''
     submission = _make_submission_groups(top_n, groups, predictions, glc_ids, groups_dict, props)
     return _get_df(submission)
