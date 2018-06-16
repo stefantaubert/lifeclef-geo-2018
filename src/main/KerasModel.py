@@ -27,7 +27,7 @@ def train():
     print("Start training...")
 
     model.fit_generator(bg.nextBatch(train_samples, species_map, augment=stg.AUGMENT), epochs=stg.EPOCHS, steps_per_epoch=len(train_samples)/stg.BATCH_SIZE/1500,
-                        verbose=1, validation_data=bg.nextBatch(val_samples, species_map, augment=False), validation_steps=len(val_samples)/stg.BATCH_SIZE,
+                        verbose=1, validation_data=bg.nextBatch(val_samples, species_map, augment=False), validation_steps=len(val_samples)/stg.BATCH_SIZE/1000,
                         callbacks=[checkpoint])
 
     print("Training finished!")
@@ -39,7 +39,6 @@ def evaluate():
     glc_ids = []
 
     for x, y, batch_species_ids, batch_glc_ids in bg.nextValidationBatch(val_samples, species_map):
-        print(model.predict_on_batch(x))
         ground_truth.extend(batch_species_ids)
         predictions.extend(model.predict_on_batch(x))
         glc_ids.extend(batch_glc_ids)
