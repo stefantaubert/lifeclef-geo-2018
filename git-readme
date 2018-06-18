@@ -1,3 +1,0 @@
-git add .
-git commit --author="Stefan Taubert <stefan.taubert@s2014.tu-chemnitz.de>" -am "ulf"
-git commit --author="Max Mauermann <max.mauermann@s2014.tu-chemnitz.de>" -am "ulf"

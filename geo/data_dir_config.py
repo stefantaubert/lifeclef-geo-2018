@@ -1,0 +1,1 @@
+root = "D:/dev/Python/life-clef-geo-2018/data/"
