@@ -12,6 +12,6 @@ def mrr_score(ranks):
     return mrr_score
 
 def mrr_score_df(df):
-    '''Calculates the mrr for a DataFrame where the rank's colum is named 'rank'.'''
+    '''Calculates the mrr for a DataFrame where the rank's column is named 'rank'.'''
     assert "rank" in df.columns.values
     return mrr_score(list(df["rank"].values))

@@ -1,20 +1,20 @@
-import module_support_analysis
 import numpy as np
 import pandas as pd
-import data_paths_analysis as data_paths
-from tqdm import tqdm
 import tifffile
 import pickle
-import settings_analysis as settings
 import sys
 import seaborn
 import matplotlib.pyplot as plt
 import os
+from tqdm import tqdm
+
+from geo.analysis.data_paths import heatmaps_dir
+from geo.data_paths import patch_train
+from geo.data_paths import occurrences_train
 
 count_channels = 33
 image_dimension = 64
-
-readcount=50000
+readcount = 50000
 
 def analyse_tiffs(species_id, df):
 
@@ -32,7 +32,7 @@ def analyse_tiffs(species_id, df):
             current_patch_dirname = row["patch_dirname"]
             current_patch_id = row["patch_id"]
 
-            img = tifffile.imread(data_paths.patch_train+'/{}/patch_{}.tif'.format(current_patch_dirname, current_patch_id))
+            img = tifffile.imread(patch_train+'/{}/patch_{}.tif'.format(current_patch_dirname, current_patch_id))
             assert img.shape == (count_channels, image_dimension, image_dimension)
 
             img = np.array(img, dtype=np.float64)
@@ -49,7 +49,7 @@ def analyse_tiffs(species_id, df):
     print(heatmaps)
 
     for i in range(len(heatmaps)):
-        results_dir = data_paths.heatmaps + 'species{0}/'.format(species_id)
+        results_dir = heatmaps_dir + 'species{0}/'.format(species_id)
         if not os.path.isdir(results_dir):
             print("created")
             os.makedirs(results_dir)
@@ -57,12 +57,12 @@ def analyse_tiffs(species_id, df):
         seaborn.heatmap(data=heatmaps[i], vmin=0, vmax=1, yticklabels=False, xticklabels=False)
         #print(heatmaps[i])
         #seaborn.plt.show()
-        plt.savefig(data_paths.heatmaps + 'species{0}/heatmap_channel{1}'.format(species_id,i))
-        print(data_paths.heatmaps + 'species{0}/heatmap_channel{1}'.format(species_id,i))
+        plt.savefig(heatmaps_dir + 'species{0}/heatmap_channel{1}'.format(species_id,i))
+        print(heatmaps_dir + 'species{0}/heatmap_channel{1}'.format(species_id,i))
         plt.clf()
 
 if __name__ == '__main__':
-    df = pd.read_csv(data_paths.occurrences_train, sep=';', low_memory=False)
+    df = pd.read_csv(occurrences_train, sep=';', low_memory=False)
     analyse_tiffs(890, df)
     analyse_tiffs(775, df)
     analyse_tiffs(912, df)

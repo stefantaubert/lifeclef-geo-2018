@@ -1,7 +1,7 @@
-from tqdm import tqdm
-from joblib import Parallel, delayed
 import multiprocessing as mp
 import threading
+from tqdm import tqdm
+from joblib import Parallel, delayed
 
 def top_k_acc(y_predicted, y_true, class_map, k):
     '''Calculates the top_k-accuracy for the prediction of xgboost.'''
