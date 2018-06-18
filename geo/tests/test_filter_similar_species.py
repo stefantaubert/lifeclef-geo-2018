@@ -1,7 +1,7 @@
-from PixelValueExtractor import get_pixel_value
 import unittest
 import numpy as np
-from get_groups import get_groups
+
+from geo.preprocessing.groups.filter_similar_species import filter_similar_species
 
 class TestGetGroupsMethod(unittest.TestCase):
     similar_species = {
@@ -19,14 +19,14 @@ class TestGetGroupsMethod(unittest.TestCase):
         }
 
     def test_k1(self):
-        groups = get_groups(self.similar_species, k=1)
+        groups = filter_similar_species(self.similar_species, k=1)
 
         self.assertEqual(len(groups), 2)
         self.assertEqual(groups[0], set([1,2,3,4,5,9]))
         self.assertEqual(groups[1], set([8,7,6]))
 
     def test_k2(self):
-        groups = get_groups(self.similar_species, k=2)
+        groups = filter_similar_species(self.similar_species, k=2)
 
         self.assertEqual(len(groups), 6)
         self.assertEqual(groups[0], set([1,2,3,4]))
@@ -37,7 +37,7 @@ class TestGetGroupsMethod(unittest.TestCase):
         self.assertEqual(groups[5], set([8]))
 
     def test_k3(self):
-        groups = get_groups(self.similar_species, k=3)
+        groups = filter_similar_species(self.similar_species, k=3)
 
         self.assertEqual(len(groups), 9)
         self.assertEqual(groups[0], set([1]))

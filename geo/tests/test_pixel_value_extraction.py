@@ -1,6 +1,7 @@
-from PixelValueExtractor import get_pixel_value
 import unittest
 import numpy as np
+
+from geo.preprocessing.pixel_value_extraction import get_pixel_value
 
 class TestGetPixelValueMethod(unittest.TestCase):
     def test_img_value_1(self):

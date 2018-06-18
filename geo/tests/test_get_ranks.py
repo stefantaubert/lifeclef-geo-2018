@@ -1,6 +1,8 @@
 import unittest
 import pandas as pd
-import get_ranks
+
+from geo.postprocessing.get_ranks import get_ranks
+from geo.postprocessing.get_ranks import get_ranks_df
 
 class TestGetRanksMethod(unittest.TestCase):
     '''Testcases for the get_ranks()- and get_ranks_df()-method.'''
@@ -29,7 +31,7 @@ class TestGetRanksMethod(unittest.TestCase):
 
         top_n = 3
 
-        ranks = get_ranks.get_ranks(submissions, solution, top_n)
+        ranks = get_ranks(submissions, solution, top_n)
 
         self.assertEqual(4, len(ranks))
         self.assertEqual(2, ranks[0])
@@ -63,7 +65,7 @@ class TestGetRanksMethod(unittest.TestCase):
         top_n = 3
 
         submission_df = pd.DataFrame(submissions, columns = ['patch_id', 'species_glc_id', 'probability', 'rank'])
-        ranks = get_ranks.get_ranks_df(submission_df, solution, top_n)
+        ranks = get_ranks_df(submission_df, solution, top_n)
 
         self.assertEqual(4, len(ranks))
         self.assertEqual(2, ranks[0])

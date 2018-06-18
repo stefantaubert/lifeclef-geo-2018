@@ -6,7 +6,7 @@ from geo.preprocessing.preprocessing import create_datasets
 from geo.models.settings import train_val_split
 from geo.data_paths import train
 
-def find_rand():
+def find_split():
     create_datasets()
     rand = 0
     x_text = pd.read_csv(train)
@@ -40,4 +40,4 @@ def find_rand():
     print("Ok:", rand)
 
 if __name__ == "__main__":
-    find_rand()
+    find_split()

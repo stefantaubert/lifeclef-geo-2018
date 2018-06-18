@@ -1,7 +1,10 @@
 import unittest
 import pandas as pd
-import submission_maker
 import numpy as np
+
+from geo.postprocessing.submission_maker import make_submission_df
+from geo.postprocessing.submission_maker import _make_submission
+from geo.postprocessing.submission_maker import _make_submission_groups
 
 class TestMakeSubmissionMethods(unittest.TestCase):
     '''Contains tests for the methods: _make_submission_groups(), _make_submission() and make_submission_df() of the module submission_maker.'''
@@ -17,7 +20,7 @@ class TestMakeSubmissionMethods(unittest.TestCase):
 
         glc_ids = [1,2]
 
-        submission = submission_maker._make_submission_groups(top_n, groups_map, prediction, glc_ids, groups, props)
+        submission = _make_submission_groups(top_n, groups_map, prediction, glc_ids, groups, props)
         
         self.assertEqual(top_n*len(prediction), len(submission)) # top_n * Anzahl an Predictions (Größe des Validierungssets)
 
@@ -41,7 +44,7 @@ class TestMakeSubmissionMethods(unittest.TestCase):
 
         glc_ids = [1,2]
 
-        submission = submission_maker._make_submission_groups(top_n, groups_map, prediction, glc_ids, groups, props)
+        submission = _make_submission_groups(top_n, groups_map, prediction, glc_ids, groups, props)
         
         self.assertEqual(top_n*len(prediction), len(submission)) 
 
@@ -63,7 +66,7 @@ class TestMakeSubmissionMethods(unittest.TestCase):
 
         glc_ids = [1,2]
 
-        submission = submission_maker._make_submission_groups(top_n, groups_map, prediction, glc_ids, groups, props)
+        submission = _make_submission_groups(top_n, groups_map, prediction, glc_ids, groups, props)
         
         self.assertEqual(top_n*len(prediction), len(submission)) 
 
@@ -82,7 +85,7 @@ class TestMakeSubmissionMethods(unittest.TestCase):
 
         glc_ids = [2.0,4.0]
  
-        submission = submission_maker._make_submission(top_n, classes, prediction, glc_ids)
+        submission = _make_submission(top_n, classes, prediction, glc_ids)
  
         self.assertEqual(3*2, len(submission)) # Anzahl Klassen * Anzahl an Predictions (Größe des Validierungssets)
 
@@ -107,7 +110,7 @@ class TestMakeSubmissionMethods(unittest.TestCase):
 
         top_n = 3
  
-        submission = submission_maker._make_submission(top_n, species_map, prediction, glc_ids)
+        submission = _make_submission(top_n, species_map, prediction, glc_ids)
  
         self.assertEqual(9, len(submission)) # top_n * Anzahl an Predictions (Größe des Validierungssets bzw len(glc_ids))
 
@@ -135,7 +138,7 @@ class TestMakeSubmissionMethods(unittest.TestCase):
 
         top_n = 2
  
-        submission = submission_maker._make_submission(top_n, species_map, prediction, glc_ids)
+        submission = _make_submission(top_n, species_map, prediction, glc_ids)
  
         self.assertEqual(6, len(submission)) # top_n * Anzahl an Predictions (Größe des Validierungssets bzw len(glc_ids))
 
@@ -160,7 +163,7 @@ class TestMakeSubmissionMethods(unittest.TestCase):
 
         top_n = 1
  
-        submission = submission_maker._make_submission(top_n, species_map, prediction, glc_ids)
+        submission = _make_submission(top_n, species_map, prediction, glc_ids)
  
         self.assertEqual(3, len(submission)) # top_n * Anzahl an Predictions (Größe des Validierungssets bzw len(glc_ids))
 
@@ -180,7 +183,7 @@ class TestMakeSubmissionMethods(unittest.TestCase):
             [0, 1, 0, 0], 
         ]
  
-        submission = submission_maker._make_submission(top_n, classes, prediction, glc_ids)
+        submission = _make_submission(top_n, classes, prediction, glc_ids)
  
         self.assertEqual(4*3, len(submission)) # Anzahl Klassen * Anzahl an Predictions (Größe des Validierungssets)
 
@@ -209,7 +212,7 @@ class TestMakeSubmissionMethods(unittest.TestCase):
 
         glc_ids = [1, 2]
  
-        submission = submission_maker._make_submission(top_n, classes, prediction, glc_ids)
+        submission = _make_submission(top_n, classes, prediction, glc_ids)
  
         self.assertEqual(3*2, len(submission)) # Anzahl Klassen * Anzahl an Predictions (Größe des Validierungssets)
 
@@ -232,7 +235,7 @@ class TestMakeSubmissionMethods(unittest.TestCase):
 
         glc_ids = [1, 2]
  
-        submission_df = submission_maker.make_submission_df(top_n, classes, prediction, glc_ids)
+        submission_df = make_submission_df(top_n, classes, prediction, glc_ids)
         self.assertEqual(3*2, len(submission_df.index))
 
         submission_matrix = submission_df.as_matrix()
