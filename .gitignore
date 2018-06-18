@@ -38,5 +38,8 @@
 .idea
 .vscode
 *.md~
-/config
+/data
+/etc
+/test_submissions
 .gitignore~
+
