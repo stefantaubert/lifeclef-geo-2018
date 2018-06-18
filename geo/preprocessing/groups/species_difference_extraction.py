@@ -1,7 +1,6 @@
 import pandas as pd
 import numpy as np
 import os
-import math
 from tqdm import tqdm
 from collections import Counter
 
@@ -9,6 +8,7 @@ from geo.preprocessing.text_preprocessing import load_train
 from geo.preprocessing.groups.most_common_value_extraction import load_most_common_values
 from geo.data_paths import channel_map_diff
 from geo.data_paths import similar_species
+from geo.calculation.get_vector_length import get_vector_length
 
 def load_channel_map_diff():
     assert os.path.exists(channel_map_diff)
@@ -20,16 +20,6 @@ def extract_channel_map_diff():
     else: 
         print("Species distances already exist.")
   
-def get_vector_length(v):
-    summ = 0
-
-    for num in v:
-        summ += num * num
-
-    distance = math.sqrt(summ)
-
-    return distance
-
 def get_species_diff_matrix_df(most_common_value_matrix_df):
     _, species, species_count = load_train()
     most_common_value_matrix_df.drop(['occurence', 'species_glc_id'], axis=1, inplace=True)

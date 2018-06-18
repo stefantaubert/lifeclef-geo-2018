@@ -18,7 +18,6 @@ values_occurences_test = analysis_dir + "values_occurences_test" + get_suffix_pr
 
 group_network = analysis_dir + "group_network" + get_suffix_prote() + ".pdf"
 group_length_probabilities = analysis_dir + "group_length_probabilities" + get_suffix_prote() + ".pdf"
-species_occurences = analysis_dir + "species_occurences" + get_suffix_o() + ".csv"
 species_channel_map_dir = analysis_dir + "channel_maps" + get_suffix_pro() + "/"
 value_occurences_species_dir = analysis_dir + "value_occurences_species" + get_suffix_pro() + "/"
 

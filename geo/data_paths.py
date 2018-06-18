@@ -49,6 +49,7 @@ named_groups = preprocessing_dir + "named_groups" + get_suffix_prote() + ".npy"
 similar_species = preprocessing_dir + "similar_species" + get_suffix_prot() + ".npy"
 channel_map_diff = preprocessing_dir + "channel_map_diff" + get_suffix_pro() + ".csv"
 groups_txt = preprocessing_dir + "groups" + get_suffix_prote() + ".txt"
+species_occurences = preprocessing_dir + "species_occurences" + get_suffix_o() + ".csv"
 
 if not os.path.exists(preprocessing_dir):
     os.makedirs(preprocessing_dir)

@@ -1,6 +1,6 @@
-from data_paths_global import *
-import settings_main
 import os 
+
+from geo.data_dir_config import root
 
 test_submission = root + "submissions/submission_val.csv"
 

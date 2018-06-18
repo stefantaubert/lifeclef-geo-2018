@@ -1,6 +1,6 @@
+import pandas as pd
 from tqdm import tqdm
 from scipy.stats import rankdata
-import pandas as pd
 
 def _make_submission_groups(top_n, groups_map, predictions, glc_ids, groups, props):
     '''
