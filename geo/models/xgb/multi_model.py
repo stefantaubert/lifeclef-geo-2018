@@ -14,7 +14,6 @@ import numpy as np
 import xgboost as xgb
 import matplotlib.pyplot as plt
 import multiprocessing as mp
-from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import log_loss
 from joblib import Parallel, delayed
@@ -28,7 +27,6 @@ from geo.preprocessing.preprocessing import create_datasets
 from geo.data_paths import train
 from geo.data_paths import test
 from geo.metrics.mrr import mrr_score
-from geo.metrics.top_k_acc import top_k_error_eval
 from geo.logging.log import log_start
 from geo.logging.log import log_end_xgb
 from geo.postprocessing.submission_maker import _make_submission

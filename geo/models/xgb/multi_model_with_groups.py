@@ -17,7 +17,6 @@ import numpy as np
 import xgboost as xgb
 import matplotlib.pyplot as plt
 import multiprocessing as mp
-from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import log_loss
 from joblib import Parallel, delayed
@@ -35,7 +34,6 @@ from geo.data_paths import train_with_groups
 from geo.data_paths import test
 from geo.data_paths import named_groups
 from geo.metrics.mrr import mrr_score
-from geo.metrics.top_k_acc import top_k_error_eval
 from geo.logging.log import log_start
 from geo.logging.log import log_end_xgb
 from geo.postprocessing.submission_maker import _make_submission_groups
@@ -142,7 +140,7 @@ def predict_species(species, x_train, x_valid, x_test, y_train, y_valid):
         evals=watchlist, 
         early_stopping_rounds=params["early_stopping_rounds"]
     )
-    
+
     plt_features(bst, d_train)
     pred = bst.predict(d_valid, ntree_limit=bst.best_ntree_limit)
     #print("validation-logloss for", str(species) + ":", log_loss(val_target, pred))
