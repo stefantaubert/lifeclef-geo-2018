@@ -47,3 +47,14 @@ class top_k_accuracy():
         _, sorted_species = zip(*reversed(sorted(zip(pred, list(self.class_map)))))
         if self.y_true[i] in sorted_species[:self.k]:
             count_matching_species += 1
+
+class top_k_error_eval():
+    '''Calculates the top_k-accuracy for xgboost.'''
+    def __init__(self, species_map, y_valid, k):
+        self.species_map = species_map
+        self.y_valid = list(y_valid)
+        self.species_count = len(self.species_map)
+        self.k = k
+
+    def evaluate(self, y_predicted, _):
+        return ("top_" + str(self.k) + "_acc", 1 - top_k_acc(y_predicted, self.y_valid, self.species_map, self.k))

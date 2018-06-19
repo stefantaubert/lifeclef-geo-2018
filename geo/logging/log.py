@@ -1,7 +1,10 @@
 import time
 from datetime import datetime
 
+from geo.models.settings import seed
+from geo.models.settings import train_val_split
 from geo.data_paths import log
+from geo.data_paths import get_suffix_prot
 
 def log_start():
     global start_time
@@ -28,6 +31,18 @@ def log_end(modelname, additional=""):
     log_text += additional
     log_text += "============================="
     _write_log(log_text)
+
+def log_end_xgb(title, train_columns, params, mrr):
+    log_text = str("Mrr: {}\nSuffix: {}\nTraincolumns: {}\nSeed: {}\nSplit: {}\nModelparams:\n{}".format
+    (
+        str(mrr), 
+        get_suffix_prot(),
+        ", ".join(train_columns),
+        seed,
+        train_val_split,
+        "".join(["- {}: {}\n".format(x, y) for x, y in params.items()])
+    ))
+    log_end(title, log_text)
 
 def _write_log(text):
     with open(log, 'r+') as f:

@@ -1,202 +1,135 @@
-import module_support_main
+#http://xgboost.readthedocs.io/en/latest/parameter.html
+#http://xgboost.readthedocs.io/en/latest/python/python_api.html
+#http://xgboost.readthedocs.io/en/latest/gpu/index.html
+
 import pandas as pd
 import numpy as np
-import time
-import data_paths_main as data_paths
-from scipy.stats import rankdata
-from sklearn.model_selection import train_test_split
 import xgboost as xgb
-import submission_maker
-import settings_main as settings
-import time
-import main_preprocessing
-import json
-import pickle
-import os
-import get_ranks
-import mrr
 import matplotlib.pyplot as plt
-import datetime
-import Log
-from tqdm import tqdm
 from sklearn.preprocessing import LabelEncoder
-from top_k_acc import top_k_acc
+from sklearn.model_selection import train_test_split
 
-# class XGBMrrEval():
-#     def __init__(self, classes, y_valid):
-#         self.classes = classes
-#         self.y_valid = y_valid
-#         self.class_count = len(self.classes)
+from geo.models.settings import seed
+from geo.models.settings import train_val_split
+from geo.models.settings import TOP_N_SUBMISSION_RANKS
+from geo.models.data_paths import xgb_singlemodel_submission
+from geo.models.data_paths import xgb_model
+from geo.models.data_paths import xgb_model_dump
+from geo.models.data_paths import xgb_feature_importances
+from geo.preprocessing.preprocessing import create_datasets
+from geo.data_paths import train
+from geo.data_paths import test
+from geo.metrics.mrr import mrr_score
+from geo.metrics.top_k_acc import top_k_error_eval
+from geo.logging.log import log_start
+from geo.logging.log import log_end_xgb
+from geo.postprocessing.submission_maker import _make_submission
+from geo.postprocessing.submission_maker import make_submission_df
+from geo.postprocessing.get_ranks import get_ranks
 
-#     def evalute(self, y_predicted, y_true):
-#         print("evaluate")
-#         glc = [x for x in range(len(y_predicted))]
-#         subm = submission_maker._make_submission(self.class_count, self.classes, y_predicted, glc)
-#         ranks = get_ranks.get_ranks(subm, self.y_valid, self.class_count)
-#         mrr_score = mrr.mrr_score(ranks)
-#         return ("mrr", mrr_score)
+train_columns = [
+    'chbio_1', 'chbio_2', 'chbio_3', 'chbio_4', 'chbio_5', 'chbio_6',
+    'chbio_7', 'chbio_8', 'chbio_9', 'chbio_10', 'chbio_11', 'chbio_12',
+    'chbio_13', 'chbio_14', 'chbio_15', 'chbio_16', 'chbio_17', 'chbio_18','chbio_19', 
+    'etp', 'alti', 'awc_top', 'bs_top', 'cec_top', 'crusting', 'dgh', 'dimp', 'erodi', 'oc_top', 'pd_top', 'text',
+    'proxi_eau_fast', 'clc', 'latitude', 'longitude'
+]
 
-class top_k_error_eval():
-    '''Calculates the top_k-accuracy for xgboost.'''
-    def __init__(self, species_map, y_valid, k):
-        self.species_map = species_map
-        self.y_valid = list(y_valid)
-        self.species_count = len(self.species_map)
-        self.k = k
+def run_single_model():
+    log_start()
+    print("Running xgboost single model...")
+    create_datasets()
+    x_text = pd.read_csv(train)
+    x_test = pd.read_csv(test)
+    y = x_text["species_glc_id"]
+    species_map = np.unique(y)
+    species_count = len(species_map)
 
-    def evaluate(self, y_predicted, _):
-        return ("top_" + str(self.k) + "_acc", 1 - top_k_acc(y_predicted, self.y_valid, self.species_map, self.k))
+    x_train, x_valid, y_train, y_valid = train_test_split(x_text, y, test_size=train_val_split, random_state=seed)
 
+    test_glc_ids = list(x_test['patch_id'])
+    valid_glc_ids = list(x_valid['patch_id'])
+    x_test = x_test[train_columns]
+    x_train = x_train[train_columns]
+    x_valid = x_valid[train_columns]
 
-class Model():
-    def save_after_it(self, env):
-        print("Saving model of iteration", str(env.iteration))
-        env.model.save_model(data_paths.xgb_model + str(env.iteration))
+    # create data matrix for the datasets
+    le = LabelEncoder().fit(y_train)
+    training_labels = le.transform(y_train)
+    validation_labels = le.transform(y_valid)
+    d_train = xgb.DMatrix(x_train, label=training_labels)
+    d_valid = xgb.DMatrix(x_valid, label=validation_labels)
 
-    def __init__(self):
-        main_preprocessing.create_datasets()
+    watchlist = [
+        #(d_train, 'train'), 
+        (d_valid, 'validation'),
+    ]
+            
+    evaluator = top_k_error_eval(species_map, y_valid, k=20)
+    # bst = xgb.Booster(model_file=path)
+    
+    # setting the parameters for xgboost
+    params = {
+        'objective': 'multi:softprob',
+        'max_depth': 2,
+        'seed': 4242,
+        'silent': 0,
+        'eval_metric': 'merror',
+        'num_class': len(species_map),
+        'num_boost_round': 180,
+        'early_stopping_rounds': 10,
+        'verbose_eval': 1,
+        'updater': 'grow_gpu',
+        'predictor': 'gpu_predictor',
+        'tree_method': 'gpu_hist'
+    }
 
-        self.train_columns = [ 
-            'chbio_1', 'chbio_2', 'chbio_3', 'chbio_4', 'chbio_5', 'chbio_6',
-            'chbio_7', 'chbio_8', 'chbio_9', 'chbio_10', 'chbio_11', 'chbio_12',
-            'chbio_13', 'chbio_14', 'chbio_15', 'chbio_16', 'chbio_17', 'chbio_18','chbio_19', 
-            'etp', 'alti', 'awc_top', 'bs_top', 'cec_top', 'crusting', 'dgh', 'dimp', 'erodi', 'oc_top', 'pd_top', 'text',
-            'proxi_eau_fast', 'clc', 'latitude', 'longitude'
-        ]
+    print("Training model...")
+    bst = xgb.train(
+        params,
+        d_train, 
+        num_boost_round=params["num_boost_round"], 
+        verbose_eval=params["verbose_eval"],
+        #feval=evaluator.evaluate, 
+        evals=watchlist, 
+        #early_stopping_rounds=params["early_stopping_rounds"]
+        #callbacks=[save_after_it]
+    )
 
-        x_text = pd.read_csv(data_paths.train)
-        self.x_test = pd.read_csv(data_paths.test)
-        y = x_text["species_glc_id"]
-        self.species_map = np.unique(y)
-        self.species_count = len(self.species_map)
+    print("Save model...")
+    bst.save_model(xgb_model)
+    bst.dump_model(xgb_model_dump)
 
-        self.x_train, self.x_valid, self.y_train, self.y_valid = train_test_split(x_text, y, test_size=settings.train_val_split, random_state=settings.seed)
+    #plt_features(bst, d_train)
 
-        self.test_glc_ids = list(self.x_test['patch_id'])
-        self.valid_glc_ids = list(self.x_valid['patch_id'])
-        self.x_test = self.x_test[self.train_columns]
-        self.x_train = self.x_train[self.train_columns]
-        self.x_valid = self.x_valid[self.train_columns]
-        
-        # Die Parameter für XGBoost erstellen.
-        self.params = {}
-        self.params['updater'] = 'grow_gpu'
-        self.params['base_score'] = 0.5
-        self.params['booster'] = 'gbtree'
-        self.params['objective'] = 'multi:softprob'
-        self.params['max_depth'] = 2
-        self.params['learning_rate'] = 0.1
-        self.params['seed'] = 4242
-        self.params['silent'] = 0
-        self.params['eval_metric'] = 'merror'
-        self.params['num_class'] = len(self.species_map)
-        self.params['num_boost_round'] = 180
-        self.params['early_stopping_rounds'] = 10
-        self.params['verbose_eval'] = 1
-        self.params['predictor'] = 'gpu_predictor'
-        self.params['tree_method'] = 'gpu_hist'
+    print("Predict test set and create submission...")    
+    d_test = xgb.DMatrix(x_test)
+    test_predictions = bst.predict(d_test, ntree_limit=bst.best_ntree_limit)        
+    df = make_submission_df(TOP_N_SUBMISSION_RANKS, species_map, test_predictions, test_glc_ids)
+    df.to_csv(xgb_singlemodel_submission, index=False, sep=";", header=None)
+    print("Finished.", xgb_singlemodel_submission)
 
-    def predict(self):       
-        le = LabelEncoder().fit(self.y_train)
-        training_labels = le.transform(self.y_train)
-        validation_labels = le.transform(self.y_valid)
+    print("Predict & evaluate validation set...")    
+    valid_predictions = bst.predict(d_valid, ntree_limit=bst.best_ntree_limit)
+    print(evaluator.evaluate(valid_predictions, y_valid))
+    subm = _make_submission(species_count, species_map, valid_predictions, valid_glc_ids)
+    ranks = get_ranks(subm, y_valid, species_count)
+    score = mrr_score(ranks)
+    print("MRR-Score:", score * 100, "%")
+    log_end_xgb("XGBoost Single Model", train_columns, params, score)
 
-        # Datenmatrix für die Eingabedaten erstellen.
-        d_train = xgb.DMatrix(self.x_train, label=training_labels)
-        d_valid = xgb.DMatrix(self.x_valid, label=validation_labels)
+def plt_features(bst, d_matrix):
+    print("Plot feature importances...")
+    _, ax = plt.subplots(figsize=(12,18))
+    xgb.plot_importance(bst.get_fscore(), color='red', ax=ax)
+    #plt.show()
+    plt.draw()
+    plt.savefig(xgb_feature_importances, bbox_inches='tight')
+    print("Finished.", xgb_feature_importances)
 
-        print("Training model...")
-        
-        watchlist = [
-            #(d_train, 'train'), 
-            (d_valid, 'validation'),
-        ]
-                
-        evaluator = top_k_error_eval(self.species_map, self.y_valid, k=20)
-        # bst = xgb.Booster(model_file=path)
-        bst = xgb.train(
-            self.params,
-            d_train, 
-            num_boost_round=self.params["num_boost_round"], 
-            verbose_eval=self.params["verbose_eval"],
-            #feval=evaluator.evaluate, 
-            evals=watchlist, 
-            #early_stopping_rounds=self.params["early_stopping_rounds"]
-            #callbacks=[self.save_after_it]
-        )
-
-        print("Save model...")
-        bst.save_model(data_paths.xgb_model)
-        bst.dump_model(data_paths.xgb_model_dump)
-
-        self.plt_features(bst, d_train)
-        
-        print("Predict validation set...")
-        self.valid_predictions = bst.predict(d_valid, ntree_limit=bst.best_ntree_limit)
-        print(evaluator.evaluate(self.valid_predictions, self.y_valid))
-
-        print("Predict test set...")    
-        d_test = xgb.DMatrix(self.x_test)
-        self.test_predictions = bst.predict(d_test, ntree_limit=bst.best_ntree_limit)        
-
-    def plt_features(self, bst, d_matrix):
-        print("Plot feature importances...")
-        # Ausschlagskraft aller Features plotten
-        _, ax = plt.subplots(figsize=(12,18))
-        xgb.plot_importance(bst.get_fscore(), color='red', ax=ax)
-        #plt.show()
-        plt.draw()
-        plt.savefig(data_paths.xgb_feature_importances, bbox_inches='tight')
-        print("Finished.", data_paths.xgb_feature_importances)
-
-def run_without_groups():
-    start_time = time.time()
-    start_datetime = datetime.datetime.now()
-    print("Start:", start_datetime)
-    m = Model()
-    print("Predict testset...")
-    m.predict()
-    print("Finished.")
-    print("Create test submission...")
-    df = submission_maker.make_submission_df(settings.TOP_N_SUBMISSION_RANKS, m.species_map, m.test_predictions, m.test_glc_ids)
-    print("Save test submission...")
-    df.to_csv(data_paths.xgb_singlemodel_submission, index=False, sep=";", header=None)
-    print("Finished.", data_paths.xgb_singlemodel_submission)
-
-    print("Evaluate submission...")
-    print("Create valid submission...")
-    subm = submission_maker._make_submission(m.species_count, m.species_map, m.valid_predictions, m.valid_glc_ids)
-    print("Calculate score...")
-    ranks = get_ranks.get_ranks(subm, m.y_valid, m.species_count)
-    mrr_score = mrr.mrr_score(ranks)
-    print("MRR-Score:", mrr_score * 100, "%")
-
-    end_date_time = datetime.datetime.now()
-    print("End:", end_date_time)
-    seconds = time.time() - start_time
-    duration_min = round(seconds / 60, 2)
-    print("Total duration:", duration_min, "min")
-    writeLog("XGBoost Single Model", start_datetime, end_date_time, duration_min, m, mrr_score)
-
-def writeLog(title, start, end, duration, model, mrr):
-    log_text = str("{}\n--------------------\nMRR-Score: {}\nStarted: {}\nFinished: {}\nDuration: {}min\nSuffix: {}\nTraincolumns: {}\nSeed: {}\nSplit: {}\n".format
-    (
-        title,
-        str(mrr), 
-        str(start), 
-        str(end),
-        str(duration),
-        data_paths.get_suffix_prot(),
-        ", ".join(model.train_columns),
-        settings.seed,
-        settings.train_val_split,
-    ))
-    log_text += "Modelparams:\n"
-    params = ["- {}: {}\n".format(x, y) for x, y in model.params.items()]
-    log_text += "".join(params) + "============================="
-    Log.write(log_text)
-    print(log_text)
+def save_after_it(env):
+    print("Saving model of iteration", str(env.iteration))
+    env.model.save_model(xgb_model + str(env.iteration))
 
 if __name__ == "__main__":
-    run_without_groups()
-    
+    run_single_model()

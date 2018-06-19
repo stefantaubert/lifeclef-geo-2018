@@ -24,10 +24,10 @@ def run_random_model():
     log_start()
     random.seed = seed
     create_datasets()
-    x_text = pd.read_csv(train)
+    x_train = pd.read_csv(train)
     x_test = pd.read_csv(test)
     
-    y = x_text["species_glc_id"]
+    y = x_train["species_glc_id"]
     
     species_map = list(np.unique(y))
     test_glc_ids = x_test["patch_id"]
