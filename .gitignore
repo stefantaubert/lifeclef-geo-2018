@@ -40,6 +40,7 @@
 *.md~
 /data
 /etc
-/test_submissions
+/test_submissions/until 5.8.2018/*.csv
+/test_submissions/until 27.8.2018/*.csv
 .gitignore~
 
