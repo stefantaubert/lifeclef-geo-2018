@@ -1,4 +1,5 @@
-#TODO QUELLE
+#mainly taken from: https://github.com/flyyufelix/DenseNet-Keras/blob/master/densenet121.py
+
 from keras.models import Model
 from keras.layers import Input, merge, ZeroPadding2D
 from keras.layers.core import Dense, Dropout, Activation
@@ -6,8 +7,9 @@ from keras.layers.convolutional import Convolution2D
 from keras.layers.pooling import AveragePooling2D, GlobalAveragePooling2D, MaxPooling2D
 from keras.layers.normalization import BatchNormalization
 import keras.backend as K
-import settings_main as stg
-from keras_models.custom_layers import Scale
+
+from geo.models.keras.model_architectures.custom_layers import Scale
+from geo.models.settings import CHANNEL_COUNT
 
 def DenseNet(nb_dense_block=4, growth_rate=32, nb_filter=64, reduction=0.0, dropout_rate=0.0, weight_decay=1e-4, classes=1000, weights_path=None):
     '''Instantiate the DenseNet 121 architecture,

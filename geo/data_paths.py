@@ -51,6 +51,14 @@ channel_map_diff = preprocessing_dir + "channel_map_diff" + get_suffix_pro() + "
 groups_txt = preprocessing_dir + "groups" + get_suffix_prote() + ".txt"
 species_occurences = preprocessing_dir + "species_occurences" + get_suffix_o() + ".csv"
 
+#Keras Model Image Lists
+img_list_dir = root + "image_lists/"
+train_samples_path = img_list_dir + "train/samples.npy"
+test_samples_path = img_list_dir + "test/samples.npy"
+train_samples_species_map = img_list_dir + "train/species_map.py"
+
+
+
 if not os.path.exists(preprocessing_dir):
     os.makedirs(preprocessing_dir)
 

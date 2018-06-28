@@ -2,20 +2,18 @@
 #a list of patch_ids and patch_dirnames of all images in this set,
 #and for the train set also
 #a list of target vectors and the species map used to create the target vectors
-import module_support
 import numpy as np
 import pandas as pd
 from tqdm import tqdm
 import tifffile
 import pickle
 import sys
-import data_paths_main as data_paths
-
+from geo.data_paths import occurrences_train, occurrences_test, train_samples_path, train_samples_species_map, test_samples_path
 
 def generate_train_image_list():
     samples = []
 
-    df = pd.read_csv(data_paths.occurrences_train, sep=';', low_memory=False)
+    df = pd.read_csv(occurrences_train, sep=';', low_memory=False)
 
     species_map = {l: i for i, l in enumerate(df.species_glc_id.unique())}
 
@@ -36,14 +34,14 @@ def generate_train_image_list():
 
     samples = np.array(samples, dtype=np.uint32)
 
-    np.save(data_paths.train_samples, samples)
-    pickle.dump(species_map, open(data_paths.train_samples_species_map, 'wb'))
+    np.save(train_samples, samples)
+    pickle.dump(species_map, open(train_samples_species_map, 'wb'))
 
 
 def generate_test_image_list():
     samples = []
 
-    df = pd.read_csv(data_paths.occurrences_test, sep=';', low_memory=False)
+    df = pd.read_csv(occurrences_test, sep=';', low_memory=False)
 
     print("Reading CSV...")
 
@@ -62,8 +60,4 @@ def generate_test_image_list():
 
     samples = np.array(samples, dtype=np.uint32)
 
-    np.save(data_paths.test_samples, samples)
-
-if __name__ == '__main__':
-    #generate__train_image_list()
-    generate_test_image_list()
+    np.save(test_samples, samples)

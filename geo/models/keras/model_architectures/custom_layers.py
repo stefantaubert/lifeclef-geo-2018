@@ -1,4 +1,5 @@
-#TODO QUELLE
+#taken from https://github.com/flyyufelix/DenseNet-Keras/blob/master/custom_layers.py
+
 from keras.engine import Layer, InputSpec
 try:
     from keras import initializations

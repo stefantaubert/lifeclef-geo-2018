@@ -1,12 +1,10 @@
-import module_support_main
 import numpy as np
-import data_paths_main as data_paths
 import tifffile
-import settings_main as stg
 import itertools as it
 import cv2
-from data_reading.augmentations import flipImage, rotateImage, cropMultiChannelImage, cropSingleChannelImage
-from data_reading.utils import loadImage
+from geo.models.settings import BATCH_SIZE
+from geo.data_reading.utils import loadImage
+from geo.data_reading.augmentations import flipImage, cropMultiChannelImage, rotateImage 
 
 def resizeImage(image, h, w):
     resized_image = np.zeros(shape=(33, h, w))
@@ -16,22 +14,19 @@ def resizeImage(image, h, w):
     return resized_image
 
 def getDatasetChunk(samples):
-    for i in range(0, len(samples), stg.BATCH_SIZE):
-        yield samples[i:i+stg.BATCH_SIZE]
+    for i in range(0, len(samples), BATCH_SIZE):
+        yield samples[i:i+BATCH_SIZE]
 
-def getNextImageBatch(samples, species_map, augment=False):
+def getNextImageBatch(samples, species_map, augment=False, fromTestSet=False):
     for chunk in getDatasetChunk(samples):
-        if(stg.resize):
-            x_batch = np.zeros((stg.BATCH_SIZE, 33, stg.resize_h, stg.resize_w), dtype=np.uint8)
-        else:
-            x_batch = np.zeros((stg.BATCH_SIZE, 33, 64, 64), dtype=np.uint8)
-        y_batch = np.zeros((stg.BATCH_SIZE, len(species_map.keys())))
-        species_ids_batch = np.zeros(stg.BATCH_SIZE)
-        glc_ids_batch = np.zeros(stg.BATCH_SIZE)
+        x_batch = np.zeros((BATCH_SIZE, 33, 64, 64), dtype=np.uint8)
+        y_batch = np.zeros((BATCH_SIZE, len(species_map.keys())))
+        species_ids_batch = np.zeros(BATCH_SIZE)
+        glc_ids_batch = np.zeros(BATCH_SIZE)
         current_batch_slot = 0
 
         for sample in chunk:
-            x = loadImage(sample)
+            x = loadImage(sample, fromTestSet)
             if(augment):
                 if np.random.random_sample() > 0.5:
                     x = flipImage(x)
@@ -39,8 +34,6 @@ def getNextImageBatch(samples, species_map, augment=False):
                     x = rotateImage(x, 90)
                 if np.random.random_sample() > 0.5:
                     x = cropMultiChannelImage(x)
-            if(stg.resize):
-                x = resizeImage(x, stg.resize_h, stg.resize_w)
             y = np.zeros(len(species_map.keys()))
             y[species_map[sample[2]]] = 1 
 
@@ -64,11 +57,7 @@ def nextBatch(samples, species_map, augment=True):
 def nextValidationBatch(samples, species_map):
     for x, y, species_ids, glc_ids in getNextImageBatch(samples, species_map):
         yield (x, y, species_ids, glc_ids)
-
-def nextTrainingValidationBatch(samples, species_map):
-    for x, y, species_ids, glc_ids in it.repeat(getNextImageBatch(samples, species_map)):
-        yield (x, y)
-
+        
 def nextTestBatch(samples, species_map):
-    for x, _, _, glc_ids in getNextImageBatch(samples, species_map):
+    for x, _, _, glc_ids in getNextImageBatch(samples, species_map, fromTestSet=True):
         yield (x, glc_ids)

@@ -1,7 +1,4 @@
-import module_support_main
 import numpy as np
-import data_paths_main as data_paths
-import settings_main as stg
 import cv2
 
 def flipImage(image):

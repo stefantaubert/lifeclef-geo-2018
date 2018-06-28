@@ -1,7 +1,7 @@
 # Run 10
 
 ## Model
-Keras Single Model with augmentations: rotation
+Keras Single Model with augmentations: rotation and flip
 
 ## Wrong Testdata
 False
