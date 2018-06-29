@@ -29,8 +29,8 @@ def train():
 
     print("Start training...")
 
-    model.fit_generator(nextBatch(train_samples, species_map, augment=AUGMENT), epochs=EPOCHS, steps_per_epoch=len(train_samples)/BATCH_SIZE/1500,
-                        verbose=1, validation_data=nextBatch(val_samples, species_map, augment=False), validation_steps=len(val_samples)/BATCH_SIZE/1000,
+    model.fit_generator(nextBatch(train_samples, species_map, augment=AUGMENT), epochs=EPOCHS, steps_per_epoch=len(train_samples)/BATCH_SIZE/500,
+                        verbose=1, validation_data=nextBatch(val_samples, species_map, augment=False), validation_steps=len(val_samples)/BATCH_SIZE/100,
                         callbacks=[checkpoint])
 
     print("Training finished!")
@@ -51,6 +51,7 @@ def evaluate():
     predictions = np.array(predictions)
     glc_ids = np.array(glc_ids)
 
+    print("Make submission...")
     evaluation_df = make_submission_df(TOP_N_SUBMISSION_RANKS, species_map, predictions, glc_ids)
 
     print("Evaluate submission...")
@@ -58,28 +59,13 @@ def evaluate():
     score = mrr_score(ranks)
     print("MRR-Score:", score * 100,"%")
 
-    '''
-    np.save(data_paths.keras_training_gt, ground_truth)
-    np.save(data_paths.keras_training_results, predictions)
-    np.save(data_paths.keras_training_glc_ids, glc_ids)
-
-    make_submission_from_files(species_map_path=data_paths.train_samples_species_map,
-                               predictions_path=data_paths.keras_training_results,
-                               glc_ids_path=data_paths.keras_training_glc_ids,
-                               submission_path=data_paths.keras_training_submission)
-                               
-    evaluate_results_from_files(submission_path=data_paths.keras_training_submission,
-                                gt_path=data_paths.keras_training_gt,
-                                species_map_path=data_paths.train_samples_species_map)
-    '''
-
-
 def predict():
     model.load_weights(keras_training_model)
     predictions = []
     glc_ids = []
 
-    for x, batch_glc_ids in tqdm(nextTestBatch(test_samples[0:50], species_map)):
+    print("Predict test set...")
+    for x, batch_glc_ids in nextTestBatch(test_samples, species_map):
         predictions.extend(model.predict_on_batch(x))
         glc_ids.extend(batch_glc_ids)
 
@@ -90,17 +76,6 @@ def predict():
     prediction_df = make_submission_df(TOP_N_SUBMISSION_RANKS, species_map, predictions, glc_ids)
     print("Save submission...")
     prediction_df.to_csv(keras_test_submission, index=False, sep=";", header=None)
-
-    '''
-    np.save(data_paths.keras_test_results, predictions)
-    np.save(data_paths.keras_test_glc_ids, glc_ids)
-
-    make_submission_from_files(data_paths.train_samples_species_map,
-                               data_paths.keras_test_results,
-                               data_paths.keras_test_glc_ids,
-                               data_paths.keras_test_submission,
-                               header=False)
-    '''
     
 
 if __name__ == '__main__':
@@ -113,7 +88,7 @@ if __name__ == '__main__':
     tf.set_random_seed(seed)
 
     train_samples = np.load(train_samples_path)
-    split = 1 - np.int(len(train_samples_path)*train_val_split)
+    split = 1 - np.int(len(train_samples)*train_val_split)
     train_samples, val_samples = train_samples[:split, :], train_samples[split:, :]
     test_samples = np.load(test_samples_path)
 
