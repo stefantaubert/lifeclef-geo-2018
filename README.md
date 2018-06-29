@@ -1,4 +1,5 @@
 # Species Prediction based on Environmental Variables using Machine Learning Techniques
+
 By [Stefan Taubert](https://stefantaubert.com/), [Max Mauermann](https://www.tu-chemnitz.de/informatik/HomePages/Medieninformatik/team.php.en), [Stefan Kahl](http://medien.informatik.tu-chemnitz.de/skahl/about/), [Thomas Wilhelm-Stein](https://www.tu-chemnitz.de/informatik/HomePages/Medieninformatik/team.php.en), [Danny Kowerko](https://www.tu-chemnitz.de/informatik/mc/staff.php.en) and [Maximilian Eibl](https://www.tu-chemnitz.de/informatik/HomePages/Medieninformatik/team.php.en)
 
 
@@ -23,6 +24,8 @@ Please cite the paper in your publications if it helps your research.
 <b>You can download our working notes here:</b> [TUCMI GeoLifeCLEF Working Notes PDF](todo)
 
 ## Installation
+![Python](https://img.shields.io/badge/python-3.6.0-green.svg)
+
 ```
 git clone git@github.com:stefantaubert/lifeclef-geo-2018.git
 cd lifeclef-geo-2018
@@ -118,4 +121,21 @@ PYTHONPATH=/path/to/gitrepo python geo/tests/test_*.py
 You can run our analysis with any script in the ```geo/analysis/``` directory for instance:
 ```
 PYTHONPATH=/path/to/gitrepo python geo/analysis/species_occurences.py
+```
+
+## On Windows
+Look at this [post](https://stackoverflow.com/a/4580120/3684580) on StackOverflow to set the PYTHONPATH. An other possibility is to use Visual Studio Code and set the ```launch.json``` like this:
+```
+{
+"version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Current File",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "env": {"PYTHONPATH":"${workspaceRoot}"}
+        }
+    ]
+}
 ```
