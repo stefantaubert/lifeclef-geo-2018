@@ -39,7 +39,7 @@ Therefor you need to create a file ```geo/data_dir_config.py``` which defines a 
 root = "/path/to/datasetdir"
 ```
 
-In this directory should be the following files and directories:
+In this dataset directory should be the following files and directories:
 ```
 occurrences_test.csv
 occurrences_train.csv
