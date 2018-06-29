@@ -14,7 +14,7 @@ This project is licensed under the terms of the MIT license.
 Please cite the paper in your publications if it helps your research.
 
 ```
-@article{kahl2017large,
+@article{todo,
   title={Species Prediction based on Environmental Variables using Machine Learning Techniques},
   author={Taubert, Stefan and Mauermann Max and Kahl, Stefan and Wilhelm-Stein, Thomas and Kowerko, Danny and Ritter, Marc and Eibl, Maximilian},
   journal={Working notes of CLEF},
@@ -32,7 +32,7 @@ sudo pip install –r requirements.txt
 ```
 
 ## Training
-For the training you need to download the GeoLifCLEF [training data](http://otmedia.lirmm.fr/LifeCLEF/GeoLifeCLEF2018/).
+For the training you need to download the GeoLifeCLEF [training data](http://otmedia.lirmm.fr/LifeCLEF/GeoLifeCLEF2018/).
 
 ### Dataset
 You need to set the path to the directory with the data. 
