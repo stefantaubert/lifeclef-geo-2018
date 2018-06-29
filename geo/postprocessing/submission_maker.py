@@ -9,7 +9,7 @@ def _make_submission_groups(top_n, groups_map, predictions, glc_ids, groups, pro
     In this case the groups will be resolved to the single species whereas the most common species get the lowest rank.
     
     Keyword arguments:
-    top_n -- considers only the top_n-predictions
+    top_n -- considers only top_n-predictions
     groups_map -- contains a simple list of all possible groups
     predictions -- contains the predicted probabilities for each glc_id
     glc_ids -- contains all glc_ids of the dataset which was predicted

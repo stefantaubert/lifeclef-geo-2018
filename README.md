@@ -12,11 +12,10 @@ E-Mail: stefan.taubert@informatik.tu-chemnitz.de
 This project is licensed under the terms of the MIT license.
 
 Please cite the paper in your publications if it helps your research.
-
 ```
-@article{todo,
+@article{taubert2018large,
   title={Species Prediction based on Environmental Variables using Machine Learning Techniques},
-  author={Taubert, Stefan and Mauermann Max and Kahl, Stefan and Wilhelm-Stein, Thomas and Kowerko, Danny and Ritter, Marc and Eibl, Maximilian},
+  author={Taubert, Stefan and Mauermann, Max and Kahl, Stefan and Wilhelm-Stein, Thomas and Kowerko, Danny and Ritter, Marc and Eibl, Maximilian},
   journal={Working notes of CLEF},
   year={2018}
 }
@@ -24,7 +23,6 @@ Please cite the paper in your publications if it helps your research.
 <b>You can download our working notes here:</b> [TUCMI GeoLifeCLEF Working Notes PDF](todo)
 
 ## Installation
-
 ```
 git clone git@github.com:stefantaubert/lifeclef-geo-2018.git
 cd lifeclef-geo-2018
@@ -35,17 +33,89 @@ sudo pip install –r requirements.txt
 For the training you need to download the GeoLifeCLEF [training data](http://otmedia.lirmm.fr/LifeCLEF/GeoLifeCLEF2018/).
 
 ### Dataset
-You need to set the path to the directory with the data. 
-Therefor you need to create a file ./data_dir_config.py which defines a root variable and looks like this:
-
+You need to set up the path to the directory with the datasets. 
+Therefor you need to create a file ```geo/data_dir_config.py``` which defines a ```root```-variable and looks like this:
 ```
-root = "path/to/datasetdir"
+root = "/path/to/datasetdir"
+```
+
+In this directory should be the following files and directories:
+```
+occurrences_test.csv
+occurrences_train.csv
+patchTrain   
+¦   256
+¦   ¦   patch_1.tif
+¦   ¦   patch_2.tif
+¦   ¦   ...
+¦   512
+¦   ¦   patch_257.tif
+¦   ¦   patch_258.tif
+¦   ¦   ...
+¦   ...
+patchTest
+¦   256
+¦   ¦   patch_1.tif
+¦   ¦   patch_2.tif
+¦   ¦   ...
+¦   512
+¦   ¦   patch_257.tif
+¦   ¦   patch_258.tif
+¦   ¦   ...
+¦   ...
 ```
 
 ## Run Models
-To run the models you need to navigate to the specific model directory and execute the python script for example:
+To run any of the eight models you need to navigate to the specific model directory and execute the according python script:
 
+### XGB Single Model
 ```
-cd geo/models/xgb
-PYTHONPATH=/path/to/gitrepo python single_model.py
+PYTHONPATH=/path/to/gitrepo python geo/models/xgb/single_model.py
+```
+
+### XGB Multi Model
+```
+PYTHONPATH=/path/to/gitrepo python geo/models/xgb/multi_model.py
+```
+
+### XGB Multi Model with Groups
+```
+PYTHONPATH=/path/to/gitrepo python geo/models/xgb/multi_model_with_groups.py
+```
+
+### Keras Single Model
+```
+PYTHONPATH=/path/to/gitrepo python geo/models/keras/train_keras_model.py
+```
+
+### Keras Multi Model
+```
+PYTHONPATH=/path/to/gitrepo python geo/models/keras/train_keras_model.py
+```
+
+### Vector Model
+```
+PYTHONPATH=/path/to/gitrepo python geo/models/vector/model.py
+```
+
+### Random Model
+```
+PYTHONPATH=/path/to/gitrepo python geo/models/random/model.py
+```
+
+### Probability Model
+```
+PYTHONPATH=/path/to/gitrepo python geo/models/probability/model.py
+```
+
+## Tests
+If you want to run the tests you need to run the specific script in the test dir:
+```
+PYTHONPATH=/path/to/gitrepo python geo/tests/test_*.py
+```
+
+## Analysis
+You can run our analysis with any script in the ```geo/analysis/``` directory for instance:
+```
+PYTHONPATH=/path/to/gitrepo python geo/analysis/species_occurences.py
 ```

@@ -17,13 +17,13 @@ from geo.settings import pixel_count
 count_channels = 33
 image_dimension = 64
 result_cols = [
-                'chbio_1', 'chbio_2', 'chbio_3', 'chbio_4', 'chbio_5', 'chbio_6',
-                'chbio_7', 'chbio_8', 'chbio_9', 'chbio_10', 'chbio_11', 'chbio_12',
-                'chbio_13', 'chbio_14', 'chbio_15', 'chbio_16', 'chbio_17', 'chbio_18','chbio_19',
-                'etp', 'alti','awc_top', 'bs_top', 'cec_top', 'crusting', 'dgh', 'dimp', 'erodi', 'oc_top', 'pd_top', 'text',
-                'proxi_eau_fast', 'clc', 
-                'day', 'month', 'year', 'latitude', 'longitude', 'patch_id'
-            ]
+    'chbio_1', 'chbio_2', 'chbio_3', 'chbio_4', 'chbio_5', 'chbio_6',
+    'chbio_7', 'chbio_8', 'chbio_9', 'chbio_10', 'chbio_11', 'chbio_12',
+    'chbio_13', 'chbio_14', 'chbio_15', 'chbio_16', 'chbio_17', 'chbio_18','chbio_19',
+    'etp', 'alti','awc_top', 'bs_top', 'cec_top', 'crusting', 'dgh', 'dimp', 'erodi', 'oc_top', 'pd_top', 'text',
+    'proxi_eau_fast', 'clc', 
+    'day', 'month', 'year', 'latitude', 'longitude', 'patch_id'
+]
 
 def load_occurences_train():
     assert os.path.exists(occurrences_train_gen)

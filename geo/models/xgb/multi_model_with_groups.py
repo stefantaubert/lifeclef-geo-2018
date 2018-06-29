@@ -155,4 +155,4 @@ def plt_features(bst, d_test):
     plt.show()
 
 if __name__ == '__main__':
-    run_multi_model_with_groups(use_multithread=False)
+    run_multi_model_with_groups(use_multithread=True)

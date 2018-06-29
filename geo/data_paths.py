@@ -58,10 +58,11 @@ test_samples_path = img_list_dir + "test/samples.npy"
 train_samples_species_map = img_list_dir + "train/species_map.py"
 
 
-
+# Create preprocessing directory
 if not os.path.exists(preprocessing_dir):
     os.makedirs(preprocessing_dir)
 
+# Create log-file
 if not os.path.exists(log):
     file = open(log, 'w+')
     file.close()

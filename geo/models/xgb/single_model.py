@@ -1,6 +1,7 @@
-#http://xgboost.readthedocs.io/en/latest/parameter.html
-#http://xgboost.readthedocs.io/en/latest/python/python_api.html
-#http://xgboost.readthedocs.io/en/latest/gpu/index.html
+# Documentation XGBoost
+# http://xgboost.readthedocs.io/en/latest/parameter.html
+# http://xgboost.readthedocs.io/en/latest/python/python_api.html
+# http://xgboost.readthedocs.io/en/latest/gpu/index.html
 
 import pandas as pd
 import numpy as np

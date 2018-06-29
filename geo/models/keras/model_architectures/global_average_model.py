@@ -1,11 +1,13 @@
 import settings_main as settings
 import numpy as np
-np.random.seed(settings.seed)
+import tensorflow as tf
+
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Flatten, BatchNormalization
 from keras.layers import Conv2D, AveragePooling2D, MaxPooling2D
 from keras import regularizers
-import tensorflow as tf
+
+np.random.seed(settings.seed)
 
 def get_model(output_shape, channel_count):
     model = Sequential()

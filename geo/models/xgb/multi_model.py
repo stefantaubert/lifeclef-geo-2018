@@ -116,7 +116,6 @@ def predict_species(species, x_train, x_valid, x_test, y_train, y_valid):
     d_valid = xgb.DMatrix(x_valid, label=val_target)
     d_test = xgb.DMatrix(x_test)
     watchlist = [(d_train, 'train'), (d_valid, 'valid')]
-    
     bst = xgb.train(
         params, 
         d_train, 
@@ -125,6 +124,7 @@ def predict_species(species, x_train, x_valid, x_test, y_train, y_valid):
         evals=watchlist, 
         early_stopping_rounds=params["early_stopping_rounds"]
     )
+
     plt_features(bst, d_train)
     pred = bst.predict(d_valid, ntree_limit=bst.best_ntree_limit)
     #print("validation-logloss for", str(species) + ":", log_loss(val_target, pred))
@@ -139,4 +139,4 @@ def plt_features(bst, d_test):
     plt.show()
 
 if __name__ == '__main__':
-    run_multi_model(use_multithread=False)
+    run_multi_model(use_multithread=True)
