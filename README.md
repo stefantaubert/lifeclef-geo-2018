@@ -21,7 +21,7 @@ Please cite the paper in your publications if it helps your research.
   year={2018}
 }
 ```
-<b>You can download our working notes here:</b> [TUCMI GeoLifeCLEF Working Notes PDF](todo)
+<b>You can download our working notes here:</b> [TUCMI GeoLifeCLEF Working Notes PDF](http://ceur-ws.org/Vol-2125/paper_93.pdf)
 
 ## Installation
 ![Python](https://img.shields.io/badge/python-3.6.0-green.svg)
