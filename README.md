@@ -8,7 +8,7 @@ This is the sourcecode for our submissions to the GeoLifeCLEF 2018 species recog
 
 Contact:  [Stefan Taubert](https://stefantaubert.com/), [Technische Universität Chemnitz](https://www.tu-chemnitz.de/index.html.en), [Media Informatics](https://www.tu-chemnitz.de/informatik/Medieninformatik/index.php.en)
 
-E-Mail: stefan.taubert@informatik.tu-chemnitz.de
+E-Mail: github@stefantaubert.com
 
 This project is licensed under the terms of the MIT license.
 
